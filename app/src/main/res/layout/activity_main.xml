@@ -5,7 +5,7 @@
     android:id="@+id/your_view_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".view.activites.MainActivity">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/imageCategory"
@@ -18,7 +18,7 @@
         android:layout_alignParentBottom="true"
         android:background="@drawable/sliding_background" />
 
-    <com.sports.sportsflashes.CustomRecyler
+    <com.sports.sportsflashes.view.customviewimpl.CustomRecycler
         android:id="@+id/circularRecycler"
         android:layout_width="match_parent"
         android:layout_height="150dp"

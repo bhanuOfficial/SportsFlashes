@@ -1,21 +1,30 @@
-package com.sports.sportsflashes
+package com.sports.sportsflashes.view.activites
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.bekawestberg.loopinglayout.library.LoopingLayoutManager
+import com.sports.sportsflashes.R
+import com.sports.sportsflashes.common.applicationlevel.SFApplication
+import com.sports.sportsflashes.view.adapters.CircularCategoryAdapter
+import com.sports.sportsflashes.view.adapters.ImageCategoryAdapter
+import com.sports.sportsflashes.view.customviewimpl.CircularHorizontalMode
+import com.sports.sportsflashes.viewmodel.MainActivityViewModel
 import kotlinx.android.synthetic.main.activity_main.*
-import me.khrystal.library.widget.CircularHorizontalMode
 
 class MainActivity : AppCompatActivity() {
     var smallItemWidth: Int = 0
     var mainItemWidth: Int = 0
     private var draggingView = -1
-    private var scrolled = false
+    private lateinit var viewModel: MainActivityViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        SFApplication.getAppComponent().inject(this)
+        viewModel = ViewModelProvider(this).get(MainActivityViewModel::class.java)
+        viewModel.check()
         setContentView(R.layout.activity_main)
         val list = ArrayList<String>()
         list.add("asdad")
@@ -47,9 +56,10 @@ class MainActivity : AppCompatActivity() {
             linearSnapHelper.attachToRecyclerView(circularRecycler)*/
         circularRecycler.mViewMode = CircularHorizontalMode()
         circularRecycler.mNeedCenterForce = true
-        circularRecycler.adapter = CircularCategoryAdapter(list) {
-            smallItemWidth = it
-        }
+        circularRecycler.adapter =
+            CircularCategoryAdapter(list) {
+                smallItemWidth = it
+            }
         imageCategory.setHasFixedSize(true)
         imageCategory.layoutManager = LoopingLayoutManager(this).also {
             it.reverseLayout = false
@@ -57,9 +67,10 @@ class MainActivity : AppCompatActivity() {
         }
         val snapHelper = PagerSnapHelper()
         snapHelper.attachToRecyclerView(imageCategory)
-        imageCategory.adapter = ImageCategoryAdapter(list) {
-            mainItemWidth = it
-        }
+        imageCategory.adapter =
+            ImageCategoryAdapter(list) {
+                mainItemWidth = it
+            }
         imageCategory.postDelayed(Runnable {
             imageCategory.scrollToPosition(
                 circularRecycler.getChildAdapterPosition(

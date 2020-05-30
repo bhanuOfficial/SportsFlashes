@@ -26,3 +26,8 @@ allprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+ext{
+    okhttpVersion = '3.4.1'
+    retrofitVersion = "2.2.0"
+}

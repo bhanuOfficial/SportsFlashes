@@ -1,2 +1,2 @@
 rootProject.name='SportsFlashes'
-include ':app', ':library'
+include ':app'

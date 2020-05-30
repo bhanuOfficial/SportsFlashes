@@ -1,4 +1,4 @@
-package com.sports.sportsflashes
+package com.sports.sportsflashes.view.adapters
 
 import android.graphics.Color
 import android.view.LayoutInflater
@@ -6,6 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.sports.sportsflashes.R
+import com.sports.sportsflashes.view.activites.MainActivity
 import kotlin.random.Random
 
 /*class ImageCategoryAdapter(

@@ -1,4 +1,4 @@
-package com.sports.sportsflashes
+package com.sports.sportsflashes.view.customviewimpl
 
 import android.content.Context
 import android.util.AttributeSet
@@ -7,11 +7,10 @@ import android.view.View
 import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bekawestberg.loopinglayout.library.LoopingLayoutManager
-import me.khrystal.library.widget.ItemViewMode
 import java.lang.ref.WeakReference
 
 
-class CustomRecyler @JvmOverloads constructor(
+class CustomRecycler @JvmOverloads constructor(
     context: Context?,
     attrs: AttributeSet? = null,
     defStyle: Int = 0
@@ -75,21 +74,6 @@ class CustomRecyler @JvmOverloads constructor(
 
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
         super.onLayout(changed, l, t, r, b)
-        //            scrollToPosition(DEFAULT_SELECTION);
-      /*  val layoutManager = layoutManager as LoopingLayoutManager?
-        if (layoutManager!!.canScrollHorizontally()) setPadding(
-            width / 2,
-            0,
-            width / 2,
-            0
-        ) else if (layoutManager.canScrollVertically()) setPadding(
-            0,
-            height / 2,
-            0,
-            height / 2
-        )
-        clipToPadding = false
-        clipChildren = false*/
         mCurrentCenterChildView = findViewAtCenter()
         smoothScrollToView(mCurrentCenterChildView!!)
     }
@@ -118,7 +102,7 @@ class CustomRecyler @JvmOverloads constructor(
         return null
     }
 
-   fun smoothScrollToView(v: View) {
+    fun smoothScrollToView(v: View) {
         var distance = 0
         if (layoutManager is LoopingLayoutManager) {
             if (layoutManager!!.canScrollVertically()) {
@@ -133,59 +117,4 @@ class CustomRecyler @JvmOverloads constructor(
         } else throw IllegalArgumentException("CircleRecyclerView just support T extend LinearLayoutManager!")
         smoothScrollBy(distance, distance)
     }
-
-    /*override fun fling(velocityX: Int, velocityY: Int): Boolean {
-        val linearLayoutManager = layoutManager as LoopingLayoutManager?
-        val screenWidth: Int = Resources.getSystem().getDisplayMetrics().widthPixels
-
-        // views on the screen
-
-        // views on the screen
-        val lastVisibleItemPosition = linearLayoutManager!!.topLeftIndex
-        val lastView =
-            linearLayoutManager!!.findViewByPosition(lastVisibleItemPosition)
-        val firstVisibleItemPosition = linearLayoutManager!!.bottomRightIndex
-        val firstView =
-            linearLayoutManager!!.findViewByPosition(firstVisibleItemPosition)
-
-        // distance we need to scroll
-
-        // distance we need to scroll
-        val leftMargin = (screenWidth - lastView!!.width) / 2
-        val rightMargin = (screenWidth - firstView!!.width) / 2 + firstView!!.width
-        val leftEdge = lastView!!.left
-        val rightEdge = firstView!!.right
-        val scrollDistanceLeft = leftEdge - leftMargin
-        val scrollDistanceRight = rightMargin - rightEdge
-
-        return if (Math.abs(velocityX) < 1000) {
-            // The fling is slow -> stay at the current page if we are less than half through,
-            // or go to the next page if more than half through
-            if (leftEdge > screenWidth / 2) {
-                // go to next page
-                smoothScrollBy(-scrollDistanceRight, 0)
-            } else if (rightEdge < screenWidth / 2) {
-                // go to next page
-                smoothScrollBy(scrollDistanceLeft, 0)
-            } else {
-                // stay at current page
-                if (velocityX > 0) {
-                    smoothScrollBy(-scrollDistanceRight, 0)
-                } else {
-                    smoothScrollBy(scrollDistanceLeft, 0)
-                }
-            }
-            true
-        } else {
-            // The fling is fast -> go to next page
-            if (velocityX > 0) {
-                smoothScrollBy(scrollDistanceLeft, 0)
-            } else {
-                smoothScrollBy(-scrollDistanceRight, 0)
-            }
-            true
-        }
-    }*/
-
-
 }
