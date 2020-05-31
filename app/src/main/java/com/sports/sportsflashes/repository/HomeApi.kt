@@ -6,7 +6,6 @@ import io.reactivex.Single
 import retrofit2.http.GET
 
 interface HomeApi {
-
     @GET("/v5/findlang")
     fun getHomeApi(): Single<BaseResponse<Language>>
 }
