@@ -1,7 +1,7 @@
 package com.sports.sportsflashes.repository
 
 import com.google.gson.Gson
-import com.sports.sportsflashes.common.applicationlevel.SFApplication
+import com.sports.sportsflashes.common.application.SFApplication
 import javax.inject.Inject
 
 class RepositoryFactory {
@@ -12,6 +12,6 @@ class RepositoryFactory {
     @Inject
     lateinit var gson: Gson
     val homeScreenRepo: HomeScreenRepo by lazy {
-        HomeScreenRepo(ApiFactory().HOME_API, gson)
+        HomeScreenRepo(ApiFactory().Dashboard_API, gson)
     }
 }

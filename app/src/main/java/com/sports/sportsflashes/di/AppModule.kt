@@ -5,7 +5,7 @@ import android.content.Context
 import android.content.res.Resources
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import com.sports.sportsflashes.common.applicationlevel.SFApplication
+import com.sports.sportsflashes.common.application.SFApplication
 import dagger.Module
 import dagger.Provides
 import io.reactivex.disposables.CompositeDisposable

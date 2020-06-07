@@ -1,6 +1,6 @@
 package com.sports.sportsflashes.repository
 
-import com.sports.sportsflashes.common.applicationlevel.SFApplication
+import com.sports.sportsflashes.common.application.SFApplication
 import retrofit2.Retrofit
 import javax.inject.Inject
 
@@ -12,7 +12,7 @@ class ApiFactory {
     @Inject
     lateinit var retrofit: Retrofit
 
-    val HOME_API: HomeApi by lazy {
-        retrofit.create(HomeApi::class.java)
+    val Dashboard_API: DashboardApi by lazy {
+        retrofit.create(DashboardApi::class.java)
     }
 }

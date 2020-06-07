@@ -7,10 +7,17 @@ import com.sports.sportsflashes.repository.RepositoryFactory
 import com.sports.sportsflashes.repository.STATUS
 
 class MainActivityViewModel : ViewModel() {
-    val repoFactory = RepositoryFactory().homeScreenRepo
-    val responseObserver = MutableLiveData(NetworkResponse(STATUS.NOT_REQUESTED))
+    private val repoFactory = RepositoryFactory().homeScreenRepo
+    private val showResponseObserver = MutableLiveData(NetworkResponse(STATUS.NOT_REQUESTED))
+    private val categoriesResponseObserver = MutableLiveData(NetworkResponse(STATUS.NOT_REQUESTED))
 
-    fun check() {
-        repoFactory.getHomeScreenData(responseObserver)
+    fun getFeaturedShows(): MutableLiveData<NetworkResponse> {
+        repoFactory.getFeaturedShowsData(showResponseObserver)
+        return showResponseObserver
+    }
+
+    fun getCategories(): MutableLiveData<NetworkResponse> {
+        repoFactory.getCategoriesData(categoriesResponseObserver)
+        return categoriesResponseObserver
     }
 }

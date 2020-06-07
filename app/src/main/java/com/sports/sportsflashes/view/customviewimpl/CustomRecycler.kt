@@ -74,8 +74,10 @@ class CustomRecycler @JvmOverloads constructor(
 
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
         super.onLayout(changed, l, t, r, b)
-        mCurrentCenterChildView = findViewAtCenter()
-        smoothScrollToView(mCurrentCenterChildView!!)
+        if (findViewAtCenter() != null) {
+            mCurrentCenterChildView = findViewAtCenter()
+            smoothScrollToView(mCurrentCenterChildView!!)
+        }
     }
 
     fun findViewAt(x: Int, y: Int): View? {

@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">SportsFlashes</string>
+    <string name="home">Home</string>
+    <string name="schedule">Schedule</string>
+    <string name="highlights">Highlights</string>
+    <string name="download">Downloads</string>
+    <string name="reminder">Reminder</string>
 
 </resources>

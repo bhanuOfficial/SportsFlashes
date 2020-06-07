@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/radio"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="bottom"
+    android:background="@color/medium_dark_gray"
+    android:clickable="true"
+    android:focusable="true"
+    app:behavior_hideable="false"
+    app:behavior_peekHeight="80dp"
+    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+
+    <ImageView
+        android:id="@+id/podcast_thumb"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/black_transparent" />
+
+    <RelativeLayout
+        android:id="@+id/podcast_actionView"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:background="@color/medium_dark_gray"
+        android:gravity="center"
+        android:paddingLeft="@dimen/small_padding"
+        android:paddingRight="@dimen/small_padding">
+
+        <RelativeLayout
+            android:id="@+id/podcast_play_status"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center">
+
+            <ImageView
+                android:layout_width="@dimen/circle_size"
+                android:layout_height="@dimen/circle_size"
+                android:background="@drawable/play_button"
+                android:clickable="false" />
+
+            <me.tankery.lib.circularseekbar.CircularSeekBar
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:clickable="false"
+                android:id="@+id/smallSeekBar"
+                app:cs_circle_color="@color/medium_light_gray"
+                app:cs_circle_progress_color="@color/black"
+                app:cs_circle_stroke_width="3dp"
+                app:cs_pointer_color="@color/sf_red"
+                app:cs_pointer_stroke_width="1dp"
+                />
+
+            <View
+                android:id="@+id/play"
+                android:layout_width="@dimen/circle_size"
+                android:layout_height="@dimen/circle_size" />
+        </RelativeLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_toLeftOf="@id/drag_podcast_view"
+            android:layout_toRightOf="@id/podcast_play_status"
+            android:gravity="center_vertical"
+            android:orientation="vertical"
+            android:paddingLeft="@dimen/large_padding">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="sdasd"
+                android:textColor="@color/white"
+                android:textSize="@dimen/x_medium_size" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="sdasd"
+                android:textColor="@color/medium_light_gray"
+                android:textSize="@dimen/medium_size" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/drag_podcast_view"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentEnd="true"
+            android:gravity="center_vertical"
+            android:paddingLeft="@dimen/small_padding"
+            android:paddingRight="@dimen/small_padding">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/ic_baseline_keyboard_arrow_up_24" />
+
+        </LinearLayout>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical|center"
+            android:padding="@dimen/small_padding"
+            android:text="Show Name"
+            android:textColor="@color/white"
+            android:textSize="@dimen/large_size" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center|center_vertical"
+            android:text="RJ Name"
+            android:textColor="@color/white"
+            android:textSize="@dimen/medium_size" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/large_margin"
+            android:gravity="center_vertical|center"
+            android:padding="@dimen/medium_padding"
+            android:text="22:00 - 24:00"
+            android:textColor="@color/white"
+            android:textSize="@dimen/x_medium_size" />
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/xx_large_padding">
+
+            <me.tankery.lib.circularseekbar.CircularSeekBar
+                android:id="@+id/largeSeekBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cs_circle_color="@color/medium_light_gray"
+                app:cs_circle_progress_color="@color/black"
+                app:cs_circle_stroke_width="14dp"
+                app:cs_pointer_color="@color/sf_red"
+                app:cs_pointer_stroke_width="24dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/play_podcast"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="@dimen/large_margin"
+                android:gravity="center|center_vertical"
+                android:padding="@dimen/small_padding"
+                android:text="Live Radio"
+                android:textColor="@color/white"
+                android:textSize="@dimen/medium_size" />
+
+            <ImageView
+                android:id="@+id/play_podcast"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:background="@drawable/play_button" />
+        </RelativeLayout>
+    </LinearLayout>
+</RelativeLayout>
