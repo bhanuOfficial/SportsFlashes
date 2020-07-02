@@ -1,5 +1,6 @@
 package com.sports.sportsflashes.view.fragments
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -19,13 +20,11 @@ import com.sports.sportsflashes.model.FeaturedShows
 import com.sports.sportsflashes.repository.NetworkResponse
 import com.sports.sportsflashes.repository.STATUS
 import com.sports.sportsflashes.view.activites.MainActivity
-import com.sports.sportsflashes.view.activites.MainActivity.Companion.instance
 import com.sports.sportsflashes.view.adapters.CircularShowAdapter
 import com.sports.sportsflashes.view.adapters.ImageShowAdapter
 import com.sports.sportsflashes.view.customviewimpl.CircularHorizontalMode
 import com.sports.sportsflashes.viewmodel.HomeFragmentViewModel
 import kotlinx.android.synthetic.main.home_fragment.*
-import javax.inject.Inject
 
 /**
  *Created by Bhanu on 02-07-2020
@@ -38,6 +37,7 @@ class HomeFragment : Fragment(),
     var featuredShowslist = listOf<FeaturedShows>()
     private lateinit var animation1: AlphaAnimation
     private lateinit var viewModel: HomeFragmentViewModel
+    private lateinit var attachedActivity: Context
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -58,6 +58,8 @@ class HomeFragment : Fragment(),
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        attachedActivity = this!!.requireContext()
+
     }
 
 
@@ -128,7 +130,7 @@ class HomeFragment : Fragment(),
         setAlphaForFeaturedChanged()
 
         playCurrentShow.setOnClickListener {
-            instance.onCurrentShowClicked(featuredShowslist[imageCategory.layoutManager.let { t ->
+            (attachedActivity as MainActivity).onCurrentShowClicked(featuredShowslist[imageCategory.layoutManager.let { t ->
                 t!!.getPosition(circularRecycler.findViewAtCenter()!!)
             }])
 
@@ -161,7 +163,7 @@ class HomeFragment : Fragment(),
                 Observer<NetworkResponse> { t ->
                     if (t!!.status == STATUS.SUCCESS) {
                         featuredShowslist = t.data as List<FeaturedShows>
-//                        instance.setShowsList(featuredShowslist)
+                        (attachedActivity as MainActivity).setShowsList(featuredShowslist)
                         circularRecycler.adapter =
                             CircularShowAdapter(featuredShowslist, {
                                 smallItemWidth = it

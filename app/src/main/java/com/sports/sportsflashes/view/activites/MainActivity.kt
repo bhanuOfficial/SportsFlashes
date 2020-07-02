@@ -18,13 +18,18 @@ import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory
 import com.google.android.exoplayer2.source.ExtractorMediaSource
 import com.google.android.exoplayer2.source.TrackGroupArray
+import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray
+import com.google.android.exoplayer2.upstream.DefaultAllocator
+import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.sports.sportsflashes.R
 import com.sports.sportsflashes.common.application.SFApplication
 import com.sports.sportsflashes.common.helper.CurrentShowClickListener
 import com.sports.sportsflashes.common.helper.FeaturedShowsListImpl
+import com.sports.sportsflashes.common.utils.AppConstant
 import com.sports.sportsflashes.model.FeaturedShows
 import com.sports.sportsflashes.model.SportCategories
 import com.sports.sportsflashes.repository.STATUS
@@ -37,23 +42,40 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.menu_view.*
 import kotlinx.android.synthetic.main.podcast_play_view.*
 import java.util.*
-import javax.inject.Inject
 
 
 class MainActivity : AppCompatActivity(), FeaturedShowsListImpl, CurrentShowClickListener {
 
     private lateinit var viewModel: MainActivityViewModel
-
-
-    @Inject
     lateinit var mediaPlayer: ExoPlayer
     private var seekBarHandler = Handler()
     private lateinit var updateSongTime: Runnable
     private lateinit var podcastPlayerView: BottomSheetBehavior<RelativeLayout>
 
-    companion object {
-        val TAG = MainActivity::class.java.simpleName
-        var instance = MainActivity()
+    private fun getMediaPlayer() {
+        val renderersFactory = DefaultRenderersFactory(this)
+        val bandwidthMeter = DefaultBandwidthMeter()
+        val trackSelectionFactory = AdaptiveTrackSelection.Factory(bandwidthMeter)
+        val trackSelector = DefaultTrackSelector(trackSelectionFactory)
+        val loadControl = DefaultLoadControl.Builder()
+            .setAllocator(DefaultAllocator(true, C.DEFAULT_BUFFER_SEGMENT_SIZE))
+            .setBufferDurationsMs(
+                AppConstant.MIN_BUFFER,
+                AppConstant.MAX_BUFFER,
+                DefaultLoadControl.DEFAULT_BUFFER_FOR_PLAYBACK_MS,
+                DefaultLoadControl.DEFAULT_BUFFER_FOR_PLAYBACK_AFTER_REBUFFER_MS
+            )
+            .setTargetBufferBytes(DefaultLoadControl.DEFAULT_TARGET_BUFFER_BYTES)
+            .setPrioritizeTimeOverSizeThresholds(DefaultLoadControl.DEFAULT_PRIORITIZE_TIME_OVER_SIZE_THRESHOLDS)
+            .createDefaultLoadControl()
+        mediaPlayer = ExoPlayerFactory.newSimpleInstance(
+            this,
+            renderersFactory,
+            trackSelector,
+            loadControl,
+            null,
+            bandwidthMeter
+        )
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,6 +85,7 @@ class MainActivity : AppCompatActivity(), FeaturedShowsListImpl, CurrentShowClic
         setSupportActionBar(toolbar)
         initMenuOptions()
         viewModel = ViewModelProvider(this).get(MainActivityViewModel::class.java)
+        getMediaPlayer()
         setCategories()
         initPodcastViewer()
         onItemClickOptionMenu()
