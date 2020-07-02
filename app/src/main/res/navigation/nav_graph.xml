@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/homeFragment">
+    <fragment
+        android:id="@+id/scheduleFragment"
+        android:name="com.sports.sportsflashes.view.fragments.ScheduleFragment"
+        android:label="fragment_schedule"
+        tools:layout="@layout/schedule_fragment" />
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.sports.sportsflashes.view.fragments.HomeFragment"
+        android:label="HomeFragment"
+        tools:layout="@layout/home_fragment">
+        <action
+            android:id="@+id/action_homeFragment_to_scheduleFragment"
+            app:destination="@id/scheduleFragment" />
+    </fragment>
+</navigation>

@@ -1,6 +1,7 @@
 package com.sports.sportsflashes.view.adapters
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,13 +11,14 @@ import com.bumptech.glide.Glide
 import com.sports.sportsflashes.R
 import com.sports.sportsflashes.model.FeaturedShows
 import com.sports.sportsflashes.view.activites.MainActivity
+import com.sports.sportsflashes.view.fragments.HomeFragment
 
 
 class ImageShowAdapter(
     private val featuredShowsList: List<FeaturedShows>,
     val onItemSizeCaptured: (Int) -> Unit,
     val context: Context
-) : RecyclerView.Adapter<ImageShowAdapter.ItemHolder>(), MainActivity.ItemPosition {
+) : RecyclerView.Adapter<ImageShowAdapter.ItemHolder>(), HomeFragment.ItemPosition {
     companion object {
         var pos: Int = 0
     }
@@ -37,7 +39,7 @@ class ImageShowAdapter(
 
     override fun onBindViewHolder(holder: ItemHolder, position: Int) {
 //        holder.textView.text = "" + position
-        (context as MainActivity).setFeaturedDetail(featuredShowsList[position])
+        Log.d("BHANU", "onBindViewHolder: --> ${position%featuredShowsList.size}")
         view = holder.itemView
         index = position
         Glide.with(holder.itemView.context).load(featuredShowsList[position].thumbnail)

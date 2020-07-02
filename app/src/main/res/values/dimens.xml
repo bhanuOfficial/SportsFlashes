@@ -29,6 +29,7 @@
     <dimen name="xx_large_size">24sp</dimen>
     <dimen name="x_small_size">12sp</dimen>
     <dimen name="xx_small_size">10sp</dimen>
+    <dimen name="text_margin">16dp</dimen>
 
 
 </resources>

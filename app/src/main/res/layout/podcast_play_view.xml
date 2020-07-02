@@ -9,7 +9,7 @@
     android:clickable="true"
     android:focusable="true"
     app:behavior_hideable="false"
-    app:behavior_peekHeight="80dp"
+    app:behavior_peekHeight="65dp"
     app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
 
@@ -27,7 +27,7 @@
     <RelativeLayout
         android:id="@+id/podcast_actionView"
         android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:layout_height="70dp"
         android:background="@color/medium_dark_gray"
         android:gravity="center"
         android:paddingLeft="@dimen/small_padding"
@@ -74,16 +74,16 @@
             android:paddingLeft="@dimen/large_padding">
 
             <TextView
+                android:id="@+id/showName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="sdasd"
                 android:textColor="@color/white"
                 android:textSize="@dimen/x_medium_size" />
 
             <TextView
+                android:id="@+id/showDisc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="sdasd"
                 android:textColor="@color/medium_light_gray"
                 android:textSize="@dimen/medium_size" />
         </LinearLayout>

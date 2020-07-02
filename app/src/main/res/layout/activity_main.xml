@@ -10,8 +10,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/colorAccent">
+        android:layout_height="match_parent">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
@@ -24,20 +23,26 @@
                 android:orientation="horizontal">
 
                 <LinearLayout
-                   android:paddingRight="@dimen/large_padding"
                     android:id="@+id/menu_drawer"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:paddingRight="@dimen/large_padding">
 
                     <ImageView
-                        android:layout_gravity="center_vertical"
                         android:layout_width="29dp"
                         android:layout_height="20dp"
                         android:layout_alignParentStart="true"
                         android:layout_centerVertical="true"
+                        android:layout_gravity="center_vertical"
                         android:background="@drawable/menu_icon" />
 
                 </LinearLayout>
+
+                <ImageView
+                    android:layout_width="140dp"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:background="@drawable/in_app_logo" />
 
                 <ImageView
                     android:layout_width="wrap_content"
@@ -60,104 +65,21 @@
 
         </androidx.appcompat.widget.Toolbar>
 
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/imageCategory"
+        <fragment
+            android:id="@+id/app_host_fragment"
+            android:name="androidx.navigation.fragment.NavHostFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/toolbar"
-            android:visibility="visible" />
+            android:layout_marginTop="?actionBarSize"
+            app:defaultNavHost="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:navGraph="@navigation/nav_graph" />
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="250dp"
-            android:layout_alignParentBottom="true"
-            android:background="@drawable/sliding_background" />
-
-        <com.sports.sportsflashes.view.customviewimpl.CustomRecycler
-            android:id="@+id/circularRecycler"
-            android:layout_width="match_parent"
-            android:layout_height="190dp"
-            android:layout_alignParentBottom="true"
-            app:layoutManager="com.bekawestberg.loopinglayout.library.LoopingLayoutManager" />
     </RelativeLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_centerHorizontal="true"
-            android:orientation="vertical">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingLeft="@dimen/large_padding">
-
-                <ImageView
-                    android:layout_width="40dp"
-                    android:layout_height="51dp"
-                    android:background="@drawable/play_show" />
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    android:paddingLeft="@dimen/x_medium_padding">
-
-                    <TextView
-                        android:id="@+id/showTittle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingBottom="@dimen/xx_small_padding"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/large_size"
-                        tools:text="text" />
-
-                    <TextView
-                        android:id="@+id/showDescription"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/medium_size"
-                        tools:text="asdasd" />
-                </LinearLayout>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:paddingLeft="@dimen/large_padding">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingTop="@dimen/small_padding"
-                    android:paddingBottom="@dimen/xx_small_padding"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/medium_size"
-                    tools:text="asdasd" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/small_size"
-                    tools:text="asdasd" />
-
-            </LinearLayout>
-
-
-        </LinearLayout>
-    </LinearLayout>
 
     <include
         layout="@layout/menu_view"
@@ -165,7 +87,6 @@
         android:layout_height="match_parent"
         android:layout_marginTop="?actionBarSize"
         android:visibility="gone" />
-
 
     <include layout="@layout/podcast_play_view" />
 

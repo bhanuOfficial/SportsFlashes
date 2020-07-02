@@ -10,23 +10,24 @@ import com.bumptech.glide.Glide
 import com.sports.sportsflashes.R
 import com.sports.sportsflashes.model.FeaturedShows
 import com.sports.sportsflashes.view.activites.MainActivity
+import com.sports.sportsflashes.view.fragments.HomeFragment
 
 class CircularShowAdapter(
     private val featuredShowsList: List<FeaturedShows>,
     val onItemSizeCaptured: (Int) -> Unit,
     val context: Context,
-    val isMenuShow : Boolean
+    val isMenuShow: Boolean
 ) :
-    RecyclerView.Adapter<CircularShowAdapter.ItemHolder>(), MainActivity.ItemPosition {
+    RecyclerView.Adapter<CircularShowAdapter.ItemHolder>(), HomeFragment.ItemPosition {
     private var index: Int = -1
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemHolder {
-        return if (isMenuShow){
+        return if (isMenuShow) {
             val rootView =
                 LayoutInflater.from(parent.context)
                     .inflate(R.layout.dashboard_show_items_menu, parent, false)
             ItemHolder(rootView)
-        }else{
+        } else {
             val rootView =
                 LayoutInflater.from(parent.context)
                     .inflate(R.layout.dashboard_show_items, parent, false)
@@ -40,8 +41,7 @@ class CircularShowAdapter(
 
     override fun onBindViewHolder(holder: ItemHolder, position: Int) {
         index = position
-        (context as MainActivity).setFeaturedDetail(featuredShowsList[position])
-        Glide.with(holder.itemView.context).load(featuredShowsList[position].thumbnail)
+        Glide.with(holder.itemView.context).load(featuredShowsList[position].icon)
             .placeholder(
                 holder.itemView.context.resources.getDrawable(
                     R.drawable.default_thumbnail,
