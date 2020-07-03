@@ -81,3 +81,8 @@ data class SportCategories(
     val createdAt: String,
     val updatedAt: String
 )
+
+data class WeekDays(
+    val date: String,
+    val day: String
+)

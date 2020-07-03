@@ -1,11 +1,13 @@
 package com.sports.sportsflashes.view.fragments
 
 import android.os.Bundle
+import android.text.format.DateUtils
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -15,21 +17,19 @@ import com.sports.sportsflashes.model.FeaturedShows
 import com.sports.sportsflashes.view.adapters.CircularShowAdapter
 import kotlinx.android.synthetic.main.schedule_fragment.*
 import java.lang.reflect.Type
+import java.text.DateFormat
+import java.text.ParseException
+import java.text.SimpleDateFormat
+import java.util.*
 import javax.inject.Inject
 
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [ScheduleFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class ScheduleFragment : Fragment() {
     private var featuredShows = listOf<FeaturedShows>()
+    private var weekdayList = arrayListOf<String>()
 
     @Inject
     lateinit var gson: Gson
@@ -40,9 +40,7 @@ class ScheduleFragment : Fragment() {
         arguments?.let {
             val featuredListType: Type = object : TypeToken<ArrayList<FeaturedShows?>?>() {}.type
             featuredShows =
-                gson.fromJson<List<FeaturedShows>>(it.getString("CHECK"), featuredListType)
-            Log.d("BHANU", "value ---> " + it.getString("CHECK"))
-            Log.d("BHANU", "List value ---> $featuredShows")
+                gson.fromJson(it.getString("CHECK"), featuredListType)
         }
     }
 
@@ -59,6 +57,7 @@ class ScheduleFragment : Fragment() {
         initScheduleShowRecycler()
         initWeeViewRecycler()
         initSchedulerRecycler()
+        getWeekList()
 
     }
 
@@ -78,8 +77,8 @@ class ScheduleFragment : Fragment() {
 
     fun initWeeViewRecycler() {
         weekView_recycler.setHasFixedSize(true)
-        weekView_recycler.layoutManager = LinearLayoutManager(activity).apply {
-            this.orientation = LinearLayoutManager.HORIZONTAL
+        weekView_recycler.layoutManager = GridLayoutManager(activity, 1).apply {
+            this.orientation = GridLayoutManager.HORIZONTAL
             this.reverseLayout = false
         }
     }
@@ -93,15 +92,6 @@ class ScheduleFragment : Fragment() {
     }
 
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment ScheduleFragment.
-         */
-        // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
             ScheduleFragment().apply {
@@ -115,6 +105,81 @@ class ScheduleFragment : Fragment() {
         fun newInstance(): ScheduleFragment {
             return ScheduleFragment()
         }
+    }
+
+    private fun getWeekList() {
+        var cal: Calendar = Calendar.getInstance()
+        cal.time = cal.time
+        val df: DateFormat = SimpleDateFormat("dd/MM/yyyy")
+        for (i in 1..3) {
+            cal.add(Calendar.DATE, -1)
+            weekdayList.add(df.format(cal.time))
+        }
+        cal = Calendar.getInstance()
+        cal.time = (cal.time)
+        weekdayList.add(df.format(cal.time))
+        for (i in 1..3) {
+            cal.add(Calendar.DATE, 1)
+            weekdayList.add(df.format(cal.time))
+        }
+
+        val byDate: Comparator<String?> =
+            object : Comparator<String?> {
+                var sdf =
+                    SimpleDateFormat("dd/MM/yyyy")
+
+                override fun compare(p0: String?, p1: String?): Int {
+                    var d1: Date? = null
+                    var d2: Date? = null
+                    try {
+                        d1 = sdf.parse(p0)
+                        d2 = sdf.parse(p1)
+                    } catch (e: ParseException) {
+                        e.printStackTrace()
+                    }
+//                    return if (d1!!.time > d2!!.time) -1 else 1 //descending
+                    return if (d1!!.time > d2!!.time) 1 else -1    //ascending
+                }
+            }
+
+        Collections.sort(weekdayList, byDate)
+        for (i in weekdayList) {
+            Log.d("BHANU", " DATE --> $i")
+            val date1 = SimpleDateFormat("dd/MM/yyyy").parse(i)
+            when {
+                isYesterday(date1!!) -> {
+                    weekTabs.addTab(weekTabs.newTab().setText("Yesterday $i"))
+                }
+                isTomorrow(date1) -> {
+                    weekTabs.addTab(weekTabs.newTab().setText("Tomorrow $i"))
+                }
+                isToday(date1) -> {
+                    weekTabs.addTab(weekTabs.newTab().setText("Today $i"))
+                }
+                else -> {
+                    weekTabs.addTab(weekTabs.newTab().setText(i))
+                }
+            }
+
+        }
+//        weekTabs.scrollX = weekTabs.width
+        weekTabs.postDelayed({
+            weekTabs.setScrollPosition(3, 0f, true)
+        }, 100)
+//        weekTabs.selectTab(weekTabs.getTabAt(),true)
+//        weekView_recycler.adapter = ScheduleTimeAdapter(weekdayList)
+    }
+
+    fun isYesterday(d: Date): Boolean {
+        return DateUtils.isToday(d.time + DateUtils.DAY_IN_MILLIS)
+    }
+
+    fun isTomorrow(d: Date): Boolean {
+        return DateUtils.isToday(d.time - DateUtils.DAY_IN_MILLIS)
+    }
+
+    fun isToday(d: Date): Boolean {
+        return DateUtils.isToday(d.time)
     }
 
 }
