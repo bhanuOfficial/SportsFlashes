@@ -38,6 +38,7 @@ class HomeFragment : Fragment(),
     private lateinit var animation1: AlphaAnimation
     private lateinit var viewModel: HomeFragmentViewModel
     private lateinit var attachedActivity: Context
+    private var created = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -52,14 +53,14 @@ class HomeFragment : Fragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initDashboard()
-        setFeaturedShows()
+
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        attachedActivity = this!!.requireContext()
-
+        attachedActivity = this.requireContext()
+        initDashboard()
+        setFeaturedShows()
     }
 
 
@@ -126,7 +127,6 @@ class HomeFragment : Fragment(),
         imageCategory.addOnScrollListener(scrollListener)
         circularRecycler.addOnScrollListener(scrollListener)
 
-
         setAlphaForFeaturedChanged()
 
         playCurrentShow.setOnClickListener {
@@ -162,12 +162,15 @@ class HomeFragment : Fragment(),
                 it,
                 Observer<NetworkResponse> { t ->
                     if (t!!.status == STATUS.SUCCESS) {
+                        created = true
                         featuredShowslist = t.data as List<FeaturedShows>
                         (attachedActivity as MainActivity).setShowsList(featuredShowslist)
-                        circularRecycler.adapter =
-                            CircularShowAdapter(featuredShowslist, {
-                                smallItemWidth = it
-                            }, requireActivity(), false)
+                        circularRecycler.postDelayed({
+                            circularRecycler . adapter =
+                                CircularShowAdapter(featuredShowslist, {
+                                    smallItemWidth = it
+                                }, requireActivity(), false)
+                        }, 200)
 
 
                         imageCategory.adapter =
@@ -186,7 +189,7 @@ class HomeFragment : Fragment(),
                                     circularRecycler.findViewAtCenter()!!
                                 )]
                             )
-                        }, 200)
+                        }, 300)
                     }
                 })
         }

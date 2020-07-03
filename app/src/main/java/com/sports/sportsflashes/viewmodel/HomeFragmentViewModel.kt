@@ -12,7 +12,6 @@ import com.sports.sportsflashes.repository.STATUS
 class HomeFragmentViewModel : ViewModel() {
     private val repoFactory = RepositoryFactory().homeScreenRepo
     private val showResponseObserver = MutableLiveData(NetworkResponse(STATUS.NOT_REQUESTED))
-    private val categoriesResponseObserver = MutableLiveData(NetworkResponse(STATUS.NOT_REQUESTED))
 
     fun getFeaturedShows(): MutableLiveData<NetworkResponse> {
         repoFactory.getFeaturedShowsData(showResponseObserver)

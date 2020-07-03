@@ -2,29 +2,25 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/black"
     android:orientation="vertical">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/schedule_shows_recycler"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/small_margin" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/weekView_recycler"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/small_margin" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/scheduleRecycler"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <TextView
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="adasdasdasdasda"
-        android:textColor="@color/black"
-        android:textSize="90dp" />
+        android:layout_marginTop="@dimen/small_margin" />
 
 </LinearLayout>

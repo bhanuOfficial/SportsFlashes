@@ -37,34 +37,4 @@ abstract class BaseNetworkRepo(gson: Gson) {
 
              })
      }
-
-   /* fun startNetworkService(
-        networkResponseObserver: MutableLiveData<NetworkResponse>,
-        onSuccess: ((Any?) -> Unit)? = null,
-        onFailure: ((Any?) -> Unit)? = null,
-        networkRequest: Single<List<Any>>
-    ) {
-        networkRequest.subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(object : SingleObserver<List<Any>> {
-                override fun onSuccess(t: List<Any>) {
-                    if (t != null) {
-                        onSuccess?.let { it(t) }
-                        networkResponseObserver.postValue(NetworkResponse(STATUS.SUCCESS, t))
-                    }
-                }
-
-                override fun onSubscribe(d: Disposable) {
-                }
-
-                override fun onError(e: Throwable) {
-                    onFailure?.let { it(e.message) }
-                    networkResponseObserver.postValue(NetworkResponse(STATUS.ERROR))
-                    e.printStackTrace()
-                }
-
-            })
-
-    }*/
-
 }

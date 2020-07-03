@@ -11,6 +11,7 @@ import android.widget.RelativeLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
@@ -25,6 +26,7 @@ import com.google.android.exoplayer2.upstream.DefaultAllocator
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.gson.Gson
 import com.sports.sportsflashes.R
 import com.sports.sportsflashes.common.application.SFApplication
 import com.sports.sportsflashes.common.helper.CurrentShowClickListener
@@ -35,6 +37,7 @@ import com.sports.sportsflashes.model.SportCategories
 import com.sports.sportsflashes.repository.STATUS
 import com.sports.sportsflashes.view.adapters.CategoryAdapter
 import com.sports.sportsflashes.view.adapters.CircularShowAdapter
+import com.sports.sportsflashes.view.fragments.ScheduleFragment
 import com.sports.sportsflashes.viewmodel.MainActivityViewModel
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
 import jp.wasabeef.glide.transformations.BlurTransformation
@@ -42,15 +45,20 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.menu_view.*
 import kotlinx.android.synthetic.main.podcast_play_view.*
 import java.util.*
+import javax.inject.Inject
 
 
 class MainActivity : AppCompatActivity(), FeaturedShowsListImpl, CurrentShowClickListener {
 
     private lateinit var viewModel: MainActivityViewModel
-    lateinit var mediaPlayer: ExoPlayer
+    private lateinit var mediaPlayer: ExoPlayer
     private var seekBarHandler = Handler()
     private lateinit var updateSongTime: Runnable
     private lateinit var podcastPlayerView: BottomSheetBehavior<RelativeLayout>
+    private lateinit var featuredShows: List<FeaturedShows>
+
+    @Inject
+    lateinit var gson: Gson
 
     private fun getMediaPlayer() {
         val renderersFactory = DefaultRenderersFactory(this)
@@ -82,6 +90,7 @@ class MainActivity : AppCompatActivity(), FeaturedShowsListImpl, CurrentShowClic
         super.onCreate(savedInstanceState)
         SFApplication.getAppComponent().inject(this)
         setContentView(R.layout.activity_main)
+        initFragmentHost()
         setSupportActionBar(toolbar)
         initMenuOptions()
         viewModel = ViewModelProvider(this).get(MainActivityViewModel::class.java)
@@ -114,6 +123,8 @@ class MainActivity : AppCompatActivity(), FeaturedShowsListImpl, CurrentShowClic
     }
 
     private fun initFragmentHost() {
+        /*navController =
+            Navigation.findNavController(R.id.nav_graph)*/
 
     }
 
@@ -284,6 +295,11 @@ class MainActivity : AppCompatActivity(), FeaturedShowsListImpl, CurrentShowClic
 
         when (clickedView) {
             schedualView -> {
+                findNavController(R.id.app_host_fragment).navigate(
+                    R.id.action_homeFragment_to_scheduleFragment,
+                    Bundle().apply {
+                        this.putString("CHECK",gson.toJson(featuredShows))
+                    })
                 arrayOf(downloadView, eventView, homeView, reminderView).forEach {
                     it.setBackgroundResource(R.drawable.circle_white)
                 }
@@ -324,6 +340,7 @@ class MainActivity : AppCompatActivity(), FeaturedShowsListImpl, CurrentShowClic
                 downloadIcon.background = resources.getDrawable(R.drawable.download, null)
             }
             homeView -> {
+                findNavController(R.id.app_host_fragment).popBackStack()
                 arrayOf(schedualView, downloadView, eventView, reminderView).forEach {
                     it.setBackgroundResource(R.drawable.circle_white)
                 }
@@ -333,11 +350,12 @@ class MainActivity : AppCompatActivity(), FeaturedShowsListImpl, CurrentShowClic
                 reminderIcon.background = resources.getDrawable(R.drawable.reminder, null)
                 downloadIcon.background = resources.getDrawable(R.drawable.download, null)
             }
-
         }
+        menu_drawer.performClick()
     }
 
     override fun setShowsList(featuredShows: List<FeaturedShows>) {
+        this.featuredShows = featuredShows
         setMenuShows()
         menu_show_recyclerView.adapter =
             CircularShowAdapter(featuredShows, {
