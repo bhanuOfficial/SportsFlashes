@@ -8,6 +8,7 @@
 
     <androidx.cardview.widget.CardView
         app:cardUseCompatPadding="true"
+        android:id="@+id/circularItemContainer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:cardCornerRadius="40dp">

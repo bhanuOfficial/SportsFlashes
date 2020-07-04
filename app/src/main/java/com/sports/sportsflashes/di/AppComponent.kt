@@ -4,6 +4,7 @@ import com.sports.sportsflashes.repository.ApiFactory
 import com.sports.sportsflashes.repository.RepositoryFactory
 import com.sports.sportsflashes.view.activites.MainActivity
 import com.sports.sportsflashes.view.fragments.HomeFragment
+import com.sports.sportsflashes.view.fragments.ShowViewFragment
 import com.sports.sportsflashes.view.fragments.ScheduleFragment
 import com.sports.sportsflashes.viewmodel.MainActivityViewModel
 import dagger.Component
@@ -18,4 +19,5 @@ interface AppComponent {
     fun inject(repositoryFactory: RepositoryFactory)
     fun inject(homeFragment: HomeFragment)
     fun inject(scheduleFragment: ScheduleFragment)
+    fun inject(playableShowFragment: ShowViewFragment)
 }

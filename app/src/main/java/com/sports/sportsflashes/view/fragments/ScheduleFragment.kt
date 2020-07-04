@@ -7,12 +7,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.sports.sportsflashes.R
 import com.sports.sportsflashes.common.application.SFApplication
+import com.sports.sportsflashes.common.utils.AppConstant
 import com.sports.sportsflashes.model.FeaturedShows
 import com.sports.sportsflashes.view.adapters.CircularShowAdapter
 import kotlinx.android.synthetic.main.schedule_fragment.*
@@ -40,7 +40,7 @@ class ScheduleFragment : Fragment() {
         arguments?.let {
             val featuredListType: Type = object : TypeToken<ArrayList<FeaturedShows?>?>() {}.type
             featuredShows =
-                gson.fromJson(it.getString("CHECK"), featuredListType)
+                gson.fromJson(it.getString(AppConstant.BundleExtras.FEATURED_SHOW_LIST), featuredListType)
         }
     }
 
@@ -55,10 +55,19 @@ class ScheduleFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initScheduleShowRecycler()
-        initWeeViewRecycler()
         initSchedulerRecycler()
         getWeekList()
+        refresh()
 
+    }
+
+    private fun refresh() {
+        swipeRefresh.setOnRefreshListener {
+            swipeRefresh.isRefreshing = true
+            swipeRefresh.postDelayed({
+                swipeRefresh.isRefreshing = false
+            }, 2000)
+        }
     }
 
     fun initScheduleShowRecycler() {
@@ -73,14 +82,6 @@ class ScheduleFragment : Fragment() {
                     var smallItemWidth = it
                 }, it, true)
             }
-    }
-
-    fun initWeeViewRecycler() {
-        weekView_recycler.setHasFixedSize(true)
-        weekView_recycler.layoutManager = GridLayoutManager(activity, 1).apply {
-            this.orientation = GridLayoutManager.HORIZONTAL
-            this.reverseLayout = false
-        }
     }
 
     fun initSchedulerRecycler() {
@@ -108,6 +109,8 @@ class ScheduleFragment : Fragment() {
     }
 
     private fun getWeekList() {
+        val dateFormat = SimpleDateFormat("dd MMM")
+        val dateFormatWithDay = SimpleDateFormat("EEE, dd MMM")
         var cal: Calendar = Calendar.getInstance()
         cal.time = cal.time
         val df: DateFormat = SimpleDateFormat("dd/MM/yyyy")
@@ -148,16 +151,27 @@ class ScheduleFragment : Fragment() {
             val date1 = SimpleDateFormat("dd/MM/yyyy").parse(i)
             when {
                 isYesterday(date1!!) -> {
-                    weekTabs.addTab(weekTabs.newTab().setText("Yesterday $i"))
+                    weekTabs.addTab(
+                        weekTabs.newTab()
+                            .setText("Yesterday, ${dateFormat.format(df.parse(i)!!)}")
+                    )
                 }
                 isTomorrow(date1) -> {
-                    weekTabs.addTab(weekTabs.newTab().setText("Tomorrow $i"))
+                    weekTabs.addTab(
+                        weekTabs.newTab()
+                            .setText("Tomorrow, ${dateFormat.format(df.parse(i)!!)}")
+                    )
                 }
                 isToday(date1) -> {
-                    weekTabs.addTab(weekTabs.newTab().setText("Today $i"))
+                    weekTabs.addTab(
+                        weekTabs.newTab()
+                            .setText("Today, ${dateFormat.format(df.parse(i)!!)}")
+                    )
                 }
                 else -> {
-                    weekTabs.addTab(weekTabs.newTab().setText(i))
+                    weekTabs.addTab(
+                        weekTabs.newTab().setText(dateFormatWithDay.format(df.parse(i)!!))
+                    )
                 }
             }
 
@@ -167,7 +181,6 @@ class ScheduleFragment : Fragment() {
             weekTabs.setScrollPosition(3, 0f, true)
         }, 100)
 //        weekTabs.selectTab(weekTabs.getTabAt(),true)
-//        weekView_recycler.adapter = ScheduleTimeAdapter(weekdayList)
     }
 
     fun isYesterday(d: Date): Boolean {

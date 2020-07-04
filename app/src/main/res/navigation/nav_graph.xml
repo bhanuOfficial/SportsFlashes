@@ -8,7 +8,15 @@
         android:id="@+id/scheduleFragment"
         android:name="com.sports.sportsflashes.view.fragments.ScheduleFragment"
         android:label="fragment_schedule"
-        tools:layout="@layout/schedule_fragment" />
+        tools:layout="@layout/schedule_fragment">
+        <action
+            android:id="@+id/action_scheduleFragment_to_playableShowFragment"
+            app:destination="@id/playableShowFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+    </fragment>
     <fragment
         android:id="@+id/homeFragment"
         android:name="com.sports.sportsflashes.view.fragments.HomeFragment"
@@ -16,6 +24,24 @@
         tools:layout="@layout/home_fragment">
         <action
             android:id="@+id/action_homeFragment_to_scheduleFragment"
-            app:destination="@id/scheduleFragment" />
+            app:destination="@id/scheduleFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"
+            />
+        <action
+            android:id="@+id/action_homeFragment_to_playableShowFragment"
+            app:destination="@id/playableShowFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"
+            />
     </fragment>
+    <fragment
+        android:id="@+id/playableShowFragment"
+        android:name="com.sports.sportsflashes.view.fragments.ShowViewFragment"
+        android:label="PlayableShowFragment"
+        tools:layout="@layout/show_view_layout" />
 </navigation>

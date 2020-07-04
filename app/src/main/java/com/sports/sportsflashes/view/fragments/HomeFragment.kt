@@ -25,6 +25,7 @@ import com.sports.sportsflashes.view.adapters.ImageShowAdapter
 import com.sports.sportsflashes.view.customviewimpl.CircularHorizontalMode
 import com.sports.sportsflashes.viewmodel.HomeFragmentViewModel
 import kotlinx.android.synthetic.main.home_fragment.*
+import kotlinx.android.synthetic.main.playable_item_layout.*
 
 /**
  *Created by Bhanu on 02-07-2020
@@ -48,11 +49,6 @@ class HomeFragment : Fragment(),
         viewModel = ViewModelProvider(this).get(HomeFragmentViewModel::class.java)
         SFApplication.getAppComponent().inject(this)
         return inflater.inflate(R.layout.home_fragment, null, false)
-
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
 
     }
 
@@ -103,9 +99,13 @@ class HomeFragment : Fragment(),
                         imageCategory.scrollBy(dx * (mainItemWidth / smallItemWidth), 0)
                         if (state == RecyclerView.SCROLL_STATE_SETTLING) {
                             circularRecycler.post {
-                                imageCategory.smoothScrollToPosition(
-                                    circularRecycler.getChildAdapterPosition(circularRecycler.findViewAtCenter()!!)
-                                )
+                                circularRecycler?.let {
+                                    it.getChildAdapterPosition(circularRecycler.findViewAtCenter()!!)
+                                }?.let {
+                                    imageCategory.smoothScrollToPosition(
+                                        it
+                                    )
+                                }
                             }
                             setFeaturedDetail(featuredShowslist[imageCategory.layoutManager.let { t ->
                                 t!!.getPosition(circularRecycler.findViewAtCenter()!!)
@@ -165,31 +165,40 @@ class HomeFragment : Fragment(),
                         created = true
                         featuredShowslist = t.data as List<FeaturedShows>
                         (attachedActivity as MainActivity).setShowsList(featuredShowslist)
-                        circularRecycler.postDelayed({
-                            circularRecycler . adapter =
-                                CircularShowAdapter(featuredShowslist, {
-                                    smallItemWidth = it
-                                }, requireActivity(), false)
-                        }, 200)
 
+                        imageCategory?.let {
+                            it.adapter =
+                                ImageShowAdapter(featuredShowslist, {
+                                    mainItemWidth = it
+                                }, requireContext())
+                        }
 
-                        imageCategory.adapter =
-                            ImageShowAdapter(featuredShowslist, {
-                                mainItemWidth = it
-                            }, requireContext())
+                        circularRecycler?.let {
+                            it.postDelayed({
+                                it.adapter =
+                                    CircularShowAdapter(featuredShowslist, {
+                                        smallItemWidth = it
+                                    }, requireActivity(), false)
+                                imageCategory.postDelayed({
+                                    try {
+                                        imageCategory.scrollToPosition(
+                                            circularRecycler.getChildAdapterPosition(
+                                                circularRecycler.findViewAtCenter()!!
+                                            )
+                                        )
+                                        setFeaturedDetail(
+                                            featuredShowslist[circularRecycler.getChildAdapterPosition(
+                                                circularRecycler.findViewAtCenter()!!
+                                            )]
+                                        )
+                                    } catch (e: Exception) {
+                                        e.printStackTrace()
+                                    }
 
-                        imageCategory.postDelayed(Runnable {
-                            imageCategory.scrollToPosition(
-                                circularRecycler.getChildAdapterPosition(
-                                    circularRecycler.findViewAtCenter()!!
-                                )
-                            )
-                            setFeaturedDetail(
-                                featuredShowslist[circularRecycler.getChildAdapterPosition(
-                                    circularRecycler.findViewAtCenter()!!
-                                )]
-                            )
-                        }, 300)
+                                }, 50)
+
+                            }, 500)
+                        }
                     }
                 })
         }

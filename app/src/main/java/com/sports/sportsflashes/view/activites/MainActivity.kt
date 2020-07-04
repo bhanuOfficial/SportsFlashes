@@ -11,6 +11,7 @@ import android.widget.RelativeLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.ActivityNavigator
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
@@ -37,7 +38,6 @@ import com.sports.sportsflashes.model.SportCategories
 import com.sports.sportsflashes.repository.STATUS
 import com.sports.sportsflashes.view.adapters.CategoryAdapter
 import com.sports.sportsflashes.view.adapters.CircularShowAdapter
-import com.sports.sportsflashes.view.fragments.ScheduleFragment
 import com.sports.sportsflashes.viewmodel.MainActivityViewModel
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
 import jp.wasabeef.glide.transformations.BlurTransformation
@@ -298,7 +298,10 @@ class MainActivity : AppCompatActivity(), FeaturedShowsListImpl, CurrentShowClic
                 findNavController(R.id.app_host_fragment).navigate(
                     R.id.action_homeFragment_to_scheduleFragment,
                     Bundle().apply {
-                        this.putString("CHECK",gson.toJson(featuredShows))
+                        this.putString(
+                            AppConstant.BundleExtras.FEATURED_SHOW_LIST,
+                            gson.toJson(featuredShows)
+                        )
                     })
                 arrayOf(downloadView, eventView, homeView, reminderView).forEach {
                     it.setBackgroundResource(R.drawable.circle_white)
@@ -377,6 +380,10 @@ class MainActivity : AppCompatActivity(), FeaturedShowsListImpl, CurrentShowClic
             }
     }
 
+    override fun finish() {
+        super.finish()
+        ActivityNavigator.applyPopAnimationsToPendingTransition(this)
+    }
 }
 
 

@@ -1,25 +1,31 @@
 package com.sports.sportsflashes.view.adapters
 
+import android.app.Activity
 import android.content.Context
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.cardview.widget.CardView
+import androidx.navigation.Navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.google.gson.Gson
 import com.sports.sportsflashes.R
+import com.sports.sportsflashes.common.utils.AppConstant
 import com.sports.sportsflashes.model.FeaturedShows
-import com.sports.sportsflashes.view.activites.MainActivity
 import com.sports.sportsflashes.view.fragments.HomeFragment
 
 class CircularShowAdapter(
     private val featuredShowsList: List<FeaturedShows>,
     val onItemSizeCaptured: (Int) -> Unit,
     val context: Context,
-    val isMenuShow: Boolean
+    private val isMenuShow: Boolean
 ) :
     RecyclerView.Adapter<CircularShowAdapter.ItemHolder>(), HomeFragment.ItemPosition {
     private var index: Int = -1
+    private val gson = Gson()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemHolder {
         return if (isMenuShow) {
@@ -49,7 +55,18 @@ class CircularShowAdapter(
                 )
             )
             .into(holder.image)
+
+        holder.circularItemContainer.setOnClickListener {
+            findNavController(context as Activity, R.id.app_host_fragment)
+                .navigate(R.id.action_homeFragment_to_playableShowFragment, Bundle().apply {
+                    this.putString(
+                        AppConstant.BundleExtras.FEATURED_SHOW,
+                        gson.toJson(featuredShowsList[position])
+                    )
+                })
+        }
     }
+
 
     inner class ItemHolder(view: View) : RecyclerView.ViewHolder(view) {
         init {
@@ -58,7 +75,8 @@ class CircularShowAdapter(
             }
         }
 
-        val image = view.findViewById<ImageView>(R.id.imageCategory)
+        val image: ImageView = view.findViewById(R.id.imageCategory)
+        val circularItemContainer: CardView = view.findViewById(R.id.circularItemContainer)
     }
 
     override fun getItemPosition(): Int {

@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.sports.sportsflashes.R
 import com.sports.sportsflashes.model.FeaturedShows
-import com.sports.sportsflashes.view.activites.MainActivity
 import com.sports.sportsflashes.view.fragments.HomeFragment
 
 
@@ -54,7 +53,7 @@ class ImageShowAdapter(
 
     inner class ItemHolder(view: View) : RecyclerView.ViewHolder(view) {
         //        val image = view.findViewById<ImageView>(R.id.imageCategory)
-        val showThumb: ImageView = view.findViewById(R.id.gradient)
+        val showThumb: ImageView = view.findViewById(R.id.showImage)
 
         init {
             itemView.post {
