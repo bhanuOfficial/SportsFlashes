@@ -17,8 +17,8 @@ import com.sports.sportsflashes.R
 import com.sports.sportsflashes.common.application.SFApplication
 import com.sports.sportsflashes.common.helper.FeaturedShowsImpl
 import com.sports.sportsflashes.model.FeaturedShows
-import com.sports.sportsflashes.repository.NetworkResponse
-import com.sports.sportsflashes.repository.STATUS
+import com.sports.sportsflashes.repository.api.NetworkResponse
+import com.sports.sportsflashes.repository.api.STATUS
 import com.sports.sportsflashes.view.activites.MainActivity
 import com.sports.sportsflashes.view.adapters.CircularShowAdapter
 import com.sports.sportsflashes.view.adapters.ImageShowAdapter

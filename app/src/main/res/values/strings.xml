@@ -12,5 +12,7 @@
     <string name="see_all">See All</string>
     <string name="hide_more">Read Less</string>
     <string name="show_more">Read More</string>
+    <string name="error_player">There was an error initializing the YouTubePlayer (%1$s)</string>
+    <string name="no_show_schedule_for_the_day">No show schedule for the day</string>
 
 </resources>

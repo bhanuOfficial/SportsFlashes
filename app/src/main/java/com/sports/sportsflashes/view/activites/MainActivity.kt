@@ -35,7 +35,7 @@ import com.sports.sportsflashes.common.helper.FeaturedShowsListImpl
 import com.sports.sportsflashes.common.utils.AppConstant
 import com.sports.sportsflashes.model.FeaturedShows
 import com.sports.sportsflashes.model.SportCategories
-import com.sports.sportsflashes.repository.STATUS
+import com.sports.sportsflashes.repository.api.STATUS
 import com.sports.sportsflashes.view.adapters.CategoryAdapter
 import com.sports.sportsflashes.view.adapters.CircularShowAdapter
 import com.sports.sportsflashes.viewmodel.MainActivityViewModel

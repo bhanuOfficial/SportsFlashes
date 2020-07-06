@@ -1,4 +1,4 @@
-package com.sports.sportsflashes.repository
+package com.sports.sportsflashes.repository.api
 
 data class NetworkResponse(val status: STATUS, val data: Any? = null)
 

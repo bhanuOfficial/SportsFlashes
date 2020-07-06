@@ -1,7 +1,7 @@
 package com.sports.sportsflashes.di
 
-import com.sports.sportsflashes.repository.ApiFactory
-import com.sports.sportsflashes.repository.RepositoryFactory
+import com.sports.sportsflashes.repository.factory.ApiFactory
+import com.sports.sportsflashes.repository.factory.RepositoryFactory
 import com.sports.sportsflashes.view.activites.MainActivity
 import com.sports.sportsflashes.view.fragments.HomeFragment
 import com.sports.sportsflashes.view.fragments.ShowViewFragment

@@ -1,16 +1,20 @@
 package com.sports.sportsflashes.view.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.google.gson.Gson
 import com.sports.sportsflashes.R
 import com.sports.sportsflashes.common.application.SFApplication
 import com.sports.sportsflashes.common.utils.AppConstant
+import com.sports.sportsflashes.common.utils.AppUtility
 import com.sports.sportsflashes.model.FeaturedShows
+import com.sports.sportsflashes.view.activites.YoutubePlayerActivity
 import kotlinx.android.synthetic.main.dashboard_full_image_show.*
 import kotlinx.android.synthetic.main.playable_item_layout.*
 import javax.inject.Inject
@@ -79,7 +83,18 @@ class ShowViewFragment : Fragment() {
                 showDescriptionDetail.tag = true
             }
         }
-
+        playCurrentShow.setOnClickListener {
+            if (featuredShows.type == "Video")
+                activity?.let {
+                    ContextCompat.startActivity(
+                        it,
+                        Intent(context, YoutubePlayerActivity::class.java),
+                        null
+                    )
+                }
+            else
+                context?.let { context -> AppUtility.showToast(context, "dsasd") }
+        }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

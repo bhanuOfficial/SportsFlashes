@@ -1,4 +1,4 @@
-package com.sports.sportsflashes.repository
+package com.sports.sportsflashes.repository.api
 
 import com.sports.sportsflashes.model.BaseResponse
 import com.sports.sportsflashes.model.FeaturedShows

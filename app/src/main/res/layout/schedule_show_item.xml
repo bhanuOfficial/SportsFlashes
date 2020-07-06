@@ -13,6 +13,7 @@
 
         <ImageView
             android:id="@+id/showImage"
+            android:scaleType="fitXY"
             android:layout_width="150dp"
             android:layout_height="100dp"
             android:layout_centerVertical="true" />
@@ -20,32 +21,33 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/x_small_padding"
             android:layout_centerVertical="true"
             android:layout_toRightOf="@+id/showImage"
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/showTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/xx_small_padding"
-                android:text="adsadasd"
                 android:textColor="@color/white"
                 android:textSize="@dimen/small_size" />
 
             <TextView
+                android:id="@+id/showTittle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/xx_small_padding"
-                android:text="adsadasd"
                 android:textColor="@color/white"
                 android:textSize="@dimen/medium_size"
                 android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/showDescription"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/xx_small_padding"
-                android:text="adsadasd"
                 android:textColor="@color/white"
                 android:textSize="@dimen/small_size" />
         </LinearLayout>

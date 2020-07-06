@@ -1,8 +1,10 @@
-package com.sports.sportsflashes.repository
+package com.sports.sportsflashes.repository.repo
 
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.sports.sportsflashes.model.BaseResponse
+import com.sports.sportsflashes.repository.api.NetworkResponse
+import com.sports.sportsflashes.repository.api.STATUS
 import io.reactivex.Single
 import io.reactivex.SingleObserver
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -20,10 +22,13 @@ abstract class BaseNetworkRepo(gson: Gson) {
              .observeOn(AndroidSchedulers.mainThread())
              .subscribe(object : SingleObserver<BaseResponse<Any>> {
                  override fun onSuccess(t: BaseResponse<Any>) {
-                     if (t != null) {
-                         onSuccess?.let { it(t.data) }
-                         networkResponseObserver.postValue(NetworkResponse(STATUS.SUCCESS, t.data))
-                     }
+                     onSuccess?.let { it(t.data) }
+                     networkResponseObserver.postValue(
+                         NetworkResponse(
+                             STATUS.SUCCESS,
+                             t.data
+                         )
+                     )
                  }
 
                  override fun onSubscribe(d: Disposable) {
@@ -31,7 +36,11 @@ abstract class BaseNetworkRepo(gson: Gson) {
 
                  override fun onError(e: Throwable) {
                      onFailure?.let { it(e.message) }
-                     networkResponseObserver.postValue(NetworkResponse(STATUS.ERROR))
+                     networkResponseObserver.postValue(
+                         NetworkResponse(
+                             STATUS.ERROR
+                         )
+                     )
                      e.printStackTrace()
                  }
 
