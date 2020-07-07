@@ -217,63 +217,56 @@ class ScheduleFragment : Fragment() {
                         if (scheduleModel.`0`.isEmpty()) {
                             visible()
                         } else {
-                            hide()
-                            scheduleRecycler.adapter =
-                                ScheduleShowsAdapter(scheduleShowsList = scheduleModel.`0`)
+                            if (this@ScheduleFragment::scheduleModel.isInitialized)
+                                hide(scheduleModel.`0`)
                         }
                     }
                     WeekDays.Monday.name -> {
                         if (scheduleModel.`1`.isEmpty()) {
                             visible()
                         } else {
-                            hide()
-                            scheduleRecycler.adapter =
-                                ScheduleShowsAdapter(scheduleShowsList = scheduleModel.`1`)
+                            if (this@ScheduleFragment::scheduleModel.isInitialized)
+                                hide(scheduleModel.`1`)
                         }
                     }
                     WeekDays.Tuesday.name -> {
                         if (scheduleModel.`2`.isEmpty()) {
                             visible()
                         } else {
-                            hide()
-                            scheduleRecycler.adapter =
-                                ScheduleShowsAdapter(scheduleShowsList = scheduleModel.`2`)
+                            if (this@ScheduleFragment::scheduleModel.isInitialized)
+                                hide(scheduleModel.`2`)
                         }
                     }
                     WeekDays.Wednesday.name -> {
                         if (scheduleModel.`3`.isEmpty()) {
                             visible()
                         } else {
-                            hide()
-                            scheduleRecycler.adapter =
-                                ScheduleShowsAdapter(scheduleShowsList = scheduleModel.`3`)
+                            if (this@ScheduleFragment::scheduleModel.isInitialized)
+                                hide(scheduleModel.`3`)
                         }
                     }
                     WeekDays.Thursday.name -> {
                         if (scheduleModel.`4`.isEmpty()) {
                             visible()
                         } else {
-                            hide()
-                            scheduleRecycler.adapter =
-                                ScheduleShowsAdapter(scheduleShowsList = scheduleModel.`4`)
+                            if (this@ScheduleFragment::scheduleModel.isInitialized)
+                                hide(scheduleModel.`4`)
                         }
                     }
                     WeekDays.Friday.name -> {
                         if (scheduleModel.`5`.isEmpty()) {
                             visible()
                         } else {
-                            hide()
-                            scheduleRecycler.adapter =
-                                ScheduleShowsAdapter(scheduleShowsList = scheduleModel.`5`)
+                            if (this@ScheduleFragment::scheduleModel.isInitialized)
+                                hide(scheduleModel.`5`)
                         }
                     }
                     WeekDays.Saturday.name -> {
                         if (scheduleModel.`6`.isEmpty()) {
                             visible()
                         } else {
-                            hide()
-                            scheduleRecycler.adapter =
-                                ScheduleShowsAdapter(scheduleShowsList = scheduleModel.`6`)
+                            if (this@ScheduleFragment::scheduleModel.isInitialized)
+                                hide(scheduleModel.`6`)
                         }
                     }
                 }
@@ -288,9 +281,11 @@ class ScheduleFragment : Fragment() {
         scheduleRecycler.visibility = View.GONE
     }
 
-    private fun hide() {
+    private fun hide(list: List<ScheduleModel.WeekScheduleData>) {
         noData.visibility = View.GONE
         scheduleRecycler.visibility = View.VISIBLE
+        scheduleRecycler.adapter =
+            ScheduleShowsAdapter(scheduleShowsList = list)
     }
 
     fun isYesterday(d: Date): Boolean {

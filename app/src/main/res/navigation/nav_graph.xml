@@ -15,7 +15,7 @@
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"/>
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/homeFragment"
@@ -28,20 +28,34 @@
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"
-            />
+            app:popExitAnim="@anim/slide_out_right" />
         <action
             android:id="@+id/action_homeFragment_to_playableShowFragment"
             app:destination="@id/playableShowFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"
-            />
+            app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_homeFragment_to_eventsFragment"
+            app:destination="@id/eventsFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/playableShowFragment"
         android:name="com.sports.sportsflashes.view.fragments.ShowViewFragment"
         android:label="PlayableShowFragment"
         tools:layout="@layout/show_view_layout" />
+    <fragment
+        android:id="@+id/eventsFragment"
+        android:name="com.sports.sportsflashes.view.fragments.EventsFragment"
+        android:label="EventsFragment"
+        tools:layout="@layout/events_fragment" >
+        <action
+            android:id="@+id/action_eventsFragment_to_playableShowFragment"
+            app:destination="@id/playableShowFragment" />
+    </fragment>
 </navigation>

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/swipeRefresh"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginBottom="65dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_above="@id/submitContainer"
+            android:id="@+id/eventContainer"
+            android:paddingBottom="@dimen/medium_margin"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/black"
+            android:orientation="vertical">
+
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/monthTabs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/medium_dark_gray"
+                app:tabBackground="@drawable/tab_selector"
+                app:tabIndicatorColor="@color/white"
+                app:tabMode="auto"
+                app:tabTextColor="@color/white" />
+
+            <TextView
+                android:id="@+id/selectView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/medium_margin"
+                android:gravity="right"
+                android:padding="@dimen/xx_small_padding"
+                android:text="@string/select"
+                android:textColor="@color/white"
+                android:textSize="@dimen/medium_size"
+                android:visibility="gone" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/eventRecycler"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/small_margin" />
+
+            <TextView
+                android:id="@+id/noData"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical|center"
+                android:text="@string/no_show_schedule_for_the_day"
+                android:textColor="@color/white"
+                android:textSize="@dimen/medium_size"
+                android:textStyle="bold"
+                android:visibility="gone" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:padding="@dimen/small_padding"
+            android:id="@+id/submitContainer"
+            android:visibility="gone"
+            android:background="@color/black"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/submitReminder"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:background="@color/red"
+                android:text="@string/submit"
+                android:textColor="@color/white"
+                android:textSize="@dimen/medium_size" />
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+

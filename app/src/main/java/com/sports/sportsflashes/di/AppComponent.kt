@@ -3,6 +3,7 @@ package com.sports.sportsflashes.di
 import com.sports.sportsflashes.repository.factory.ApiFactory
 import com.sports.sportsflashes.repository.factory.RepositoryFactory
 import com.sports.sportsflashes.view.activites.MainActivity
+import com.sports.sportsflashes.view.adapters.EventsAdapter
 import com.sports.sportsflashes.view.fragments.HomeFragment
 import com.sports.sportsflashes.view.fragments.ShowViewFragment
 import com.sports.sportsflashes.view.fragments.ScheduleFragment
@@ -20,4 +21,5 @@ interface AppComponent {
     fun inject(homeFragment: HomeFragment)
     fun inject(scheduleFragment: ScheduleFragment)
     fun inject(playableShowFragment: ShowViewFragment)
+    fun inject(eventsAdapter: EventsAdapter)
 }

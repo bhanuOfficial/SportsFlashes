@@ -20,11 +20,7 @@ import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory
 import com.google.android.exoplayer2.source.ExtractorMediaSource
 import com.google.android.exoplayer2.source.TrackGroupArray
-import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection
-import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray
-import com.google.android.exoplayer2.upstream.DefaultAllocator
-import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.gson.Gson
@@ -51,7 +47,9 @@ import javax.inject.Inject
 class MainActivity : AppCompatActivity(), FeaturedShowsListImpl, CurrentShowClickListener {
 
     private lateinit var viewModel: MainActivityViewModel
-    private lateinit var mediaPlayer: ExoPlayer
+
+    @Inject
+    lateinit var mediaPlayer: ExoPlayer
     private var seekBarHandler = Handler()
     private lateinit var updateSongTime: Runnable
     private lateinit var podcastPlayerView: BottomSheetBehavior<RelativeLayout>
@@ -60,31 +58,6 @@ class MainActivity : AppCompatActivity(), FeaturedShowsListImpl, CurrentShowClic
     @Inject
     lateinit var gson: Gson
 
-    private fun getMediaPlayer() {
-        val renderersFactory = DefaultRenderersFactory(this)
-        val bandwidthMeter = DefaultBandwidthMeter()
-        val trackSelectionFactory = AdaptiveTrackSelection.Factory(bandwidthMeter)
-        val trackSelector = DefaultTrackSelector(trackSelectionFactory)
-        val loadControl = DefaultLoadControl.Builder()
-            .setAllocator(DefaultAllocator(true, C.DEFAULT_BUFFER_SEGMENT_SIZE))
-            .setBufferDurationsMs(
-                AppConstant.MIN_BUFFER,
-                AppConstant.MAX_BUFFER,
-                DefaultLoadControl.DEFAULT_BUFFER_FOR_PLAYBACK_MS,
-                DefaultLoadControl.DEFAULT_BUFFER_FOR_PLAYBACK_AFTER_REBUFFER_MS
-            )
-            .setTargetBufferBytes(DefaultLoadControl.DEFAULT_TARGET_BUFFER_BYTES)
-            .setPrioritizeTimeOverSizeThresholds(DefaultLoadControl.DEFAULT_PRIORITIZE_TIME_OVER_SIZE_THRESHOLDS)
-            .createDefaultLoadControl()
-        mediaPlayer = ExoPlayerFactory.newSimpleInstance(
-            this,
-            renderersFactory,
-            trackSelector,
-            loadControl,
-            null,
-            bandwidthMeter
-        )
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -94,7 +67,6 @@ class MainActivity : AppCompatActivity(), FeaturedShowsListImpl, CurrentShowClic
         setSupportActionBar(toolbar)
         initMenuOptions()
         viewModel = ViewModelProvider(this).get(MainActivityViewModel::class.java)
-        getMediaPlayer()
         setCategories()
         initPodcastViewer()
         onItemClickOptionMenu()
@@ -323,6 +295,14 @@ class MainActivity : AppCompatActivity(), FeaturedShowsListImpl, CurrentShowClic
                 downloadIcon.background = resources.getDrawable(R.drawable.download_white, null)
             }
             eventView -> {
+                findNavController(R.id.app_host_fragment).navigate(
+                    R.id.action_homeFragment_to_eventsFragment,null
+                    /*Bundle().apply {
+                        this.putString(
+                            AppConstant.BundleExtras.FEATURED_SHOW_LIST,
+                            gson.toJson(featuredShows)
+                        )
+                    }*/)
                 arrayOf(schedualView, downloadView, homeView, reminderView).forEach {
                     it.setBackgroundResource(R.drawable.circle_white)
                 }
@@ -384,6 +364,11 @@ class MainActivity : AppCompatActivity(), FeaturedShowsListImpl, CurrentShowClic
         super.finish()
         ActivityNavigator.applyPopAnimationsToPendingTransition(this)
     }
+
+    override fun onBackPressed() {
+        if (menu_item_.visibility == View.VISIBLE)
+            menu_drawer.performClick()
+        else
+            super.onBackPressed()
+    }
 }
-
-

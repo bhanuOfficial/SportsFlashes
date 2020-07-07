@@ -1,6 +1,7 @@
 package com.sports.sportsflashes.view.fragments
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,19 +14,23 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.bekawestberg.loopinglayout.library.LoopingLayoutManager
+import com.google.android.exoplayer2.ExoPlayer
 import com.sports.sportsflashes.R
 import com.sports.sportsflashes.common.application.SFApplication
 import com.sports.sportsflashes.common.helper.FeaturedShowsImpl
+import com.sports.sportsflashes.common.utils.AppConstant
 import com.sports.sportsflashes.model.FeaturedShows
 import com.sports.sportsflashes.repository.api.NetworkResponse
 import com.sports.sportsflashes.repository.api.STATUS
 import com.sports.sportsflashes.view.activites.MainActivity
+import com.sports.sportsflashes.view.activites.YoutubePlayerActivity
 import com.sports.sportsflashes.view.adapters.CircularShowAdapter
 import com.sports.sportsflashes.view.adapters.ImageShowAdapter
 import com.sports.sportsflashes.view.customviewimpl.CircularHorizontalMode
 import com.sports.sportsflashes.viewmodel.HomeFragmentViewModel
 import kotlinx.android.synthetic.main.home_fragment.*
 import kotlinx.android.synthetic.main.playable_item_layout.*
+import javax.inject.Inject
 
 /**
  *Created by Bhanu on 02-07-2020
@@ -40,6 +45,9 @@ class HomeFragment : Fragment(),
     private lateinit var viewModel: HomeFragmentViewModel
     private lateinit var attachedActivity: Context
     private var created = false
+
+    @Inject
+    lateinit var mediaPlayer: ExoPlayer
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -130,10 +138,22 @@ class HomeFragment : Fragment(),
         setAlphaForFeaturedChanged()
 
         playCurrentShow.setOnClickListener {
-            (attachedActivity as MainActivity).onCurrentShowClicked(featuredShowslist[imageCategory.layoutManager.let { t ->
-                t!!.getPosition(circularRecycler.findViewAtCenter()!!)
-            }])
+            if (featuredShowslist[imageCategory.layoutManager.let { t ->
+                    t!!.getPosition(circularRecycler.findViewAtCenter()!!)
+                }].type.equals("podcast", true)) {
+                (attachedActivity as MainActivity).onCurrentShowClicked(featuredShowslist[imageCategory.layoutManager.let { t ->
+                    t!!.getPosition(circularRecycler.findViewAtCenter()!!)
+                }])
 
+            } else {
+                mediaPlayer.playWhenReady = false
+                activity?.let {
+                    it.startActivity(
+                        Intent(context, YoutubePlayerActivity::class.java)
+                            .putExtra(AppConstant.BundleExtras.YOUTUBE_VIDEO_CODE,AppConstant.YOUTUBE_VIDEO_CODE)
+                    )
+                }
+            }
         }
     }
 

@@ -89,8 +89,8 @@
             android:layout_below="@+id/playActionContainer"
             android:orientation="vertical"
             android:paddingLeft="@dimen/large_padding"
-            android:paddingRight="@dimen/large_padding"
             android:paddingTop="@dimen/xx_small_padding"
+            android:paddingRight="@dimen/large_padding"
             android:paddingBottom="@dimen/small_padding"
             android:visibility="visible">
 
@@ -118,15 +118,29 @@
 
 
             <TextView
+                android:id="@+id/share"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/xx_large_margin"
                 android:drawableLeft="@drawable/ic_baseline_share_24"
                 android:drawablePadding="@dimen/small_padding"
-                android:text="Share"
+                android:text="@string/share"
                 android:textColor="@color/white"
                 android:textSize="@dimen/medium_size"
                 android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/reminderView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/xx_large_margin"
+                android:drawableLeft="@drawable/ic_baseline_alarm"
+                android:drawablePadding="@dimen/small_padding"
+                android:text="@string/set_reminder"
+                android:textColor="@color/white"
+                android:textSize="@dimen/medium_size"
+                android:textStyle="bold"
+                android:visibility="gone" />
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

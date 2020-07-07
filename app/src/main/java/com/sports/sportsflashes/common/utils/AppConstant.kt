@@ -9,6 +9,8 @@ object AppConstant {
 
     object BundleExtras{
         const val FEATURED_SHOW= "featured_show"
+        const val EVENT_ITEM= "event_item"
         const val FEATURED_SHOW_LIST= "featured_show_list"
+        const val YOUTUBE_VIDEO_CODE= "youtube_video_code"
     }
 }

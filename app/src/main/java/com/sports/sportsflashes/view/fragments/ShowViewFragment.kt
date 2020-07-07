@@ -14,9 +14,16 @@ import com.sports.sportsflashes.common.application.SFApplication
 import com.sports.sportsflashes.common.utils.AppConstant
 import com.sports.sportsflashes.common.utils.AppUtility
 import com.sports.sportsflashes.model.FeaturedShows
+import com.sports.sportsflashes.model.MonthEventModel
 import com.sports.sportsflashes.view.activites.YoutubePlayerActivity
 import kotlinx.android.synthetic.main.dashboard_full_image_show.*
-import kotlinx.android.synthetic.main.playable_item_layout.*
+import kotlinx.android.synthetic.main.playable_item_layout.playCurrentShow
+import kotlinx.android.synthetic.main.playable_item_layout.readMore
+import kotlinx.android.synthetic.main.playable_item_layout.showDescription
+import kotlinx.android.synthetic.main.playable_item_layout.showDescriptionDetail
+import kotlinx.android.synthetic.main.playable_item_layout.showTittle
+import kotlinx.android.synthetic.main.playable_item_layout.show_detail_layout
+import kotlinx.android.synthetic.main.show_view_layout.*
 import javax.inject.Inject
 
 /**
@@ -25,6 +32,7 @@ import javax.inject.Inject
 class ShowViewFragment : Fragment() {
 
     private lateinit var featuredShows: FeaturedShows
+    private lateinit var eventModel: MonthEventModel
 
     @Inject
     lateinit var gson: Gson
@@ -38,6 +46,10 @@ class ShowViewFragment : Fragment() {
                     it.getString(AppConstant.BundleExtras.FEATURED_SHOW),
                     FeaturedShows::class.java
                 )
+            eventModel = gson.fromJson(
+                it.getString(AppConstant.BundleExtras.EVENT_ITEM),
+                MonthEventModel::class.java
+            )
         }
     }
 
@@ -56,6 +68,15 @@ class ShowViewFragment : Fragment() {
     }
 
     private fun initViewForShow() {
+        if (this::eventModel.isInitialized) {
+            playCurrentShow.visibility = View.GONE
+            reminderView.visibility = View.VISIBLE
+            share.visibility = View.VISIBLE
+        } else {
+            playCurrentShow.visibility = View.VISIBLE
+            share.visibility = View.VISIBLE
+            reminderView.visibility = View.GONE
+        }
         activity?.let {
             Glide.with(this).load(featuredShows.thumbnail)
                 .placeholder(

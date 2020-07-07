@@ -57,6 +57,9 @@ class CircularShowAdapter(
             .into(holder.image)
 
         holder.circularItemContainer.setOnClickListener {
+            if (isMenuShow){
+                (context as Activity).onBackPressed()
+            }
             findNavController(context as Activity, R.id.app_host_fragment)
                 .navigate(R.id.action_homeFragment_to_playableShowFragment, Bundle().apply {
                     this.putString(

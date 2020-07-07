@@ -14,5 +14,13 @@
     <string name="show_more">Read More</string>
     <string name="error_player">There was an error initializing the YouTubePlayer (%1$s)</string>
     <string name="no_show_schedule_for_the_day">No show schedule for the day</string>
+    <string name="no_show_schedule_for_the_month">No show schedule for the month</string>
+    <string name="set_reminder">Set Reminder</string>
+    <string name="select">Select</string>
+    <string name="submit">submit</string>
+    <string name="share">Share</string>
+    <string name="set_reminder">Set Reminder</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 
 </resources>

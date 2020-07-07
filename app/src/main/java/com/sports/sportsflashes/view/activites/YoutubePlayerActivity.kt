@@ -17,6 +17,7 @@ import kotlinx.android.synthetic.main.activity_youtube_player.*
 
 class YoutubePlayerActivity : YouTubeBaseActivity(), YouTubePlayer.OnInitializedListener {
     private val RECOVERY_DIALOG_REQUEST = 1
+    private var videoCode = ""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -24,6 +25,7 @@ class YoutubePlayerActivity : YouTubeBaseActivity(), YouTubePlayer.OnInitialized
             WindowManager.LayoutParams.FLAG_FULLSCREEN,
             WindowManager.LayoutParams.FLAG_FULLSCREEN
         )
+        videoCode = intent.extras?.getString(AppConstant.BundleExtras.YOUTUBE_VIDEO_CODE)!!
         setContentView(R.layout.activity_youtube_player)
         youtube_player_view.initialize(AppConstant.YOUTUBE_API_KEY, this);
     }
@@ -34,8 +36,8 @@ class YoutubePlayerActivity : YouTubeBaseActivity(), YouTubePlayer.OnInitialized
         wasRestored: Boolean
     ) {
         if (!wasRestored) {
-            player?.loadVideo(AppConstant.YOUTUBE_VIDEO_CODE);
-            player?.setPlayerStyle(YouTubePlayer.PlayerStyle.DEFAULT);
+            player?.loadVideo(videoCode)
+            player?.setPlayerStyle(YouTubePlayer.PlayerStyle.DEFAULT)
         }
 
     }
@@ -47,9 +49,9 @@ class YoutubePlayerActivity : YouTubeBaseActivity(), YouTubePlayer.OnInitialized
         if (errorReason?.isUserRecoverableError!!) {
             errorReason.getErrorDialog(this, RECOVERY_DIALOG_REQUEST).show()
         } else {
-             val errorMessage = String.format(
-                 getString(R.string.error_player), errorReason.toString()
-             )
+            val errorMessage = String.format(
+                getString(R.string.error_player), errorReason.toString()
+            )
             Toast.makeText(this, "error", Toast.LENGTH_LONG).show()
         }
 
@@ -57,7 +59,7 @@ class YoutubePlayerActivity : YouTubeBaseActivity(), YouTubePlayer.OnInitialized
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == RECOVERY_DIALOG_REQUEST) {
-            getYouTubePlayerProvider()?.initialize(AppConstant.YOUTUBE_API_KEY, this);
+            getYouTubePlayerProvider()?.initialize(AppConstant.YOUTUBE_API_KEY, this)
         }
     }
 

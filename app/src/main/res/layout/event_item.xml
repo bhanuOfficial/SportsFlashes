@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/small_margin"
+    android:orientation="vertical">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/medium_dark_gray">
+
+        <ImageView
+            android:id="@+id/showImage"
+            android:layout_width="150dp"
+            android:layout_height="100dp"
+            android:layout_centerVertical="true"
+            android:scaleType="fitXY" />
+
+        <ImageView
+            android:visibility="gone"
+            android:id="@+id/selectedItemView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/x_small_margin"
+            android:background="@drawable/ic_baseline_check_circle" />
+
+        <LinearLayout
+            android:id="@+id/detailContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/showImage"
+            android:orientation="vertical"
+            android:paddingLeft="@dimen/x_small_padding">
+
+
+            <TextView
+                android:id="@+id/showTittle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/xx_small_padding"
+                android:textColor="@color/white"
+                android:textSize="@dimen/medium_size"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/showTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/xx_small_padding"
+                android:textColor="@color/white"
+                android:textSize="@dimen/small_size" />
+            <TextView
+                android:layout_gravity="right"
+                android:id="@+id/setReminder"
+                android:layout_alignParentRight="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/x_small_padding"
+                android:text="@string/set_reminder"
+                android:textColor="@color/red"
+                android:textSize="@dimen/small_size"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+
+    </RelativeLayout>
+
+
+</LinearLayout>

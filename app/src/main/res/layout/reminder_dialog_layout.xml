@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/red"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="@dimen/medium_padding">
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:padding="@dimen/small_padding"
+        android:textColor="@color/white"
+        android:textSize="@dimen/medium_size"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/message"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:padding="@dimen/small_padding"
+        android:textColor="@color/white"
+        android:textSize="@dimen/medium_size"
+        android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/buttonOk"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/round_corner_button_white"
+        android:text="@string/ok"
+        android:textColor="@color/red" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="@dimen/small_padding">
+
+        <Button
+            android:id="@+id/buttonYes"
+            android:alpha="0.8f"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/medium_margin"
+            android:background="@drawable/round_corner_button_white"
+            android:text="@string/yes"
+            android:textColor="@color/red" />
+
+        <Button
+            android:id="@+id/buttonNo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/medium_margin"
+            android:background="@drawable/round_corner_button_white"
+            android:text="@string/no"
+            android:textColor="@color/red" />
+    </LinearLayout>
+</LinearLayout>
