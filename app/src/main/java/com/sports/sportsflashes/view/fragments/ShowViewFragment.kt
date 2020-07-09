@@ -5,15 +5,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
+import com.google.android.exoplayer2.ExoPlayer
 import com.google.gson.Gson
 import com.sports.sportsflashes.R
 import com.sports.sportsflashes.common.application.SFApplication
 import com.sports.sportsflashes.common.utils.AppConstant
-import com.sports.sportsflashes.common.utils.AppUtility
 import com.sports.sportsflashes.model.FeaturedShows
+import com.sports.sportsflashes.model.MessageEvent
 import com.sports.sportsflashes.model.MonthEventModel
 import com.sports.sportsflashes.view.activites.YoutubePlayerActivity
 import kotlinx.android.synthetic.main.dashboard_full_image_show.*
@@ -24,6 +24,7 @@ import kotlinx.android.synthetic.main.playable_item_layout.showDescriptionDetail
 import kotlinx.android.synthetic.main.playable_item_layout.showTittle
 import kotlinx.android.synthetic.main.playable_item_layout.show_detail_layout
 import kotlinx.android.synthetic.main.show_view_layout.*
+import org.greenrobot.eventbus.EventBus
 import javax.inject.Inject
 
 /**
@@ -37,19 +38,26 @@ class ShowViewFragment : Fragment() {
     @Inject
     lateinit var gson: Gson
 
+    @Inject
+    lateinit var mediaPlayer: ExoPlayer
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         SFApplication.getAppComponent().inject(this)
         arguments?.let {
-            featuredShows =
-                gson.fromJson(
-                    it.getString(AppConstant.BundleExtras.FEATURED_SHOW),
-                    FeaturedShows::class.java
+            if (it.getString(AppConstant.BundleExtras.FEATURED_SHOW) != null)
+                featuredShows =
+                    gson.fromJson(
+                        it.getString(AppConstant.BundleExtras.FEATURED_SHOW),
+                        FeaturedShows::class.java
+                    )
+            if (it.getString(AppConstant.BundleExtras.EVENT_ITEM) != null) {
+                eventModel = gson.fromJson(
+                    it.getString(AppConstant.BundleExtras.EVENT_ITEM),
+                    MonthEventModel::class.java
                 )
-            eventModel = gson.fromJson(
-                it.getString(AppConstant.BundleExtras.EVENT_ITEM),
-                MonthEventModel::class.java
-            )
+                featuredShows = gson.fromJson(gson.toJson(eventModel), FeaturedShows::class.java)
+            }
         }
     }
 
@@ -71,22 +79,41 @@ class ShowViewFragment : Fragment() {
         if (this::eventModel.isInitialized) {
             playCurrentShow.visibility = View.GONE
             reminderView.visibility = View.VISIBLE
-            share.visibility = View.VISIBLE
+            share.visibility = View.GONE
+            moreEpisodesContainer.visibility = View.GONE
+            showTitleContainer.setPadding(0,0,0,0)
         } else {
             playCurrentShow.visibility = View.VISIBLE
+            moreEpisodesContainer.visibility = View.VISIBLE
             share.visibility = View.VISIBLE
             reminderView.visibility = View.GONE
         }
-        activity?.let {
-            Glide.with(this).load(featuredShows.thumbnail)
-                .placeholder(
-                    it.resources.getDrawable(
-                        R.drawable.default_thumbnail,
-                        null
+
+        if (this::eventModel.isInitialized) {
+            activity?.let {
+                Glide.with(this).load(eventModel.thumbnail)
+                    .placeholder(
+                        it.resources.getDrawable(
+                            R.drawable.default_thumbnail,
+                            null
+                        )
                     )
-                )
-                .into(showImage)
+                    .into(showImage)
+            }
+
         }
+        if (this::featuredShows.isInitialized)
+            activity?.let {
+                Glide.with(this).load(featuredShows.thumbnail)
+                    .placeholder(
+                        it.resources.getDrawable(
+                            R.drawable.default_thumbnail,
+                            null
+                        )
+                    )
+                    .into(showImage)
+            }
+
         showTittle.text = featuredShows.title
         showDescription.text = featuredShows.description
         show_detail_layout.visibility = View.VISIBLE
@@ -105,20 +132,34 @@ class ShowViewFragment : Fragment() {
             }
         }
         playCurrentShow.setOnClickListener {
-            if (featuredShows.type == "Video")
+            if (featuredShows.type == "Video") {
+                if (mediaPlayer.playWhenReady)
+                    mediaPlayer.playWhenReady = false
                 activity?.let {
-                    ContextCompat.startActivity(
-                        it,
-                        Intent(context, YoutubePlayerActivity::class.java),
-                        null
+                    it.startActivity(
+                        Intent(context, YoutubePlayerActivity::class.java)
+                            .putExtra(
+                                AppConstant.BundleExtras.YOUTUBE_VIDEO_CODE,
+                                AppConstant.YOUTUBE_VIDEO_CODE
+                            )
                     )
                 }
-            else
-                context?.let { context -> AppUtility.showToast(context, "dsasd") }
+            } else
+                EventBus.getDefault().post(
+                    MessageEvent(
+                        MessageEvent.PLAY_PODCAST_SOURCE,
+                        featuredShows.playing.link
+                    )
+                )
         }
     }
 
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+    }
+
+    private fun setShowDetails(show: Any) {
+
     }
 }

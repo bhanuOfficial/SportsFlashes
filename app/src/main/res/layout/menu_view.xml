@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/menu_item_"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,199 +8,206 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:weightSum="3">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical">
+            android:layout_marginTop="30dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:weightSum="3">
 
             <LinearLayout
-                android:id="@+id/homeView"
-                android:layout_width="@dimen/circle_size"
-                android:layout_height="@dimen/circle_size"
-                android:background="@drawable/circle_red"
-                android:gravity="center">
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
 
-                <ImageView
-                    android:id="@+id/homeIcon"
-                    android:layout_width="@dimen/home_icon_size"
-                    android:layout_height="@dimen/home_icon_size"
-                    android:background="@drawable/home_white" />
+                <LinearLayout
+                    android:id="@+id/homeView"
+                    android:layout_width="@dimen/circle_size"
+                    android:layout_height="@dimen/circle_size"
+                    android:background="@drawable/circle_red"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:id="@+id/homeIcon"
+                        android:layout_width="@dimen/home_icon_size"
+                        android:layout_height="@dimen/home_icon_size"
+                        android:background="@drawable/home_white" />
+                </LinearLayout>
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/small_padding"
+                    android:text="@string/home"
+                    android:textColor="@color/white"
+                    android:textSize="17sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+
+
+                <LinearLayout
+                    android:id="@+id/schedualView"
+                    android:layout_width="@dimen/circle_size"
+                    android:layout_height="@dimen/circle_size"
+                    android:background="@drawable/circle_white"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:id="@+id/schedualIcon"
+                        android:layout_width="@dimen/home_icon_size"
+                        android:layout_height="@dimen/home_icon_size"
+                        android:background="@drawable/schedule" />
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/small_padding"
+                    android:text="@string/schedule"
+                    android:textColor="@color/white"
+                    android:textSize="17sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+
+
+                <LinearLayout
+                    android:id="@+id/eventView"
+                    android:layout_width="@dimen/circle_size"
+                    android:layout_height="@dimen/circle_size"
+                    android:background="@drawable/circle_white"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:id="@+id/eventIcon"
+                        android:layout_width="@dimen/home_icon_size"
+                        android:layout_height="@dimen/home_icon_size"
+                        android:background="@drawable/highlights" />
+                </LinearLayout>
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/small_padding"
+                    android:text="@string/event"
+                    android:textColor="@color/white"
+                    android:textSize="17sp" />
             </LinearLayout>
 
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="@dimen/small_padding"
-                android:text="@string/home"
-                android:textColor="@color/white"
-                android:textSize="17sp" />
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical">
-
+            android:layout_marginTop="30dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:weightSum="2">
 
             <LinearLayout
-                android:id="@+id/schedualView"
-                android:layout_width="@dimen/circle_size"
-                android:layout_height="@dimen/circle_size"
-                android:background="@drawable/circle_white"
-                android:gravity="center">
-
-                <ImageView
-                    android:id="@+id/schedualIcon"
-                    android:layout_width="@dimen/home_icon_size"
-                    android:layout_height="@dimen/home_icon_size"
-                    android:background="@drawable/schedule" />
-            </LinearLayout>
-
-            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/small_padding"
-                android:text="@string/schedule"
-                android:textColor="@color/white"
-                android:textSize="17sp" />
-        </LinearLayout>
+                android:layout_marginLeft="50dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical">
 
+                <LinearLayout
+                    android:id="@+id/downloadView"
+                    android:layout_width="@dimen/circle_size"
+                    android:layout_height="@dimen/circle_size"
+                    android:background="@drawable/circle_white"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:id="@+id/downloadIcon"
+                        android:layout_width="@dimen/home_icon_size"
+                        android:layout_height="@dimen/home_icon_size"
+                        android:background="@drawable/download" />
+                </LinearLayout>
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/small_padding"
+                    android:text="@string/download"
+                    android:textColor="@color/white"
+                    android:textSize="17sp" />
+            </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/eventView"
-                android:layout_width="@dimen/circle_size"
-                android:layout_height="@dimen/circle_size"
-                android:background="@drawable/circle_white"
-                android:gravity="center">
-
-                <ImageView
-                    android:id="@+id/eventIcon"
-                    android:layout_width="@dimen/home_icon_size"
-                    android:layout_height="@dimen/home_icon_size"
-                    android:background="@drawable/highlights" />
-            </LinearLayout>
-
-
-            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/small_padding"
-                android:text="@string/event"
-                android:textColor="@color/white"
-                android:textSize="17sp" />
+                android:layout_marginRight="70dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+
+
+                <LinearLayout
+                    android:id="@+id/reminderView"
+                    android:layout_width="@dimen/circle_size"
+                    android:layout_height="@dimen/circle_size"
+                    android:background="@drawable/circle_white"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:id="@+id/reminderIcon"
+                        android:layout_width="@dimen/home_icon_size"
+                        android:layout_height="@dimen/home_icon_size"
+                        android:background="@drawable/reminder" />
+                </LinearLayout>
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/small_padding"
+                    android:text="@string/reminder"
+                    android:textColor="@color/white"
+                    android:textSize="17sp" />
+            </LinearLayout>
         </LinearLayout>
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/category_recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginTop="@dimen/xx_large_margin"
+            android:paddingLeft="@dimen/medium_padding"
+            android:paddingRight="@dimen/medium_padding" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/menu_show_recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/medium_margin"
+            android:paddingLeft="@dimen/medium_padding"
+            android:paddingRight="@dimen/medium_padding" />
 
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:weightSum="2">
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="50dp"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical">
-
-
-            <LinearLayout
-                android:id="@+id/downloadView"
-                android:layout_width="@dimen/circle_size"
-                android:layout_height="@dimen/circle_size"
-                android:background="@drawable/circle_white"
-                android:gravity="center">
-
-                <ImageView
-                    android:id="@+id/downloadIcon"
-                    android:layout_width="@dimen/home_icon_size"
-                    android:layout_height="@dimen/home_icon_size"
-                    android:background="@drawable/download" />
-            </LinearLayout>
-
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="@dimen/small_padding"
-                android:text="@string/download"
-                android:textColor="@color/white"
-                android:textSize="17sp" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="70dp"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical">
-
-
-            <LinearLayout
-                android:id="@+id/reminderView"
-                android:layout_width="@dimen/circle_size"
-                android:layout_height="@dimen/circle_size"
-                android:background="@drawable/circle_white"
-                android:gravity="center">
-
-                <ImageView
-                    android:id="@+id/reminderIcon"
-                    android:layout_width="@dimen/home_icon_size"
-                    android:layout_height="@dimen/home_icon_size"
-                    android:background="@drawable/reminder" />
-            </LinearLayout>
-
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="@dimen/small_padding"
-                android:text="@string/reminder"
-                android:textColor="@color/white"
-                android:textSize="17sp" />
-        </LinearLayout>
-    </LinearLayout>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/category_recyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:layout_marginTop="@dimen/xx_large_margin"
-        android:paddingLeft="@dimen/medium_padding"
-        android:paddingRight="@dimen/medium_padding" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/menu_show_recyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/medium_margin"
-        android:paddingLeft="@dimen/medium_padding"
-        android:paddingRight="@dimen/medium_padding" />
-
-</LinearLayout>
+</androidx.drawerlayout.widget.DrawerLayout>

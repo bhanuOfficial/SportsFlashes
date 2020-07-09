@@ -27,6 +27,7 @@
                 android:background="@drawable/play_show" />
 
             <LinearLayout
+                android:id="@+id/showTitleContainer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
@@ -79,6 +80,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/moreEpisodesContainer"
         android:layout_below="@+id/playActionContainer"
+        android:paddingBottom="70dp"
         android:orientation="vertical">
 
         <LinearLayout

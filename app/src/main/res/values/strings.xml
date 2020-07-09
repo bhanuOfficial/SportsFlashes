@@ -5,7 +5,6 @@
     <string name="event">Event</string>
     <string name="download">Downloads</string>
     <string name="reminder">Reminder</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="show_description_detail">The emergence and growth of blogs in the late 1990s coincided with the advent of web publishing tools that facilitated the posting of content by non-technical users who did not have much experience with HTML or computer programming. Previously, a knowledge of such technologies as HTML and File Transfer Protocol had been required to publish content on the Web, and early Web users therefore tended to be hackers and computer enthusiasts. In the 2010s, the majority are interactive Web 2.0 websites, allowing visitors to leave online comments, and it is this interactivity that distinguishes them from other static websites.[2] In that sense, blogging can be seen as a form of social networking service. Indeed, bloggers not only produce content to post on their blogs but also often build social relations with their readers and other bloggers.</string>
     <string name="more_episodes">More Episodes</string>
@@ -15,12 +14,12 @@
     <string name="error_player">There was an error initializing the YouTubePlayer (%1$s)</string>
     <string name="no_show_schedule_for_the_day">No show schedule for the day</string>
     <string name="no_show_schedule_for_the_month">No show schedule for the month</string>
-    <string name="set_reminder">Set Reminder</string>
     <string name="select">Select</string>
     <string name="submit">submit</string>
     <string name="share">Share</string>
     <string name="set_reminder">Set Reminder</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="cancel">Cancel</string>
 
 </resources>

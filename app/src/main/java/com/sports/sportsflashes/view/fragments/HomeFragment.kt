@@ -20,6 +20,7 @@ import com.sports.sportsflashes.common.application.SFApplication
 import com.sports.sportsflashes.common.helper.FeaturedShowsImpl
 import com.sports.sportsflashes.common.utils.AppConstant
 import com.sports.sportsflashes.model.FeaturedShows
+import com.sports.sportsflashes.model.MessageEvent
 import com.sports.sportsflashes.repository.api.NetworkResponse
 import com.sports.sportsflashes.repository.api.STATUS
 import com.sports.sportsflashes.view.activites.MainActivity
@@ -30,6 +31,7 @@ import com.sports.sportsflashes.view.customviewimpl.CircularHorizontalMode
 import com.sports.sportsflashes.viewmodel.HomeFragmentViewModel
 import kotlinx.android.synthetic.main.home_fragment.*
 import kotlinx.android.synthetic.main.playable_item_layout.*
+import org.greenrobot.eventbus.EventBus
 import javax.inject.Inject
 
 /**
@@ -48,6 +50,11 @@ class HomeFragment : Fragment(),
 
     @Inject
     lateinit var mediaPlayer: ExoPlayer
+
+    override fun onResume() {
+        super.onResume()
+        EventBus.getDefault().post(MessageEvent(MessageEvent.HOME_FRAGMENT))
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -150,7 +157,10 @@ class HomeFragment : Fragment(),
                 activity?.let {
                     it.startActivity(
                         Intent(context, YoutubePlayerActivity::class.java)
-                            .putExtra(AppConstant.BundleExtras.YOUTUBE_VIDEO_CODE,AppConstant.YOUTUBE_VIDEO_CODE)
+                            .putExtra(
+                                AppConstant.BundleExtras.YOUTUBE_VIDEO_CODE,
+                                AppConstant.YOUTUBE_VIDEO_CODE
+                            )
                     )
                 }
             }
@@ -217,10 +227,15 @@ class HomeFragment : Fragment(),
 
                                 }, 50)
 
-                            }, 500)
+                            }, 2000)
                         }
                     }
                 })
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        EventBus.getDefault().unregister(this)
     }
 }

@@ -83,11 +83,11 @@ class EventsAdapter(
                     listOfSelectedIndex.remove(position)
                 } else {
                     listOfSelectedIndex.add(position)
-                    (attachedContext as EventsFragment).onEventSelected(
-                        position,
-                        eventList[position]
-                    )
                 }
+            (attachedContext as EventsFragment).onEventSelected(
+                position,
+                eventList[position], listOfSelectedIndex
+            )
             notifyDataSetChanged()
         }
         holder.detailContainer.setOnClickListener {

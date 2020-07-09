@@ -1,10 +1,14 @@
 package com.sports.sportsflashes.view.fragments
 
+import android.app.Dialog
+import android.content.Context
 import android.os.Bundle
 import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
+import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -76,6 +80,7 @@ class ScheduleFragment : Fragment() {
     private fun getShowsFromNetwork() {
         activity?.let {
             scheduleFragmentViewModel.getScheduleShows().observe(it, androidx.lifecycle.Observer {
+                swipeRefresh.isRefreshing = false
                 if (it.status == STATUS.SUCCESS) {
                     scheduleModel = it.data as ScheduleModel
                 }
@@ -84,11 +89,10 @@ class ScheduleFragment : Fragment() {
     }
 
     private fun refreshViewInit() {
+        swipeRefresh.isRefreshing = true
         swipeRefresh.setOnRefreshListener {
             swipeRefresh.isRefreshing = true
-            swipeRefresh.postDelayed({
-                swipeRefresh.isRefreshing = false
-            }, 2000)
+            getShowsFromNetwork()
         }
     }
 
@@ -212,65 +216,67 @@ class ScheduleFragment : Fragment() {
             }
 
             override fun onTabSelected(tab: TabLayout.Tab?) {
-                when (tab?.tag) {
-                    WeekDays.Sunday.name -> {
-                        if (scheduleModel.`0`.isEmpty()) {
-                            visible()
-                        } else {
-                            if (this@ScheduleFragment::scheduleModel.isInitialized)
-                                hide(scheduleModel.`0`)
+                if (this@ScheduleFragment::scheduleModel.isInitialized) {
+                    when (tab?.tag) {
+                        WeekDays.Sunday.name -> {
+                            if (scheduleModel.`0`.isEmpty()) {
+                                visible()
+                            } else {
+                                if (this@ScheduleFragment::scheduleModel.isInitialized)
+                                    hide(scheduleModel.`0`)
+                            }
+                        }
+                        WeekDays.Monday.name -> {
+                            if (scheduleModel.`1`.isEmpty()) {
+                                visible()
+                            } else {
+                                if (this@ScheduleFragment::scheduleModel.isInitialized)
+                                    hide(scheduleModel.`1`)
+                            }
+                        }
+                        WeekDays.Tuesday.name -> {
+                            if (scheduleModel.`2`.isEmpty()) {
+                                visible()
+                            } else {
+                                if (this@ScheduleFragment::scheduleModel.isInitialized)
+                                    hide(scheduleModel.`2`)
+                            }
+                        }
+                        WeekDays.Wednesday.name -> {
+                            if (scheduleModel.`3`.isEmpty()) {
+                                visible()
+                            } else {
+                                if (this@ScheduleFragment::scheduleModel.isInitialized)
+                                    hide(scheduleModel.`3`)
+                            }
+                        }
+                        WeekDays.Thursday.name -> {
+                            if (scheduleModel.`4`.isEmpty()) {
+                                visible()
+                            } else {
+                                if (this@ScheduleFragment::scheduleModel.isInitialized)
+                                    hide(scheduleModel.`4`)
+                            }
+                        }
+                        WeekDays.Friday.name -> {
+                            if (scheduleModel.`5`.isEmpty()) {
+                                visible()
+                            } else {
+                                if (this@ScheduleFragment::scheduleModel.isInitialized)
+                                    hide(scheduleModel.`5`)
+                            }
+                        }
+                        WeekDays.Saturday.name -> {
+                            if (scheduleModel.`6`.isEmpty()) {
+                                visible()
+                            } else {
+                                if (this@ScheduleFragment::scheduleModel.isInitialized)
+                                    hide(scheduleModel.`6`)
+                            }
                         }
                     }
-                    WeekDays.Monday.name -> {
-                        if (scheduleModel.`1`.isEmpty()) {
-                            visible()
-                        } else {
-                            if (this@ScheduleFragment::scheduleModel.isInitialized)
-                                hide(scheduleModel.`1`)
-                        }
-                    }
-                    WeekDays.Tuesday.name -> {
-                        if (scheduleModel.`2`.isEmpty()) {
-                            visible()
-                        } else {
-                            if (this@ScheduleFragment::scheduleModel.isInitialized)
-                                hide(scheduleModel.`2`)
-                        }
-                    }
-                    WeekDays.Wednesday.name -> {
-                        if (scheduleModel.`3`.isEmpty()) {
-                            visible()
-                        } else {
-                            if (this@ScheduleFragment::scheduleModel.isInitialized)
-                                hide(scheduleModel.`3`)
-                        }
-                    }
-                    WeekDays.Thursday.name -> {
-                        if (scheduleModel.`4`.isEmpty()) {
-                            visible()
-                        } else {
-                            if (this@ScheduleFragment::scheduleModel.isInitialized)
-                                hide(scheduleModel.`4`)
-                        }
-                    }
-                    WeekDays.Friday.name -> {
-                        if (scheduleModel.`5`.isEmpty()) {
-                            visible()
-                        } else {
-                            if (this@ScheduleFragment::scheduleModel.isInitialized)
-                                hide(scheduleModel.`5`)
-                        }
-                    }
-                    WeekDays.Saturday.name -> {
-                        if (scheduleModel.`6`.isEmpty()) {
-                            visible()
-                        } else {
-                            if (this@ScheduleFragment::scheduleModel.isInitialized)
-                                hide(scheduleModel.`6`)
-                        }
-                    }
-                }
 
+                }
             }
 
         })
@@ -316,5 +322,6 @@ class ScheduleFragment : Fragment() {
         Friday,
         Saturday
     }
+
 
 }

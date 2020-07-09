@@ -1,9 +1,14 @@
 package com.sports.sportsflashes.view.fragments
 
+import android.app.Dialog
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
+import android.widget.Button
+import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -53,9 +58,16 @@ class EventsFragment : Fragment(), EventItemSelection {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initView()
         initEventRecycler()
         refreshViewInit()
         getMonths()
+    }
+
+    private fun initView() {
+        submitReminder.setOnClickListener {
+            appDialog(R.layout.reminder_dialog_layout, requireActivity())
+        }
     }
 
     private fun initEventRecycler() {
@@ -67,11 +79,10 @@ class EventsFragment : Fragment(), EventItemSelection {
     }
 
     private fun refreshViewInit() {
+        swipeRefresh.isRefreshing = true
         swipeRefresh.setOnRefreshListener {
             swipeRefresh.isRefreshing = true
-            swipeRefresh.postDelayed({
-                swipeRefresh.isRefreshing = false
-            }, 2000)
+            getEventsByMonth(monthTabs.selectedTabPosition + 1)
         }
     }
 
@@ -116,6 +127,7 @@ class EventsFragment : Fragment(), EventItemSelection {
             eventsFragmentViewModel.getEventsByMonth(month).observe(
                 it,
                 androidx.lifecycle.Observer {
+                    swipeRefresh.isRefreshing = false
                     if (it.status == STATUS.SUCCESS) {
                         val eventList = it.data as List<MonthEventModel>
                         if (eventList.isEmpty()) {
@@ -132,8 +144,18 @@ class EventsFragment : Fragment(), EventItemSelection {
         }
     }
 
-    override fun onEventSelected(position: Int, eventModel: MonthEventModel) {
-
+    override fun onEventSelected(
+        position: Int,
+        eventModel: MonthEventModel,
+        listOfSelectedEvent: ArrayList<Int>
+    ) {
+        if (listOfSelectedEvent.size == 0) {
+            selectView.text = resources.getText(R.string.select)
+            selectView.setTextColor(resources.getColor(R.color.white, null))
+        } else {
+            selectView.text = resources.getText(R.string.cancel)
+            selectView.setTextColor(resources.getColor(R.color.red, null))
+        }
     }
 
     override fun setSelectionVisible(select: Boolean) {
@@ -151,6 +173,28 @@ class EventsFragment : Fragment(), EventItemSelection {
                 eventRecycler.adapter!!.notifyDataSetChanged()
             }
         }
+    }
+
+
+    private fun appDialog(view: Int, context: Context): Dialog {
+        val dialog = Dialog(context)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setCancelable(true)
+        dialog.setContentView(view)
+        val yesBtn = dialog.findViewById(R.id.buttonYes) as Button
+        val title = dialog.findViewById(R.id.title) as TextView
+        val message = dialog.findViewById(R.id.message) as TextView
+        val noBtn = dialog.findViewById(R.id.buttonNo) as Button
+        val okBtn = dialog.findViewById(R.id.buttonOk) as Button
+        title.text = "AsdasdasdAsdasdasdAsdas"
+        message.text =
+            "AsdasdasdAsdasdasdAsdasdasdAsdasdasdAsdasdasdAsdasdasdAsdasdasdAsdasdasdAsdasdasdAsdasdasd"
+        yesBtn.setOnClickListener {
+            dialog.dismiss()
+        }
+        noBtn.setOnClickListener { dialog.dismiss() }
+        dialog.show()
+        return dialog
     }
 
 }

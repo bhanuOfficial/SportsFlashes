@@ -16,6 +16,7 @@ import com.sports.sportsflashes.R
 import com.sports.sportsflashes.common.utils.AppConstant
 import com.sports.sportsflashes.model.FeaturedShows
 import com.sports.sportsflashes.view.fragments.HomeFragment
+import com.sports.sportsflashes.view.fragments.ScheduleFragment
 
 class CircularShowAdapter(
     private val featuredShowsList: List<FeaturedShows>,
@@ -57,11 +58,11 @@ class CircularShowAdapter(
             .into(holder.image)
 
         holder.circularItemContainer.setOnClickListener {
-            if (isMenuShow){
+            if (isMenuShow) {
                 (context as Activity).onBackPressed()
             }
-            findNavController(context as Activity, R.id.app_host_fragment)
-                .navigate(R.id.action_homeFragment_to_playableShowFragment, Bundle().apply {
+           findNavController(context as Activity, R.id.app_host_fragment)
+               .navigate(R.id.action_homeFragment_to_playableShowFragment, Bundle().apply {
                     this.putString(
                         AppConstant.BundleExtras.FEATURED_SHOW,
                         gson.toJson(featuredShowsList[position])
@@ -69,7 +70,6 @@ class CircularShowAdapter(
                 })
         }
     }
-
 
     inner class ItemHolder(view: View) : RecyclerView.ViewHolder(view) {
         init {

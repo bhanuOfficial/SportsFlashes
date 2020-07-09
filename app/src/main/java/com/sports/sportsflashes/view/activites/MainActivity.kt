@@ -12,6 +12,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.ActivityNavigator
+import androidx.navigation.NavDirections
+import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
@@ -30,6 +32,7 @@ import com.sports.sportsflashes.common.helper.CurrentShowClickListener
 import com.sports.sportsflashes.common.helper.FeaturedShowsListImpl
 import com.sports.sportsflashes.common.utils.AppConstant
 import com.sports.sportsflashes.model.FeaturedShows
+import com.sports.sportsflashes.model.MessageEvent
 import com.sports.sportsflashes.model.SportCategories
 import com.sports.sportsflashes.repository.api.STATUS
 import com.sports.sportsflashes.view.adapters.CategoryAdapter
@@ -40,6 +43,9 @@ import jp.wasabeef.glide.transformations.BlurTransformation
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.menu_view.*
 import kotlinx.android.synthetic.main.podcast_play_view.*
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import java.util.*
 import javax.inject.Inject
 
@@ -61,6 +67,7 @@ class MainActivity : AppCompatActivity(), FeaturedShowsListImpl, CurrentShowClic
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        EventBus.getDefault().register(this)
         SFApplication.getAppComponent().inject(this)
         setContentView(R.layout.activity_main)
         initFragmentHost()
@@ -267,6 +274,7 @@ class MainActivity : AppCompatActivity(), FeaturedShowsListImpl, CurrentShowClic
 
         when (clickedView) {
             schedualView -> {
+                findNavController(R.id.app_host_fragment).navigateUp()
                 findNavController(R.id.app_host_fragment).navigate(
                     R.id.action_homeFragment_to_scheduleFragment,
                     Bundle().apply {
@@ -295,14 +303,16 @@ class MainActivity : AppCompatActivity(), FeaturedShowsListImpl, CurrentShowClic
                 downloadIcon.background = resources.getDrawable(R.drawable.download_white, null)
             }
             eventView -> {
+                findNavController(R.id.app_host_fragment).navigateUp()
                 findNavController(R.id.app_host_fragment).navigate(
-                    R.id.action_homeFragment_to_eventsFragment,null
+                    R.id.action_homeFragment_to_eventsFragment, null
                     /*Bundle().apply {
                         this.putString(
                             AppConstant.BundleExtras.FEATURED_SHOW_LIST,
                             gson.toJson(featuredShows)
                         )
-                    }*/)
+                    }*/
+                )
                 arrayOf(schedualView, downloadView, homeView, reminderView).forEach {
                     it.setBackgroundResource(R.drawable.circle_white)
                 }
@@ -371,4 +381,22 @@ class MainActivity : AppCompatActivity(), FeaturedShowsListImpl, CurrentShowClic
         else
             super.onBackPressed()
     }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onEvent(messageEvent: MessageEvent) {
+        if (messageEvent.type == MessageEvent.HOME_FRAGMENT) {
+            homeView.setBackgroundResource(R.drawable.circle_red)
+            arrayOf(schedualView, downloadView, eventView, reminderView).forEach {
+                it.setBackgroundResource(R.drawable.circle_white)
+            }
+            schedualIcon.background = resources.getDrawable(R.drawable.schedule, null)
+            eventIcon.background = resources.getDrawable(R.drawable.highlights, null)
+            homeIcon.background = resources.getDrawable(R.drawable.home_white, null)
+            reminderIcon.background = resources.getDrawable(R.drawable.reminder, null)
+            downloadIcon.background = resources.getDrawable(R.drawable.download, null)
+        }else if (messageEvent.type==MessageEvent.PLAY_PODCAST_SOURCE){
+            exoPlayerInit(messageEvent.data as String)
+        }
+    }
+
 }

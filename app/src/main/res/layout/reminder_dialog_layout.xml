@@ -8,6 +8,7 @@
     android:padding="@dimen/medium_padding">
 
     <TextView
+        android:layout_marginTop="@dimen/large_margin"
         android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -28,6 +29,7 @@
         android:textStyle="bold" />
 
     <Button
+        android:visibility="gone"
         android:id="@+id/buttonOk"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -36,6 +38,7 @@
         android:textColor="@color/red" />
 
     <LinearLayout
+        android:layout_marginTop="@dimen/large_margin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
@@ -43,9 +46,9 @@
 
         <Button
             android:id="@+id/buttonYes"
-            android:alpha="0.8f"
+            android:alpha="0.8"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:layout_marginRight="@dimen/medium_margin"
             android:background="@drawable/round_corner_button_white"
             android:text="@string/yes"
@@ -54,7 +57,7 @@
         <Button
             android:id="@+id/buttonNo"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:layout_marginLeft="@dimen/medium_margin"
             android:background="@drawable/round_corner_button_white"
             android:text="@string/no"
