@@ -85,6 +85,7 @@ class HomeFragment : Fragment(),
         }
         circularRecycler.mViewMode = CircularHorizontalMode()
         circularRecycler.mNeedCenterForce = true
+
         imageCategory.setHasFixedSize(true)
         imageCategory.layoutManager = activity?.let {
             LoopingLayoutManager(it).also {
@@ -113,15 +114,10 @@ class HomeFragment : Fragment(),
                     } else if (draggingView == 2 && recyclerView == circularRecycler) {
                         imageCategory.scrollBy(dx * (mainItemWidth / smallItemWidth), 0)
                         if (state == RecyclerView.SCROLL_STATE_SETTLING) {
-                            circularRecycler.post {
-                                circularRecycler?.let {
-                                    it.getChildAdapterPosition(circularRecycler.findViewAtCenter()!!)
-                                }?.let {
-                                    imageCategory.smoothScrollToPosition(
-                                        it
-                                    )
+                            recyclerView.getChildAdapterPosition(circularRecycler.findViewAtCenter()!!)
+                                .let {
+                                    imageCategory.smoothScrollToPosition(it)
                                 }
-                            }
                             setFeaturedDetail(featuredShowslist[imageCategory.layoutManager.let { t ->
                                 t!!.getPosition(circularRecycler.findViewAtCenter()!!)
                             }])
@@ -130,13 +126,13 @@ class HomeFragment : Fragment(),
                 }
 
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                    super.onScrollStateChanged(recyclerView, newState)
                     if (imageCategory == recyclerView && newState == RecyclerView.SCROLL_STATE_DRAGGING) {
                         draggingView = 1
                     } else if (circularRecycler == recyclerView && newState == RecyclerView.SCROLL_STATE_DRAGGING) {
                         draggingView = 2
                     }
                     this.state = newState
+                    super.onScrollStateChanged(recyclerView, newState)
                 }
             }
         imageCategory.addOnScrollListener(scrollListener)
@@ -202,7 +198,6 @@ class HomeFragment : Fragment(),
                                     mainItemWidth = it
                                 }, requireContext())
                         }
-
                         circularRecycler?.let {
                             it.postDelayed({
                                 it.adapter =
@@ -227,7 +222,7 @@ class HomeFragment : Fragment(),
 
                                 }, 50)
 
-                            }, 2000)
+                            }, 1000)
                         }
                     }
                 })

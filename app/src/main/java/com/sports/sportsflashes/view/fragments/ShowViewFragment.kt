@@ -80,13 +80,17 @@ class ShowViewFragment : Fragment() {
             playCurrentShow.visibility = View.GONE
             reminderView.visibility = View.VISIBLE
             share.visibility = View.GONE
-            moreEpisodesContainer.visibility = View.GONE
-            showTitleContainer.setPadding(0,0,0,0)
+            showTitleContainer.setPadding(0, 0, 0, 0)
         } else {
             playCurrentShow.visibility = View.VISIBLE
-            moreEpisodesContainer.visibility = View.VISIBLE
             share.visibility = View.VISIBLE
             reminderView.visibility = View.GONE
+        }
+
+        if (featuredShows.seasonsEpisodes.size > 1 && !this::eventModel.isInitialized) {
+            moreEpisodesContainer.visibility = View.VISIBLE
+        } else {
+            moreEpisodesContainer.visibility = View.INVISIBLE
         }
 
         if (this::eventModel.isInitialized) {

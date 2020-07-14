@@ -18,4 +18,15 @@ class MainActivityViewModel : ViewModel() {
         repoFactory.getCategoriesData(categoriesResponseObserver)
         return categoriesResponseObserver
     }
+
+    private val showResponseObserver = MutableLiveData(
+        NetworkResponse(
+            STATUS.NOT_REQUESTED
+        )
+    )
+
+    fun getFeaturedShows(): MutableLiveData<NetworkResponse> {
+        repoFactory.getFeaturedShowsData(showResponseObserver)
+        return showResponseObserver
+    }
 }

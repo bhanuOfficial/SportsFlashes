@@ -24,6 +24,7 @@ data class ScheduleModel(
         val releaseTime: String = "",
         val thumbnail: String = "",
         val title: String = "",
-        val updatedAt: String = ""
+        val updatedAt: String = "",
+        val live: Boolean = false
     )
 }

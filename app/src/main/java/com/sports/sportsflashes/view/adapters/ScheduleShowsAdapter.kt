@@ -23,7 +23,10 @@ class ScheduleShowsAdapter(private val scheduleShowsList: List<ScheduleModel.Wee
     }
 
     class LiveShowItemHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-
+        val showImage: ImageView = itemView.findViewById(R.id.showImage)
+        val showTime: TextView = itemView.findViewById(R.id.showTime)
+        val showTittle: TextView = itemView.findViewById(R.id.showTittle)
+        val showDescription: TextView = itemView.findViewById(R.id.showDescription)
     }
 
     class NoView(itemView: View?) : RecyclerView.ViewHolder(itemView!!) {
@@ -31,7 +34,7 @@ class ScheduleShowsAdapter(private val scheduleShowsList: List<ScheduleModel.Wee
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (scheduleShowsList[position].__v == 0) {
+        return if (scheduleShowsList[position].live) {
             ShowView.SHOW.ordinal
         } else {
             ShowView.LIVE_SHOW.ordinal
@@ -64,6 +67,18 @@ class ScheduleShowsAdapter(private val scheduleShowsList: List<ScheduleModel.Wee
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (holder is ShowItemHolder) {
+            holder.showTittle.text = scheduleShowsList[position].title
+            holder.showDescription.text = scheduleShowsList[position].description
+            holder.showTime.text = scheduleShowsList[position].releaseTime
+            Glide.with(holder.itemView.context).load(scheduleShowsList[position].thumbnail)
+                .placeholder(
+                    holder.itemView.context.resources.getDrawable(
+                        R.drawable.default_thumbnail,
+                        null
+                    )
+                )
+                .into(holder.showImage)
+        }else if(holder is LiveShowItemHolder){
             holder.showTittle.text = scheduleShowsList[position].title
             holder.showDescription.text = scheduleShowsList[position].description
             holder.showTime.text = scheduleShowsList[position].releaseTime

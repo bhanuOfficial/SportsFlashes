@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.sports.sportsflashes.R
 import com.sports.sportsflashes.model.FeaturedShows
+import com.sports.sportsflashes.view.activites.MainActivity
 import com.sports.sportsflashes.view.fragments.HomeFragment
 
 
@@ -38,9 +39,8 @@ class ImageShowAdapter(
 
     override fun onBindViewHolder(holder: ItemHolder, position: Int) {
 //        holder.textView.text = "" + position
-        Log.d("BHANU", "onBindViewHolder: --> ${position%featuredShowsList.size}")
         view = holder.itemView
-        index = position
+        index= position
         Glide.with(holder.itemView.context).load(featuredShowsList[position].thumbnail)
             .placeholder(
                 holder.itemView.context.resources.getDrawable(

@@ -16,7 +16,6 @@ import com.sports.sportsflashes.R
 import com.sports.sportsflashes.common.utils.AppConstant
 import com.sports.sportsflashes.model.FeaturedShows
 import com.sports.sportsflashes.view.fragments.HomeFragment
-import com.sports.sportsflashes.view.fragments.ScheduleFragment
 
 class CircularShowAdapter(
     private val featuredShowsList: List<FeaturedShows>,
@@ -62,7 +61,7 @@ class CircularShowAdapter(
                 (context as Activity).onBackPressed()
             }
            findNavController(context as Activity, R.id.app_host_fragment)
-               .navigate(R.id.action_homeFragment_to_playableShowFragment, Bundle().apply {
+               .navigate(R.id.playableShowFragment, Bundle().apply {
                     this.putString(
                         AppConstant.BundleExtras.FEATURED_SHOW,
                         gson.toJson(featuredShowsList[position])

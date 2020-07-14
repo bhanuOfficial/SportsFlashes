@@ -80,7 +80,7 @@ class CustomRecycler @JvmOverloads constructor(
         }
     }
 
-    fun findViewAt(x: Int, y: Int): View? {
+    private fun findViewAt(x: Int, y: Int): View? {
         val count = childCount
         for (i in 0 until count) {
             val v = getChildAt(i)
