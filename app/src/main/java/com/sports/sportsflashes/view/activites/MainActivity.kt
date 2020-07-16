@@ -1,11 +1,13 @@
 package com.sports.sportsflashes.view.activites
 
+import abak.tr.com.boxedverticalseekbar.BoxedVertical
 import android.content.Context
 import android.content.Intent
-import android.media.AudioAttributes
+import android.media.AudioManager
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
@@ -23,7 +25,6 @@ import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory
 import com.google.android.exoplayer2.source.ExtractorMediaSource
 import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.TrackGroupArray
-import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Util
@@ -64,6 +65,7 @@ class MainActivity : AppCompatActivity(), FeaturedShowsListImpl, CurrentShowClic
     private lateinit var updateSongTime: Runnable
     private lateinit var podcastPlayerView: BottomSheetBehavior<RelativeLayout>
     private lateinit var featuredShows: List<FeaturedShows>
+    private lateinit var bottomSheet: RelativeLayout
 
     @Inject
     lateinit var gson: Gson
@@ -75,7 +77,7 @@ class MainActivity : AppCompatActivity(), FeaturedShowsListImpl, CurrentShowClic
         SFApplication.getAppComponent().inject(this)
         viewModel = ViewModelProvider(this).get(MainActivityViewModel::class.java)
         setContentView(R.layout.activity_main)
-        initFragmentHost()
+        initPodcastBottomSheet()
         setSupportActionBar(toolbar)
         initMenuOptions()
         setCategories()
@@ -103,37 +105,56 @@ class MainActivity : AppCompatActivity(), FeaturedShowsListImpl, CurrentShowClic
 
     }
 
-    private fun initFragmentHost() {
-        /*navController =
-            Navigation.findNavController(R.id.nav_graph)*/
+    private fun initPodcastBottomSheet() {
+        bottomSheet = findViewById(R.id.radio)
+        podcastPlayerView = BottomSheetBehavior.from(bottomSheet)
+        podcastPlayerView.addBottomSheetCallback(object :
+            BottomSheetBehavior.BottomSheetCallback() {
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                if (slideOffset > 0.1f && slideOffset <= 1.0f) {
+                    podcast_actionView.alpha = 1.0f - slideOffset
+                    podcast_actionView_opened.alpha = 1.0f + slideOffset
+                } else {
+                    podcast_actionView.alpha = slideOffset + 1.0f
+                    podcast_actionView_opened.alpha = slideOffset
+                }
+                podcast_actionView.animate().scaleX(1 - slideOffset).scaleY(1 - slideOffset)
+                    .setDuration(0).start()
+            }
 
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+
+            }
+        })
+
+        drag_podcast_view.setOnClickListener {
+            if (podcastPlayerView.state == BottomSheetBehavior.STATE_COLLAPSED) {
+                podcastPlayerView.state = BottomSheetBehavior.STATE_EXPANDED
+            } else {
+                podcastPlayerView.state = BottomSheetBehavior.STATE_COLLAPSED
+            }
+        }
+        drag_podcast_down.setOnClickListener {
+            if (podcastPlayerView.state == BottomSheetBehavior.STATE_COLLAPSED) {
+                podcastPlayerView.state = BottomSheetBehavior.STATE_EXPANDED
+            } else {
+                podcastPlayerView.state = BottomSheetBehavior.STATE_COLLAPSED
+            }
+        }
+        bottomSheet.play_podcast.setOnClickListener {
+            play.performClick()
+        }
     }
 
     private fun initPodcastViewer(show: FeaturedShows) {
         if (show.type.equals("podcast", true)) {
-            val bottomSheet = findViewById<RelativeLayout>(R.id.radio)
-            podcastPlayerView = BottomSheetBehavior.from(bottomSheet)
             Glide.with(this)
                 .load(show.thumbnail)
                 .apply(RequestOptions.bitmapTransform(BlurTransformation(20, 2)))
                 .into(podcast_thumb)
-            podcastPlayerView.addBottomSheetCallback(object :
-                BottomSheetBehavior.BottomSheetCallback() {
-                override fun onSlide(bottomSheet: View, slideOffset: Float) {
-                    if (slideOffset > 0.1f && slideOffset <= 1.0f) {
-                        podcast_actionView.alpha = 1.0f - slideOffset
-                    } else {
-                        podcast_actionView.alpha = slideOffset + 1.0f
-                    }
-                    podcast_actionView.animate().scaleX(1 - slideOffset).scaleY(1 - slideOffset)
-                        .setDuration(0).start();
-                }
-
-                override fun onStateChanged(bottomSheet: View, newState: Int) {
-
-                }
-            })
-
+            Glide.with(this)
+                .load(show.thumbnail)
+                .into(showIcon)
             play.setOnClickListener {
                 if (mediaPlayer.playbackState == Player.STATE_ENDED) {
                     mediaPlayer.seekTo(0)
@@ -141,34 +162,64 @@ class MainActivity : AppCompatActivity(), FeaturedShowsListImpl, CurrentShowClic
                 } else
                     if (mediaPlayer.playWhenReady) {
                         mediaPlayer.playWhenReady = false
+                        mediaActionButton.setBackgroundResource(R.drawable.play_button)
+                        play_podcast.setBackgroundResource(R.drawable.play_button)
                     } else if (!mediaPlayer.playWhenReady) {
                         mediaPlayer.playWhenReady = true
+                        mediaActionButton.setBackgroundResource(R.drawable.stop_button)
+                        play_podcast.setBackgroundResource(R.drawable.stop_button)
                     }
-            }
-
-
-            drag_podcast_view.setOnClickListener {
-                if (podcastPlayerView.state == BottomSheetBehavior.STATE_COLLAPSED) {
-                    podcastPlayerView.state = BottomSheetBehavior.STATE_EXPANDED
-                } else {
-                    podcastPlayerView.state = BottomSheetBehavior.STATE_COLLAPSED
-                }
             }
             bottomSheet.showNameRadio.text = show.title
             bottomSheet.rjNameRadio.text = show.creator
             bottomSheet.showTimeRadio.text = show.releaseTime
-            bottomSheet.play_podcast.setOnClickListener {
-                play.performClick()
+            try {
+                volume.setOnClickListener {
+                    if (volumeController.visibility == View.VISIBLE)
+                        volumeController.visibility = View.GONE
+                    else
+                        volumeController.visibility = View.VISIBLE
+                }
+                val audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
+                volumeController.max = audioManager
+                    .getStreamMaxVolume(AudioManager.STREAM_MUSIC)
+//                volumeController.defaultValue = audioManager
+//                    .getStreamVolume(AudioManager.STREAM_MUSIC)
+
+                volumeController.setOnBoxedPointsChangeListener(object :
+                    BoxedVertical.OnValuesChangeListener {
+                    override fun onStartTrackingTouch(boxedPoints: BoxedVertical?) {
+
+                    }
+
+                    override fun onPointsChanged(boxedPoints: BoxedVertical?, points: Int) {
+                        audioManager.setStreamVolume(
+                            AudioManager.STREAM_MUSIC,
+                            points, 0
+                        )
+                        Log.d("BHANU", "VOLUME --> $points")
+                    }
+
+                    override fun onStopTrackingTouch(boxedPoints: BoxedVertical?) {
+
+                    }
+
+                })
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
             exoPlayerInit(show.seasonsEpisodes[0].link)
         } else {
-            Intent(this, YoutubePlayerActivity::class.java)
-                .putExtra(
-                    AppConstant.BundleExtras.YOUTUBE_VIDEO_CODE,
-                    show.seasonsEpisodes[0].link
-                )
-        }
+            val video_id = show.seasonsEpisodes[0].link.split("v=")[1]
+            startActivity(
+                Intent(this, YoutubePlayerActivity::class.java)
+                    .putExtra(
+                        AppConstant.BundleExtras.YOUTUBE_VIDEO_CODE,
+                        video_id
+                    )
+            )
 
+        }
     }
 
 
@@ -237,6 +288,8 @@ class MainActivity : AppCompatActivity(), FeaturedShowsListImpl, CurrentShowClic
 
             override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
                 if (playWhenReady) {
+                    mediaActionButton.setBackgroundResource(R.drawable.stop_button)
+                    play_podcast.setBackgroundResource(R.drawable.stop_button)
                     initSeek()
                 } else {
                     if (this@MainActivity::updateSongTime.isInitialized)
@@ -244,16 +297,24 @@ class MainActivity : AppCompatActivity(), FeaturedShowsListImpl, CurrentShowClic
                 }
             }
         })
+        forwardRadio.setOnClickListener {
+            mediaPlayer.seekTo(mediaPlayer.currentPosition + 20000)
+        }
+        backwardRadio.setOnClickListener {
+            mediaPlayer.seekTo(mediaPlayer.currentPosition - 20000)
+        }
 
         val mediaSource = extractMediaSourceFromUri(Uri.parse(streamUrl))
-
         mediaPlayer.prepare(mediaSource)
+        mediaPlayer.playWhenReady = true
     }
+
     private fun extractMediaSourceFromUri(uri: Uri): MediaSource {
         val userAgent = Util.getUserAgent(this, "SportsFlashes Radio")
         return ExtractorMediaSource.Factory(DefaultDataSourceFactory(this, userAgent))
             .setExtractorsFactory(DefaultExtractorsFactory()).createMediaSource(uri)
     }
+
     override fun onDestroy() {
         mediaPlayer.release()
         super.onDestroy()
@@ -394,10 +455,13 @@ class MainActivity : AppCompatActivity(), FeaturedShowsListImpl, CurrentShowClic
     }
 
     override fun onBackPressed() {
-        if (menu_item_.visibility == View.VISIBLE)
-            menu_drawer.performClick()
-        else
-            super.onBackPressed()
+        when {
+            menu_item_.visibility == View.VISIBLE -> menu_drawer.performClick()
+            this::podcastPlayerView.isInitialized && podcastPlayerView.state == BottomSheetBehavior.STATE_EXPANDED -> {
+                podcastPlayerView.state = BottomSheetBehavior.STATE_COLLAPSED
+            }
+            else -> super.onBackPressed()
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

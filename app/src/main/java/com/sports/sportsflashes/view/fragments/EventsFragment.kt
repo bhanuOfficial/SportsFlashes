@@ -186,9 +186,9 @@ class EventsFragment : Fragment(), EventItemSelection {
         val message = dialog.findViewById(R.id.message) as TextView
         val noBtn = dialog.findViewById(R.id.buttonNo) as Button
         val okBtn = dialog.findViewById(R.id.buttonOk) as Button
-        title.text = "AsdasdasdAsdasdasdAsdas"
+        title.text = "You have already set a reminder for this event"
         message.text =
-            "AsdasdasdAsdasdasdAsdasdasdAsdasdasdAsdasdasdAsdasdasdAsdasdasdAsdasdasdAsdasdasdAsdasdasd"
+            "Do you wish to cancel? "
         yesBtn.setOnClickListener {
             dialog.dismiss()
         }

@@ -18,13 +18,16 @@
             android:layout_centerVertical="true"
             android:scaleType="fitXY" />
 
-        <ImageView
+        <CheckBox
             android:visibility="gone"
-            android:id="@+id/selectedItemView"
+            android:id="@+id/checkedItem"
+            android:theme="@style/checkBoxStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:scaleX="1.5"
+            android:scaleY="1.5"
             android:layout_margin="@dimen/x_small_margin"
-            android:background="@drawable/ic_baseline_check_circle" />
+           />
 
         <LinearLayout
             android:id="@+id/detailContainer"

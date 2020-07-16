@@ -101,7 +101,6 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:maxLines="2"
-                android:text="@string/show_description_detail"
                 android:textColor="@color/medium_light_gray"
                 android:textSize="@dimen/small_size"
                 android:visibility="visible" />

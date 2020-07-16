@@ -25,4 +25,15 @@
         <item name="tabIndicatorHeight">2dp</item>
     </style>
 -->
+
+    <style name="checkBoxStyle" parent="Base.Theme.AppCompat">
+        <item name="colorAccent">@color/white</item>
+        <item name="android:textColorSecondary">@color/white</item>
+    </style>
+    <style name="FullScreenDialogStyle" parent="AppTheme">
+        <item name="android:windowFullscreen">false</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowIsFloating">false</item>
+    </style>
+
 </resources>

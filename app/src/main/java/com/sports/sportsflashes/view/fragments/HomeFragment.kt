@@ -141,25 +141,9 @@ class HomeFragment : Fragment(),
         setAlphaForFeaturedChanged()
 
         playCurrentShow.setOnClickListener {
-            if (featuredShowslist[imageCategory.layoutManager.let { t ->
-                    t!!.getPosition(circularRecycler.findViewAtCenter()!!)
-                }].type.equals("podcast", true)) {
-                (attachedActivity as MainActivity).onCurrentShowClicked(featuredShowslist[imageCategory.layoutManager.let { t ->
-                    t!!.getPosition(circularRecycler.findViewAtCenter()!!)
-                }])
-
-            } else {
-                mediaPlayer.playWhenReady = false
-                activity?.let {
-                    it.startActivity(
-                        Intent(context, YoutubePlayerActivity::class.java)
-                            .putExtra(
-                                AppConstant.BundleExtras.YOUTUBE_VIDEO_CODE,
-                                AppConstant.YOUTUBE_VIDEO_CODE
-                            )
-                    )
-                }
-            }
+            (attachedActivity as MainActivity).onCurrentShowClicked(featuredShowslist[imageCategory.layoutManager.let { t ->
+                t!!.getPosition(circularRecycler.findViewAtCenter()!!)
+            }])
         }
     }
 

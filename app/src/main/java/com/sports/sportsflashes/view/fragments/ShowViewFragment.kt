@@ -121,7 +121,7 @@ class ShowViewFragment : Fragment() {
         showTittle.text = featuredShows.title
         showDescription.text = featuredShows.description
         show_detail_layout.visibility = View.VISIBLE
-
+        showDescriptionDetail.text = featuredShows.description
         showDescriptionDetail.tag = true
 
         readMore.setOnClickListener {

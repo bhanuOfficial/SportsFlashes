@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -46,7 +47,7 @@ class EventsAdapter(
         val showTime: TextView = itemView.findViewById(R.id.showTime)
         val showTittle: TextView = itemView.findViewById(R.id.showTittle)
         val setReminder: TextView = itemView.findViewById(R.id.setReminder)
-        val selectedItemView: ImageView = itemView.findViewById(R.id.selectedItemView)
+        val checkedItem: CheckBox = itemView.findViewById(R.id.checkedItem)
         val detailContainer: LinearLayout = itemView.findViewById(R.id.detailContainer)
     }
 
@@ -61,11 +62,7 @@ class EventsAdapter(
     }
 
     override fun onBindViewHolder(holder: EventItemHolder, position: Int) {
-        if (listOfSelectedIndex.contains(position)) {
-            holder.selectedItemView.visibility = View.VISIBLE
-        } else {
-            holder.selectedItemView.visibility = View.GONE
-        }
+        holder.checkedItem.isChecked = listOfSelectedIndex.contains(position)
         holder.showTittle.text = eventList[position].title
         holder.showTime.text = eventList[position].releaseTime
         Glide.with(holder.itemView.context).load(eventList[position].thumbnail)
@@ -76,6 +73,14 @@ class EventsAdapter(
                 )
             )
             .into(holder.showImage)
+
+        if (selected) {
+            holder.checkedItem.visibility = View.VISIBLE
+            holder.setReminder.text = attachedContext.getString(R.string.more)
+        } else {
+            holder.checkedItem.visibility = View.GONE
+            holder.setReminder.text = attachedContext.getString(R.string.set_reminder)
+        }
 
         holder.showImage.setOnClickListener {
             if (selected)
@@ -90,7 +95,7 @@ class EventsAdapter(
             )
             notifyDataSetChanged()
         }
-        holder.detailContainer.setOnClickListener {
+        /*holder.detailContainer.setOnClickListener {
             Navigation.findNavController(it.context as Activity, R.id.app_host_fragment)
                 .navigate(R.id.action_eventsFragment_to_playableShowFragment, Bundle().apply {
                     this.putString(
@@ -99,10 +104,24 @@ class EventsAdapter(
                     )
                 })
         }
-
+*/
         holder.setReminder.setOnClickListener {
-            selected = true
-            (attachedContext as EventsFragment).setSelectionVisible(true)
+            if (holder.setReminder.text.contains("More")) {
+                Navigation.findNavController(it.context as Activity, R.id.app_host_fragment)
+                    .navigate(R.id.action_eventsFragment_to_playableShowFragment, Bundle().apply {
+                        this.putString(
+                            AppConstant.BundleExtras.EVENT_ITEM,
+                            gson.toJson(eventList[position])
+                        )
+                    })
+                selected = false
+            } else {
+                holder.setReminder.text = attachedContext.getString(R.string.more)
+                selected = true
+                notifyDataSetChanged()
+                (attachedContext as EventsFragment).setSelectionVisible(true)
+            }
+
         }
     }
 }

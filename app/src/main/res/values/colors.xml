@@ -10,4 +10,5 @@
     <color name="black_transparent">#56000000</color>
     <color name="medium_dark_gray">#232323</color>
     <color name="medium_light_gray">#BCBABA</color>
+    <color name="green">#388E3C</color>
 </resources>

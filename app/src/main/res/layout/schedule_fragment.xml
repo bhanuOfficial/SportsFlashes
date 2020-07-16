@@ -27,21 +27,12 @@
             app:tabMode="auto"
             app:tabTextColor="@color/white" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/scheduleRecycler"
+        <androidx.viewpager.widget.ViewPager
+            android:visibility="visible"
+            android:id="@+id/scheduleViewPager"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/small_margin" />
+            android:layout_height="match_parent" />
 
-        <TextView
-            android:id="@+id/noData"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center_vertical|center"
-            android:text="@string/no_show_schedule_for_the_day"
-            android:textColor="@color/white"
-            android:textSize="@dimen/medium_size"
-            android:textStyle="bold" />
 
     </LinearLayout>
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

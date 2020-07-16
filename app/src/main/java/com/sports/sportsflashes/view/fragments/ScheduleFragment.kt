@@ -1,14 +1,10 @@
 package com.sports.sportsflashes.view.fragments
 
-import android.app.Dialog
-import android.content.Context
 import android.os.Bundle
-import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.Window
-import android.widget.Button
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -22,7 +18,7 @@ import com.sports.sportsflashes.model.FeaturedShows
 import com.sports.sportsflashes.model.ScheduleModel
 import com.sports.sportsflashes.repository.api.STATUS
 import com.sports.sportsflashes.view.adapters.CircularShowAdapter
-import com.sports.sportsflashes.view.adapters.ScheduleShowsAdapter
+import com.sports.sportsflashes.view.adapters.ScheduleViewPagerAdapter
 import com.sports.sportsflashes.viewmodel.ScheduleFragmentViewModel
 import kotlinx.android.synthetic.main.schedule_fragment.*
 import java.lang.reflect.Type
@@ -31,6 +27,7 @@ import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 
 private const val ARG_PARAM1 = "param1"
@@ -41,6 +38,8 @@ class ScheduleFragment : Fragment() {
     private var weekdayList = arrayListOf<String>()
     private lateinit var scheduleFragmentViewModel: ScheduleFragmentViewModel
     private lateinit var scheduleModel: ScheduleModel
+    private lateinit var viewPageAdapter: ScheduleViewPagerAdapter
+
 
     @Inject
     lateinit var gson: Gson
@@ -71,7 +70,6 @@ class ScheduleFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initScheduleShowRecycler()
-        initSchedulerRecycler()
         getWeekList()
         refreshViewInit()
         getShowsFromNetwork()
@@ -79,12 +77,21 @@ class ScheduleFragment : Fragment() {
 
     private fun getShowsFromNetwork() {
         activity?.let {
-            scheduleFragmentViewModel.getScheduleShows().observe(it, androidx.lifecycle.Observer {
-                swipeRefresh.isRefreshing = false
-                if (it.status == STATUS.SUCCESS) {
-                    scheduleModel = it.data as ScheduleModel
-                }
-            })
+            scheduleFragmentViewModel.getScheduleShows()
+                .observe(it, androidx.lifecycle.Observer {
+                    swipeRefresh.isRefreshing = false
+                    if (it.status == STATUS.SUCCESS) {
+                        scheduleModel = it.data as ScheduleModel
+                        viewPageAdapter = ScheduleViewPagerAdapter(
+                            childFragmentManager,
+                            scheduleModel,
+                            weekTabs,
+                            weekdayList
+                        )
+                        scheduleViewPager.adapter = viewPageAdapter
+                        scheduleViewPager.setCurrentItem(3, true)
+                    }
+                })
         }
     }
 
@@ -96,7 +103,7 @@ class ScheduleFragment : Fragment() {
         }
     }
 
-    fun initScheduleShowRecycler() {
+    private fun initScheduleShowRecycler() {
         schedule_shows_recycler.setHasFixedSize(true)
         schedule_shows_recycler.layoutManager = LinearLayoutManager(activity).apply {
             this.orientation = LinearLayoutManager.HORIZONTAL
@@ -110,13 +117,6 @@ class ScheduleFragment : Fragment() {
             }
     }
 
-    fun initSchedulerRecycler() {
-        scheduleRecycler.setHasFixedSize(true)
-        scheduleRecycler.layoutManager = LinearLayoutManager(activity).apply {
-            this.orientation = LinearLayoutManager.VERTICAL
-            this.reverseLayout = false
-        }
-    }
 
     companion object {
         @JvmStatic
@@ -135,8 +135,7 @@ class ScheduleFragment : Fragment() {
     }
 
     private fun getWeekList() {
-        val dateFormat = SimpleDateFormat("dd MMM")
-        val dateFormatWithDay = SimpleDateFormat("EEE, dd MMM")
+        weekdayList.clear()
         var cal: Calendar = Calendar.getInstance()
         cal.time = cal.time
         val df: DateFormat = SimpleDateFormat("dd/MM/yyyy")
@@ -172,42 +171,7 @@ class ScheduleFragment : Fragment() {
             }
 
         Collections.sort(weekdayList, byDate)
-        for (i in weekdayList) {
-            val date1 = SimpleDateFormat("dd/MM/yyyy").parse(i)
-            when {
-                isYesterday(date1!!) -> {
-                    weekTabs.addTab(
-                        weekTabs.newTab()
-                            .setText("Yesterday, ${dateFormat.format(df.parse(i)!!)}")
-                            .also { tab -> tab.tag = getDayNameByDate(i) }
-                    )
-                }
-                isTomorrow(date1) -> {
-                    weekTabs.addTab(
-                        weekTabs.newTab()
-                            .setText("Tomorrow, ${dateFormat.format(df.parse(i)!!)}")
-                            .also { tab -> tab.tag = getDayNameByDate(i) }
-                    )
-                }
-                isToday(date1) -> {
-                    weekTabs.addTab(
-                        weekTabs.newTab()
-                            .setText("Today, ${dateFormat.format(df.parse(i)!!)}")
-                            .also { tab -> tab.tag = getDayNameByDate(i) }
-                    )
-                }
-                else -> {
-                    weekTabs.addTab(
-                        weekTabs.newTab().setText(dateFormatWithDay.format(df.parse(i)!!))
-                            .also { tab -> tab.tag = getDayNameByDate(i) }
-                    )
-                }
-            }
-
-        }
-        weekTabs.postDelayed({
-            weekTabs.setScrollPosition(3, 0f, true)
-        }, 100)
+        weekTabs.setupWithViewPager(scheduleViewPager)
         weekTabs.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabReselected(tab: TabLayout.Tab?) {
             }
@@ -216,111 +180,10 @@ class ScheduleFragment : Fragment() {
             }
 
             override fun onTabSelected(tab: TabLayout.Tab?) {
-                if (this@ScheduleFragment::scheduleModel.isInitialized) {
-                    when (tab?.tag) {
-                        WeekDays.Sunday.name -> {
-                            if (scheduleModel.`0`.isEmpty()) {
-                                visible()
-                            } else {
-                                if (this@ScheduleFragment::scheduleModel.isInitialized)
-                                    hide(scheduleModel.`0`)
-                            }
-                        }
-                        WeekDays.Monday.name -> {
-                            if (scheduleModel.`1`.isEmpty()) {
-                                visible()
-                            } else {
-                                if (this@ScheduleFragment::scheduleModel.isInitialized)
-                                    hide(scheduleModel.`1`)
-                            }
-                        }
-                        WeekDays.Tuesday.name -> {
-                            if (scheduleModel.`2`.isEmpty()) {
-                                visible()
-                            } else {
-                                if (this@ScheduleFragment::scheduleModel.isInitialized)
-                                    hide(scheduleModel.`2`)
-                            }
-                        }
-                        WeekDays.Wednesday.name -> {
-                            if (scheduleModel.`3`.isEmpty()) {
-                                visible()
-                            } else {
-                                if (this@ScheduleFragment::scheduleModel.isInitialized)
-                                    hide(scheduleModel.`3`)
-                            }
-                        }
-                        WeekDays.Thursday.name -> {
-                            if (scheduleModel.`4`.isEmpty()) {
-                                visible()
-                            } else {
-                                if (this@ScheduleFragment::scheduleModel.isInitialized)
-                                    hide(scheduleModel.`4`)
-                            }
-                        }
-                        WeekDays.Friday.name -> {
-                            if (scheduleModel.`5`.isEmpty()) {
-                                visible()
-                            } else {
-                                if (this@ScheduleFragment::scheduleModel.isInitialized)
-                                    hide(scheduleModel.`5`)
-                            }
-                        }
-                        WeekDays.Saturday.name -> {
-                            if (scheduleModel.`6`.isEmpty()) {
-                                visible()
-                            } else {
-                                if (this@ScheduleFragment::scheduleModel.isInitialized)
-                                    hide(scheduleModel.`6`)
-                            }
-                        }
-                    }
-
-                }
+                scheduleViewPager.setCurrentItem(weekTabs.selectedTabPosition, true)
             }
 
         })
-    }
-
-    private fun visible() {
-        noData.visibility = View.VISIBLE
-        scheduleRecycler.visibility = View.GONE
-    }
-
-    private fun hide(list: List<ScheduleModel.WeekScheduleData>) {
-        noData.visibility = View.GONE
-        scheduleRecycler.visibility = View.VISIBLE
-        scheduleRecycler.adapter =
-            ScheduleShowsAdapter(scheduleShowsList = list)
-    }
-
-    fun isYesterday(d: Date): Boolean {
-        return DateUtils.isToday(d.time + DateUtils.DAY_IN_MILLIS)
-    }
-
-    fun isTomorrow(d: Date): Boolean {
-        return DateUtils.isToday(d.time - DateUtils.DAY_IN_MILLIS)
-    }
-
-    fun isToday(d: Date): Boolean {
-        return DateUtils.isToday(d.time)
-    }
-
-    private fun getDayNameByDate(dateString: String): String {
-        val inFormat = SimpleDateFormat("dd/MM/yyyy")
-        val date = inFormat.parse(dateString)
-        val outFormat = SimpleDateFormat("EEEE")
-        return outFormat.format(date)
-    }
-
-    private enum class WeekDays {
-        Sunday,
-        Monday,
-        Tuesday,
-        Wednesday,
-        Thursday,
-        Friday,
-        Saturday
     }
 
 

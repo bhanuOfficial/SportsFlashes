@@ -1,25 +1,46 @@
 package com.sports.sportsflashes.view.adapters
 
+import android.app.Activity
+import android.content.Context
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.google.gson.Gson
 import com.sports.sportsflashes.R
+import com.sports.sportsflashes.common.application.SFApplication
+import com.sports.sportsflashes.common.utils.AppConstant
 import com.sports.sportsflashes.model.ScheduleModel
+import javax.inject.Inject
 
 /**
  *Created by Bhanu on 03-07-2020
  */
-class ScheduleShowsAdapter(private val scheduleShowsList: List<ScheduleModel.WeekScheduleData>) :
+class ScheduleShowsAdapter(
+    private val scheduleShowsList: List<ScheduleModel.WeekScheduleData>,
+    private val context: Context
+) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    @Inject
+    lateinit var gson: Gson
+
+    init {
+        SFApplication.getAppComponent().inject(this)
+    }
+
     class ShowItemHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val showImage: ImageView = itemView.findViewById(R.id.showImage)
         val showTime: TextView = itemView.findViewById(R.id.showTime)
         val showTittle: TextView = itemView.findViewById(R.id.showTittle)
         val showDescription: TextView = itemView.findViewById(R.id.showDescription)
+        val scheduleItemContainer: RelativeLayout =
+            itemView.findViewById(R.id.scheduleItemContainer)
     }
 
     class LiveShowItemHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -78,7 +99,16 @@ class ScheduleShowsAdapter(private val scheduleShowsList: List<ScheduleModel.Wee
                     )
                 )
                 .into(holder.showImage)
-        }else if(holder is LiveShowItemHolder){
+            holder.scheduleItemContainer.setOnClickListener {
+                Navigation.findNavController(context as Activity, R.id.app_host_fragment)
+                    .navigate(R.id.playableShowFragment, Bundle().apply {
+                        this.putString(
+                            AppConstant.BundleExtras.FEATURED_SHOW,
+                            gson.toJson(scheduleShowsList[position])
+                        )
+                    })
+            }
+        } else if (holder is LiveShowItemHolder) {
             holder.showTittle.text = scheduleShowsList[position].title
             holder.showDescription.text = scheduleShowsList[position].description
             holder.showTime.text = scheduleShowsList[position].releaseTime
