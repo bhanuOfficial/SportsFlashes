@@ -61,7 +61,7 @@
         android:id="@+id/podcast_actionView"
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
-        android:background="@color/medium_dark_gray"
+        android:background="@color/black"
         android:gravity="center"
         android:paddingLeft="@dimen/small_padding"
         android:paddingRight="@dimen/small_padding">
@@ -74,15 +74,17 @@
 
             <ImageView
                 android:id="@+id/mediaActionButton"
-                android:layout_width="?actionBarSize"
-                android:layout_height="?actionBarSize"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_centerVertical="true"
                 android:background="@drawable/play_button"
                 android:clickable="false" />
 
             <me.tankery.lib.circularseekbar.CircularSeekBar
                 android:id="@+id/smallSeekBar"
-                android:layout_width="?actionBarSize"
-                android:layout_height="?actionBarSize"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_centerVertical="true"
                 android:clickable="false"
                 app:cs_circle_color="@color/medium_light_gray"
                 app:cs_circle_progress_color="@color/black"
@@ -120,12 +122,13 @@
                 android:textColor="@color/medium_light_gray"
                 android:textSize="@dimen/medium_size" />
         </LinearLayout>
-
+aa
         <LinearLayout
             android:id="@+id/drag_podcast_view"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
             android:gravity="center_vertical"
             android:paddingLeft="@dimen/small_padding"
             android:paddingRight="@dimen/small_padding">

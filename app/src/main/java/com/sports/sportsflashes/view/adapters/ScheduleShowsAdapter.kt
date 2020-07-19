@@ -99,6 +99,7 @@ class ScheduleShowsAdapter(
                     )
                 )
                 .into(holder.showImage)
+
             holder.scheduleItemContainer.setOnClickListener {
                 Navigation.findNavController(context as Activity, R.id.app_host_fragment)
                     .navigate(R.id.playableShowFragment, Bundle().apply {

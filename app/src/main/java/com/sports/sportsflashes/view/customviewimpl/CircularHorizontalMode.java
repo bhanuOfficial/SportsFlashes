@@ -33,7 +33,8 @@ public class CircularHorizontalMode implements ItemViewMode {
 
         ViewCompat.setPivotY(v, halfWidth);
         ViewCompat.setPivotX(v, halfWidth);
-        ViewCompat.setRotation(v, -rot * 0.05f);
+//        for the view rotation in flot number
+        ViewCompat.setRotation(v, -rot * 0.00f);
         ViewCompat.setTranslationY(v, (float) (-Math.cos(rot * mTranslationRatio * mDegToRad) + 1) * mCircleOffset);
 
         float scale = 1.0f - Math.abs(parentHalfWidth - halfWidth - x) * mScalingRatio;

@@ -1,7 +1,6 @@
 package com.sports.sportsflashes.view.fragments
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -18,13 +17,11 @@ import com.google.android.exoplayer2.ExoPlayer
 import com.sports.sportsflashes.R
 import com.sports.sportsflashes.common.application.SFApplication
 import com.sports.sportsflashes.common.helper.FeaturedShowsImpl
-import com.sports.sportsflashes.common.utils.AppConstant
 import com.sports.sportsflashes.model.FeaturedShows
 import com.sports.sportsflashes.model.MessageEvent
 import com.sports.sportsflashes.repository.api.NetworkResponse
 import com.sports.sportsflashes.repository.api.STATUS
 import com.sports.sportsflashes.view.activites.MainActivity
-import com.sports.sportsflashes.view.activites.YoutubePlayerActivity
 import com.sports.sportsflashes.view.adapters.CircularShowAdapter
 import com.sports.sportsflashes.view.adapters.ImageShowAdapter
 import com.sports.sportsflashes.view.customviewimpl.CircularHorizontalMode
@@ -152,13 +149,28 @@ class HomeFragment : Fragment(),
         animation1.duration = 400
         animation1.fillAfter = true
         showTittle.startAnimation(animation1)
-        showDescription.startAnimation(animation1)
+        creatorName.startAnimation(animation1)
     }
 
     override fun setFeaturedDetail(featuredShow: FeaturedShows) {
         animation1.startNow()
         showTittle.text = featuredShow.title
-        showDescription.text = featuredShow.description
+        creatorName.text = featuredShow.description
+        showTime.text = formatHoursAndMinutes(featuredShow.duration)
+        if (featuredShow.seasonsEpisodes[0].live && featuredShow.type.equals("podcast", true)) {
+            showLiveStatus.text = "Listen Live"
+        } else {
+            showLiveStatus.text = "Watch Live"
+        }
+    }
+
+    private fun formatHoursAndMinutes(totalMinutes: Int): String? {
+        var minutes = (totalMinutes % 60).toString()
+        minutes = if (minutes.length == 1) "0$minutes" else minutes
+        return if ((totalMinutes / 60).toString() == "0") {
+            if (minutes.length == 1) "$minutes min" else "$minutes mins"
+        } else
+            ((totalMinutes / 60).toString()) + "h " + minutes + "m"
     }
 
 

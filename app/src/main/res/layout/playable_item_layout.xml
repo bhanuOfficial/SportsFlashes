@@ -29,7 +29,7 @@
                 android:paddingLeft="@dimen/x_medium_padding">
 
                 <TextView
-                    android:id="@+id/showTittle"
+                    android:id="@+id/showLiveStatus"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingBottom="@dimen/xx_small_padding"
@@ -37,7 +37,7 @@
                     android:textSize="@dimen/large_size" />
 
                 <TextView
-                    android:id="@+id/showDescription"
+                    android:id="@+id/showTime"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/white"
@@ -53,6 +53,7 @@
             android:paddingRight="@dimen/large_padding">
 
             <TextView
+                android:id="@+id/showTittle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingTop="@dimen/small_padding"
@@ -61,6 +62,7 @@
                 android:textSize="@dimen/medium_size" />
 
             <TextView
+                android:id="@+id/creatorName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/white"

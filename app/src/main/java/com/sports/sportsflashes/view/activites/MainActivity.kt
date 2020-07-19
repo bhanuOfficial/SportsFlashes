@@ -66,6 +66,7 @@ class MainActivity : AppCompatActivity(), FeaturedShowsListImpl, CurrentShowClic
     private lateinit var podcastPlayerView: BottomSheetBehavior<RelativeLayout>
     private lateinit var featuredShows: List<FeaturedShows>
     private lateinit var bottomSheet: RelativeLayout
+    private lateinit var show: FeaturedShows
 
     @Inject
     lateinit var gson: Gson
@@ -148,6 +149,11 @@ class MainActivity : AppCompatActivity(), FeaturedShowsListImpl, CurrentShowClic
 
     private fun initPodcastViewer(show: FeaturedShows) {
         if (show.type.equals("podcast", true)) {
+            if (show.seasonsEpisodes[0].live) {
+                backwardRadio.visibility = View.GONE
+                forwardRadio.visibility = View.GONE
+                linearLayout.setBackgroundResource(android.R.color.transparent)
+            }
             Glide.with(this)
                 .load(show.thumbnail)
                 .apply(RequestOptions.bitmapTransform(BlurTransformation(20, 2)))
@@ -208,16 +214,19 @@ class MainActivity : AppCompatActivity(), FeaturedShowsListImpl, CurrentShowClic
             } catch (e: Exception) {
                 e.printStackTrace()
             }
+            this.show = show
             exoPlayerInit(show.seasonsEpisodes[0].link)
         } else {
-            val video_id = show.seasonsEpisodes[0].link.split("v=")[1]
-            startActivity(
-                Intent(this, YoutubePlayerActivity::class.java)
-                    .putExtra(
-                        AppConstant.BundleExtras.YOUTUBE_VIDEO_CODE,
-                        video_id
+//            val video_id = show.seasonsEpisodes[0].link.split("v=")[1]
+            findNavController(R.id.app_host_fragment).navigate(
+                R.id.playableShowFragment,
+                Bundle().apply {
+                    this.putString(
+                        AppConstant.BundleExtras.FEATURED_SHOW,
+                        gson.toJson(show)
                     )
-            )
+                    this.putString(AppConstant.BundleExtras.FROM_HOME,"yes")
+                })
 
         }
     }
@@ -321,19 +330,24 @@ class MainActivity : AppCompatActivity(), FeaturedShowsListImpl, CurrentShowClic
     }
 
     private fun initSeek() {
-        val duration: Long = mediaPlayer.duration
-        val amountToUpdate = duration / 100
-        smallSeekBar.max = amountToUpdate.toFloat()
-        largeSeekBar.max = amountToUpdate.toFloat()
-        updateSongTime = object : Runnable {
-            override fun run() {
-                val startTime = mediaPlayer.currentPosition
-                smallSeekBar.progress = startTime.toFloat() / 100
-                largeSeekBar.progress = startTime.toFloat() / 100
-                seekBarHandler.postDelayed(this, 1000)
+        if (this.show.seasonsEpisodes[0].live) {
+            smallSeekBar.progress = 100F
+            largeSeekBar.progress = 100F
+        } else {
+            val duration: Long = mediaPlayer.duration
+            val amountToUpdate = duration / 100
+            smallSeekBar.max = amountToUpdate.toFloat()
+            largeSeekBar.max = amountToUpdate.toFloat()
+            updateSongTime = object : Runnable {
+                override fun run() {
+                    val startTime = mediaPlayer.currentPosition
+                    smallSeekBar.progress = startTime.toFloat() / 100
+                    largeSeekBar.progress = startTime.toFloat() / 100
+                    seekBarHandler.postDelayed(this, 1000)
+                }
             }
+            seekBarHandler.post(updateSongTime)
         }
-        seekBarHandler.post(updateSongTime)
     }
 
     private fun onItemClickOptionMenu() {

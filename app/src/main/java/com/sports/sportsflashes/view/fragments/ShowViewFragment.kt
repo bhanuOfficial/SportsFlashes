@@ -1,13 +1,23 @@
 package com.sports.sportsflashes.view.fragments
 
-import android.content.Intent
+import android.content.pm.ActivityInfo
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
+import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.google.android.exoplayer2.ExoPlayer
+import com.google.android.youtube.player.YouTubeInitializationResult
+import com.google.android.youtube.player.YouTubePlayer
+import com.google.android.youtube.player.YouTubePlayerSupportFragment.newInstance
 import com.google.gson.Gson
 import com.sports.sportsflashes.R
 import com.sports.sportsflashes.common.application.SFApplication
@@ -15,17 +25,18 @@ import com.sports.sportsflashes.common.utils.AppConstant
 import com.sports.sportsflashes.model.FeaturedShows
 import com.sports.sportsflashes.model.MessageEvent
 import com.sports.sportsflashes.model.MonthEventModel
-import com.sports.sportsflashes.view.activites.YoutubePlayerActivity
+import com.sports.sportsflashes.view.adapters.MoreEpisodeAdapter
+import jp.wasabeef.glide.transformations.BlurTransformation
 import kotlinx.android.synthetic.main.dashboard_full_image_show.*
 import kotlinx.android.synthetic.main.playable_item_layout.playCurrentShow
 import kotlinx.android.synthetic.main.playable_item_layout.readMore
-import kotlinx.android.synthetic.main.playable_item_layout.showDescription
 import kotlinx.android.synthetic.main.playable_item_layout.showDescriptionDetail
 import kotlinx.android.synthetic.main.playable_item_layout.showTittle
 import kotlinx.android.synthetic.main.playable_item_layout.show_detail_layout
 import kotlinx.android.synthetic.main.show_view_layout.*
 import org.greenrobot.eventbus.EventBus
 import javax.inject.Inject
+
 
 /**
  *Created by Bhanu on 04-07-2020
@@ -34,6 +45,7 @@ class ShowViewFragment : Fragment() {
 
     private lateinit var featuredShows: FeaturedShows
     private lateinit var eventModel: MonthEventModel
+    private lateinit var YPlayer: YouTubePlayer
 
     @Inject
     lateinit var gson: Gson
@@ -66,13 +78,92 @@ class ShowViewFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val rootView = inflater.inflate(R.layout.show_view_layout, container, false)
-        return rootView
+        val callback = object :
+            OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (activity?.resources?.configuration?.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                    activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+                    if (playerContainer.visibility == View.VISIBLE && this@ShowViewFragment::YPlayer.isInitialized) {
+                        YPlayer.setFullscreen(false)
+                    }
+                } else {
+                    findNavController().popBackStack()
+                }
+            }
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback);
+        return inflater.inflate(R.layout.show_view_layout, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initViewForShow()
+        moreEpisodesInit()
+        if (arguments?.getString(AppConstant.BundleExtras.FROM_HOME) != null) {
+            initYoutubePlayerView(featuredShows.seasonsEpisodes[0].link.split("v=")[1])
+        }
+    }
+
+    private fun moreEpisodesInit() {
+        moreEpisodesRecycler.setHasFixedSize(true)
+        moreEpisodesRecycler.isNestedScrollingEnabled = false
+        moreEpisodesRecycler.layoutManager = LinearLayoutManager(activity).also {
+            it.reverseLayout = false
+            it.orientation = RecyclerView.VERTICAL
+        }
+        moreEpisodesRecycler.adapter = MoreEpisodeAdapter(featuredShows.seasonsEpisodes)
+    }
+
+    private fun initYoutubePlayerView(videoCode: String) {
+        activity?.let {
+            Glide.with(this).load(featuredShows.thumbnail)
+                .placeholder(
+                    it.resources.getDrawable(
+                        R.drawable.default_thumbnail,
+                        null
+                    )
+                ).apply(RequestOptions.bitmapTransform(BlurTransformation(20, 2)))
+                .into(showImage)
+        }
+        playerContainer.visibility = View.VISIBLE
+        val youTubePlayerFragment = newInstance()
+        youTubePlayerFragment.initialize(AppConstant.YOUTUBE_API_KEY, object :
+            YouTubePlayer.OnInitializedListener {
+            override fun onInitializationSuccess(
+                provider: YouTubePlayer.Provider?,
+                player: YouTubePlayer,
+                wasRestored: Boolean
+            ) {
+                if (!wasRestored) {
+                    YPlayer = player
+//                    YPlayer.setFullscreen(true)
+                    YPlayer.loadVideo(videoCode)
+                    YPlayer.play()
+                }
+            }
+
+            override fun onInitializationFailure(
+                arg0: YouTubePlayer.Provider?,
+                arg1: YouTubeInitializationResult?
+            ) {
+                // TODO Auto-generated method stub
+            }
+        })
+        val transaction: FragmentTransaction = childFragmentManager.beginTransaction()
+        transaction.add(R.id.youtube_playerFragment, youTubePlayerFragment).commit()
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            if (this@ShowViewFragment::YPlayer.isInitialized) {
+                YPlayer.setFullscreen(false)
+            }
+        } else {
+            if (this@ShowViewFragment::YPlayer.isInitialized) {
+                YPlayer.setFullscreen(true)
+            }
+        }
     }
 
     private fun initViewForShow() {
@@ -139,15 +230,17 @@ class ShowViewFragment : Fragment() {
             if (featuredShows.type == "Video") {
                 if (mediaPlayer.playWhenReady)
                     mediaPlayer.playWhenReady = false
-                activity?.let {
+                val videoCode = featuredShows.seasonsEpisodes[0].link.split("v=")[1]
+                initYoutubePlayerView(videoCode)
+                /*activity?.let {
                     it.startActivity(
                         Intent(context, YoutubePlayerActivity::class.java)
                             .putExtra(
                                 AppConstant.BundleExtras.YOUTUBE_VIDEO_CODE,
-                                AppConstant.YOUTUBE_VIDEO_CODE
+                                videoCode
                             )
                     )
-                }
+                }*/
             } else
                 EventBus.getDefault().post(
                     MessageEvent(
@@ -158,12 +251,4 @@ class ShowViewFragment : Fragment() {
         }
     }
 
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-    }
-
-    private fun setShowDetails(show: Any) {
-
-    }
 }
