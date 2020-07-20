@@ -1,17 +1,15 @@
 package com.sports.sportsflashes.view.activites
 
-import abak.tr.com.boxedverticalseekbar.BoxedVertical
 import android.content.Context
-import android.content.Intent
 import android.media.AudioManager
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.RelativeLayout
+import android.widget.SeekBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -181,36 +179,37 @@ class MainActivity : AppCompatActivity(), FeaturedShowsListImpl, CurrentShowClic
             bottomSheet.showTimeRadio.text = show.releaseTime
             try {
                 volume.setOnClickListener {
-                    if (volumeController.visibility == View.VISIBLE)
-                        volumeController.visibility = View.GONE
+                    if (volumeSeekBar.visibility == View.VISIBLE)
+                        volumeSeekBar.visibility = View.GONE
                     else
-                        volumeController.visibility = View.VISIBLE
+                        volumeSeekBar.visibility = View.VISIBLE
                 }
                 val audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
-                volumeController.max = audioManager
+                volumeSeekBar.max = audioManager
                     .getStreamMaxVolume(AudioManager.STREAM_MUSIC)
-//                volumeController.defaultValue = audioManager
-//                    .getStreamVolume(AudioManager.STREAM_MUSIC)
-
-                volumeController.setOnBoxedPointsChangeListener(object :
-                    BoxedVertical.OnValuesChangeListener {
-                    override fun onStartTrackingTouch(boxedPoints: BoxedVertical?) {
-
-                    }
-
-                    override fun onPointsChanged(boxedPoints: BoxedVertical?, points: Int) {
+                volumeSeekBar.progress = audioManager
+                    .getStreamVolume(AudioManager.STREAM_MUSIC)
+                volumeSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+                    override fun onProgressChanged(seekbar: SeekBar?, progress: Int, p2: Boolean) {
                         audioManager.setStreamVolume(
                             AudioManager.STREAM_MUSIC,
-                            points, 0
+                            progress, 0
                         )
-                        Log.d("BHANU", "VOLUME --> $points")
+                        if (progress == 0) {
+                            volume.setBackgroundResource(R.drawable.ic_baseline_volume_off_24)
+                        } else {
+                            volume.setBackgroundResource(R.drawable.ic_baseline_volume_up_white)
+                        }
                     }
 
-                    override fun onStopTrackingTouch(boxedPoints: BoxedVertical?) {
+                    override fun onStartTrackingTouch(seekbar: SeekBar?) {
+                    }
 
+                    override fun onStopTrackingTouch(seekbar: SeekBar?) {
                     }
 
                 })
+
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -225,7 +224,7 @@ class MainActivity : AppCompatActivity(), FeaturedShowsListImpl, CurrentShowClic
                         AppConstant.BundleExtras.FEATURED_SHOW,
                         gson.toJson(show)
                     )
-                    this.putString(AppConstant.BundleExtras.FROM_HOME,"yes")
+                    this.putString(AppConstant.BundleExtras.FROM_HOME, "yes")
                 })
 
         }
@@ -333,6 +332,8 @@ class MainActivity : AppCompatActivity(), FeaturedShowsListImpl, CurrentShowClic
         if (this.show.seasonsEpisodes[0].live) {
             smallSeekBar.progress = 100F
             largeSeekBar.progress = 100F
+            smallSeekBar.isEnabled = false
+            largeSeekBar.isEnabled = false
         } else {
             val duration: Long = mediaPlayer.duration
             val amountToUpdate = duration / 100
@@ -450,17 +451,6 @@ class MainActivity : AppCompatActivity(), FeaturedShowsListImpl, CurrentShowClic
         showName.text = featuredShows.title
         showDisc.text = featuredShows.description
         initPodcastViewer(featuredShows)
-        /*  if (mediaPlayer.playbackState == Player.STATE_ENDED) {
-              mediaPlayer.seekTo(0)
-
-              mediaPlayer.playWhenReady = true
-          } else
-              if (mediaPlayer.playWhenReady) {
-                  mediaPlayer.playWhenReady = false
-              } else if (!mediaPlayer.playWhenReady) {
-                  mediaPlayer.playWhenReady = true
-              }*/
-
     }
 
     override fun finish() {
@@ -491,7 +481,8 @@ class MainActivity : AppCompatActivity(), FeaturedShowsListImpl, CurrentShowClic
             reminderIcon.background = resources.getDrawable(R.drawable.reminder, null)
             downloadIcon.background = resources.getDrawable(R.drawable.download, null)
         } else if (messageEvent.type == MessageEvent.PLAY_PODCAST_SOURCE) {
-            exoPlayerInit(messageEvent.data as String)
+            val show = messageEvent.data as FeaturedShows
+            initPodcastViewer(show)
         }
     }
 

@@ -28,4 +28,13 @@ class ScheduleRepo(private val apiService: ScheduleApi, gson: Gson) : BaseNetwor
             apiService.getEvents(month) as Single<BaseResponse<Any>>
         )
     }
+
+    fun getLiveSeason(responseObserver: MutableLiveData<NetworkResponse>, seasonId: String) {
+        startNetworkService(
+            responseObserver,
+            null,
+            null,
+            apiService.getSeasonById(seasonId) as Single<BaseResponse<Any>>
+        )
+    }
 }

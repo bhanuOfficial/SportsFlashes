@@ -117,23 +117,6 @@ class ScheduleFragment : Fragment() {
             }
     }
 
-
-    companion object {
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            ScheduleFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
-
-        @JvmStatic
-        fun newInstance(): ScheduleFragment {
-            return ScheduleFragment()
-        }
-    }
-
     private fun getWeekList() {
         weekdayList.clear()
         var cal: Calendar = Calendar.getInstance()

@@ -17,8 +17,19 @@
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
         <action
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"
             android:id="@+id/action_scheduleFragment_to_eventsFragment"
             app:destination="@id/eventsFragment" />
+        <action
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"
+            android:id="@+id/action_scheduleFragment_to_liveShowFragment"
+            app:destination="@id/liveShowFragment" />
     </fragment>
     <fragment
         android:id="@+id/homeFragment"
@@ -85,4 +96,9 @@
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right"/>
     </fragment>
+    <fragment
+        android:id="@+id/liveShowFragment"
+        tools:layout="@layout/live_show_fragment"
+        android:name="com.sports.sportsflashes.view.fragments.LiveShowFragment"
+        android:label="LiveShowFragment" />
 </navigation>

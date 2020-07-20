@@ -15,5 +15,20 @@ object AppConstant {
         const val SCHEDULE_POSITION= "schedule_position"
         const val WEEKDAY_LIST= "weekday_list"
         const val FROM_HOME = "from_home"
+        const val LIVE_SHOW_ID = "live_Show_id"
+        const val LIVE_SHOW_UPCOMING_LIST = "live_Show_upcoming"
+    }
+
+    object DateTime {
+        const val BDAY_FORMAT = "EEE, dd MMM yyyy"
+        const val BDAY_SERVER_FORMAT = "yyyy-MM-dd"
+        const val DONATION_SERVER_FORMAT = "yyyy-MM-dd HH:mm:ss"
+        const val ADD_DONATION_SERVER_FORMAT = "MM/dd/yyyy"
+        const val STD_DATE_FORMAT = "dd MMM, yyyy @ hh:mm aa"
+        const val TIME_FORMAT = "hh:mm aa"
+        const val DATE_FORMAT = "MMM. dd"
+        const val MINUTE_SECOND_FORMAT = "mm:ss"
+        const val DATE_TIME_FORMAT_ISO = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
+        const val DATE_TIME_FORMAT_LOCAL = "yyyy-MM-dd'T'HH:mm:ss"
     }
 }

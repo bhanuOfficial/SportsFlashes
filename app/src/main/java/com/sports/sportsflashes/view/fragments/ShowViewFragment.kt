@@ -23,6 +23,7 @@ import com.sports.sportsflashes.R
 import com.sports.sportsflashes.common.application.SFApplication
 import com.sports.sportsflashes.common.utils.AppConstant
 import com.sports.sportsflashes.model.FeaturedShows
+import com.sports.sportsflashes.model.LiveSeasonModel
 import com.sports.sportsflashes.model.MessageEvent
 import com.sports.sportsflashes.model.MonthEventModel
 import com.sports.sportsflashes.view.adapters.MoreEpisodeAdapter
@@ -46,6 +47,7 @@ class ShowViewFragment : Fragment() {
     private lateinit var featuredShows: FeaturedShows
     private lateinit var eventModel: MonthEventModel
     private lateinit var YPlayer: YouTubePlayer
+    private lateinit var liveSeason: LiveSeasonModel.Live
 
     @Inject
     lateinit var gson: Gson
@@ -53,9 +55,13 @@ class ShowViewFragment : Fragment() {
     @Inject
     lateinit var mediaPlayer: ExoPlayer
 
+    init {
+        SFApplication.getAppComponent().inject(this)
+//        EventBus.getDefault().register(this)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        SFApplication.getAppComponent().inject(this)
         arguments?.let {
             if (it.getString(AppConstant.BundleExtras.FEATURED_SHOW) != null)
                 featuredShows =
@@ -98,7 +104,6 @@ class ShowViewFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initViewForShow()
-        moreEpisodesInit()
         if (arguments?.getString(AppConstant.BundleExtras.FROM_HOME) != null) {
             initYoutubePlayerView(featuredShows.seasonsEpisodes[0].link.split("v=")[1])
         }
@@ -111,7 +116,8 @@ class ShowViewFragment : Fragment() {
             it.reverseLayout = false
             it.orientation = RecyclerView.VERTICAL
         }
-        moreEpisodesRecycler.adapter = MoreEpisodeAdapter(featuredShows.seasonsEpisodes)
+        moreEpisodesRecycler.adapter =
+            MoreEpisodeAdapter(featuredShows.seasonsEpisodes.subList(0, 1))
     }
 
     private fun initYoutubePlayerView(videoCode: String) {
@@ -180,6 +186,7 @@ class ShowViewFragment : Fragment() {
 
         if (featuredShows.seasonsEpisodes.size > 1 && !this::eventModel.isInitialized) {
             moreEpisodesContainer.visibility = View.VISIBLE
+            moreEpisodesInit()
         } else {
             moreEpisodesContainer.visibility = View.INVISIBLE
         }
@@ -232,23 +239,21 @@ class ShowViewFragment : Fragment() {
                     mediaPlayer.playWhenReady = false
                 val videoCode = featuredShows.seasonsEpisodes[0].link.split("v=")[1]
                 initYoutubePlayerView(videoCode)
-                /*activity?.let {
-                    it.startActivity(
-                        Intent(context, YoutubePlayerActivity::class.java)
-                            .putExtra(
-                                AppConstant.BundleExtras.YOUTUBE_VIDEO_CODE,
-                                videoCode
-                            )
-                    )
-                }*/
             } else
                 EventBus.getDefault().post(
                     MessageEvent(
                         MessageEvent.PLAY_PODCAST_SOURCE,
-                        featuredShows.playing.link
+                        featuredShows
                     )
                 )
         }
     }
 
+    /*@Subscribe(threadMode = ThreadMode.MAIN)
+    fun onEvent(messageEvent: MessageEvent) {
+        if (messageEvent.type == MessageEvent.LIVE_SHOW) {
+            liveSeason = messageEvent.data as LiveSeasonModel.Live
+
+        }
+    }*/
 }

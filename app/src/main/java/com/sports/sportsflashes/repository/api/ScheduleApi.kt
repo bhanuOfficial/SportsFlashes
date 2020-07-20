@@ -1,6 +1,7 @@
 package com.sports.sportsflashes.repository.api
 
 import com.sports.sportsflashes.model.BaseResponse
+import com.sports.sportsflashes.model.LiveSeasonModel
 import com.sports.sportsflashes.model.MonthEventModel
 import com.sports.sportsflashes.model.ScheduleModel
 import io.reactivex.Single
@@ -19,5 +20,5 @@ interface ScheduleApi {
     fun getEvents(@Query("month") month: Int): Single<BaseResponse<List<MonthEventModel>>>
 
     @GET("/api/seasons/{id}")
-    fun getSeasonById(@Path("id") seasonId: String): Single<BaseResponse<List<MonthEventModel>>>
+    fun getSeasonById(@Path("id") seasonId: String): Single<BaseResponse<LiveSeasonModel>>
 }

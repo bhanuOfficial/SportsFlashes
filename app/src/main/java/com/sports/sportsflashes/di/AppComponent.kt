@@ -4,12 +4,10 @@ import com.sports.sportsflashes.repository.factory.ApiFactory
 import com.sports.sportsflashes.repository.factory.RepositoryFactory
 import com.sports.sportsflashes.view.activites.MainActivity
 import com.sports.sportsflashes.view.adapters.EventsAdapter
+import com.sports.sportsflashes.view.adapters.LiveShowAdapter
 import com.sports.sportsflashes.view.adapters.ScheduleShowsAdapter
 import com.sports.sportsflashes.view.adapters.ScheduleViewPagerAdapter
-import com.sports.sportsflashes.view.fragments.HomeFragment
-import com.sports.sportsflashes.view.fragments.ShowViewFragment
-import com.sports.sportsflashes.view.fragments.ScheduleFragment
-import com.sports.sportsflashes.view.fragments.ScheduleRecyclerFragment
+import com.sports.sportsflashes.view.fragments.*
 import com.sports.sportsflashes.viewmodel.MainActivityViewModel
 import dagger.Component
 import javax.inject.Singleton
@@ -28,4 +26,6 @@ interface AppComponent {
     fun inject(viewPagerAdapter: ScheduleViewPagerAdapter)
     fun inject(scheduleRecyclerFragment: ScheduleRecyclerFragment)
     fun inject(scheduleShowsAdapter: ScheduleShowsAdapter)
+    fun inject(liveShowsAdapter: LiveShowAdapter)
+    fun inject(liveShowPagerFragment: LiveShowPagerFragment)
 }

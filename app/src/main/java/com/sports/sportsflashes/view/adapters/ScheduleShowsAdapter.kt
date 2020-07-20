@@ -16,6 +16,7 @@ import com.google.gson.Gson
 import com.sports.sportsflashes.R
 import com.sports.sportsflashes.common.application.SFApplication
 import com.sports.sportsflashes.common.utils.AppConstant
+import com.sports.sportsflashes.common.utils.DateTimeUtils
 import com.sports.sportsflashes.model.ScheduleModel
 import javax.inject.Inject
 
@@ -48,6 +49,8 @@ class ScheduleShowsAdapter(
         val showTime: TextView = itemView.findViewById(R.id.showTime)
         val showTittle: TextView = itemView.findViewById(R.id.showTittle)
         val showDescription: TextView = itemView.findViewById(R.id.showDescription)
+        val scheduleItemContainer: RelativeLayout =
+            itemView.findViewById(R.id.scheduleItemContainer)
     }
 
     class NoView(itemView: View?) : RecyclerView.ViewHolder(itemView!!) {
@@ -56,9 +59,9 @@ class ScheduleShowsAdapter(
 
     override fun getItemViewType(position: Int): Int {
         return if (scheduleShowsList[position].live) {
-            ShowView.SHOW.ordinal
-        } else {
             ShowView.LIVE_SHOW.ordinal
+        } else {
+            ShowView.SHOW.ordinal
         }
     }
 
@@ -90,7 +93,10 @@ class ScheduleShowsAdapter(
         if (holder is ShowItemHolder) {
             holder.showTittle.text = scheduleShowsList[position].title
             holder.showDescription.text = scheduleShowsList[position].description
-            holder.showTime.text = scheduleShowsList[position].releaseTime
+            holder.showTime.text = DateTimeUtils.convertServerISOTime(
+                AppConstant.DateTime.STD_DATE_FORMAT,
+                scheduleShowsList[position].releaseTime
+            )
             Glide.with(holder.itemView.context).load(scheduleShowsList[position].thumbnail)
                 .placeholder(
                     holder.itemView.context.resources.getDrawable(
@@ -112,7 +118,10 @@ class ScheduleShowsAdapter(
         } else if (holder is LiveShowItemHolder) {
             holder.showTittle.text = scheduleShowsList[position].title
             holder.showDescription.text = scheduleShowsList[position].description
-            holder.showTime.text = scheduleShowsList[position].releaseTime
+            holder.showTime.text = DateTimeUtils.convertServerISOTime(
+                AppConstant.DateTime.TIME_FORMAT,
+                scheduleShowsList[position].releaseTime
+            )
             Glide.with(holder.itemView.context).load(scheduleShowsList[position].thumbnail)
                 .placeholder(
                     holder.itemView.context.resources.getDrawable(
@@ -121,6 +130,16 @@ class ScheduleShowsAdapter(
                     )
                 )
                 .into(holder.showImage)
+
+            holder.scheduleItemContainer.setOnClickListener {
+                Navigation.findNavController(context as Activity, R.id.app_host_fragment)
+                    .navigate(R.id.action_scheduleFragment_to_liveShowFragment, Bundle().apply {
+                        this.putString(
+                            AppConstant.BundleExtras.LIVE_SHOW_ID,
+                            scheduleShowsList[position]._id
+                        )
+                    })
+            }
         }
     }
 

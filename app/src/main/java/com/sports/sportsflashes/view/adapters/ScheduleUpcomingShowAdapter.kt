@@ -11,16 +11,14 @@ import com.bumptech.glide.Glide
 import com.sports.sportsflashes.R
 import com.sports.sportsflashes.common.utils.AppConstant
 import com.sports.sportsflashes.common.utils.DateTimeUtils
-import com.sports.sportsflashes.model.SeasonsEpisode
+import com.sports.sportsflashes.model.LiveSeasonModel
 
 /**
- *Created by Bhanu on 19-07-2020
+ *Created by Bhanu on 20-07-2020
  */
-class MoreEpisodeAdapter(private val moreEpisodesList: List<SeasonsEpisode>) :
-    RecyclerView.Adapter<MoreEpisodeAdapter.MoreEpisodesHolder>() {
-
-
-    class MoreEpisodesHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+class ScheduleUpcomingShowAdapter(private val list: ArrayList<LiveSeasonModel.GenericUpcomingShows>) :
+    RecyclerView.Adapter<ScheduleUpcomingShowAdapter.ItemHolder>() {
+    class ItemHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val showImage: ImageView = itemView.findViewById(R.id.showImage)
         val showTime: TextView = itemView.findViewById(R.id.showTime)
         val showTittle: TextView = itemView.findViewById(R.id.showTittle)
@@ -29,24 +27,25 @@ class MoreEpisodeAdapter(private val moreEpisodesList: List<SeasonsEpisode>) :
             itemView.findViewById(R.id.scheduleItemContainer)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MoreEpisodesHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemHolder {
         val rootView =
             LayoutInflater.from(parent.context).inflate(R.layout.schedule_show_item, parent, false)
-        return MoreEpisodesHolder(rootView)
+        return ItemHolder(rootView)
     }
+
 
     override fun getItemCount(): Int {
-        return moreEpisodesList.size
+        return list.size
     }
 
-    override fun onBindViewHolder(holder: MoreEpisodesHolder, position: Int) {
-        holder.showTittle.text = moreEpisodesList[position].title
-        holder.showDescription.text = moreEpisodesList[position].description
+    override fun onBindViewHolder(holder: ItemHolder, position: Int) {
+        holder.showTittle.text = list[position].title
+        holder.showDescription.text = list[position].description
         holder.showTime.text = DateTimeUtils.convertServerISOTime(
             AppConstant.DateTime.STD_DATE_FORMAT,
-            moreEpisodesList[position].releaseTime
+            list[position].releaseTime
         )
-        Glide.with(holder.itemView.context).load(moreEpisodesList[position].thumbnail)
+        Glide.with(holder.itemView.context).load(list[position].thumbnail)
             .placeholder(
                 holder.itemView.context.resources.getDrawable(
                     R.drawable.default_thumbnail,
@@ -54,14 +53,5 @@ class MoreEpisodeAdapter(private val moreEpisodesList: List<SeasonsEpisode>) :
                 )
             )
             .into(holder.showImage)
-    }
-
-    private fun setEpisodeTime() {
-        /*    val cal: Calendar = Calendar.getInstance()
-            val tz: TimeZone = cal.timeZone
-            val sdf = SimpleDateFormat("dd/MM/yyyy HH:mm:ss")
-            sdf.timeZone = tz
-            val timestamp: Long = cursor.getLong(columnIndex)
-            val localTime: String = sdf.format(Date(timestamp * 1000))*/
     }
 }

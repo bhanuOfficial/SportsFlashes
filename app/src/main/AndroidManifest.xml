@@ -13,7 +13,6 @@
         android:supportsRtl="true"
         android:theme="@style/SF_Theme"
         android:usesCleartextTraffic="true">
-        <!--        <activity android:name=".view.activites.YoutubePlayerActivity"></activity>-->
         <activity
             android:name=".view.activites.MainActivity"
             android:screenOrientation="fullSensor"

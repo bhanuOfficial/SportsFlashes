@@ -122,7 +122,8 @@
                 android:textColor="@color/medium_light_gray"
                 android:textSize="@dimen/medium_size" />
         </LinearLayout>
-aa
+        aa
+
         <LinearLayout
             android:id="@+id/drag_podcast_view"
             android:layout_width="wrap_content"
@@ -261,23 +262,6 @@ aa
         </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>
 
-    <abak.tr.com.boxedverticalseekbar.BoxedVertical
-        android:id="@+id/volumeController"
-        android:layout_width="20dp"
-        android:visibility="gone"
-        android:layout_height="150dp"
-        android:layout_above="@+id/volumeContainer"
-        android:layout_gravity="center"
-        android:layout_marginStart="35dp"
-        app:backgroundColor="@color/color_background"
-        app:imageEnabled="false"
-        app:libCornerRadius="10"
-        app:progressColor="@color/color_progress"
-        app:textBottomPadding="20"
-        app:textColor="@color/red"
-        app:textEnabled="true"
-        app:textSize="12sp"
-        app:touchDisabled="true" />
 
     <RelativeLayout
         android:id="@+id/volumeContainer"
@@ -291,16 +275,28 @@ aa
             android:id="@+id/volume"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_marginLeft="@dimen/large_margin"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="@dimen/large_margin"
             android:background="@drawable/ic_baseline_volume_up_white"
             android:padding="@dimen/medium_padding" />
 
+        <androidx.appcompat.widget.AppCompatSeekBar
+            android:id="@+id/volumeSeekBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toStartOf="@+id/sharePodcastAction"
+            android:layout_toEndOf="@+id/volume"
+            android:thumb="@drawable/seekbar_thumb"
+            android:progressDrawable="@drawable/seekbar_progress"
+            android:visibility="visible" />
+
         <ImageView
+            android:id="@+id/sharePodcastAction"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="@dimen/large_margin"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="@dimen/large_margin"
             android:background="@drawable/ic_baseline_share_white"
             android:padding="@dimen/medium_padding" />
     </RelativeLayout>

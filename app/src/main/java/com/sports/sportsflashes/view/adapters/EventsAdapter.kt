@@ -17,6 +17,7 @@ import com.google.gson.Gson
 import com.sports.sportsflashes.R
 import com.sports.sportsflashes.common.application.SFApplication
 import com.sports.sportsflashes.common.utils.AppConstant
+import com.sports.sportsflashes.common.utils.DateTimeUtils
 import com.sports.sportsflashes.model.MonthEventModel
 import com.sports.sportsflashes.view.fragments.EventsFragment
 import javax.inject.Inject
@@ -64,7 +65,10 @@ class EventsAdapter(
     override fun onBindViewHolder(holder: EventItemHolder, position: Int) {
         holder.checkedItem.isChecked = listOfSelectedIndex.contains(position)
         holder.showTittle.text = eventList[position].title
-        holder.showTime.text = eventList[position].releaseTime
+        holder.showTime.text = DateTimeUtils.convertServerISOTime(
+            AppConstant.DateTime.STD_DATE_FORMAT,
+            eventList[position].releaseTime
+        )
         Glide.with(holder.itemView.context).load(eventList[position].thumbnail)
             .placeholder(
                 holder.itemView.context.resources.getDrawable(
