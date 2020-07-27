@@ -17,6 +17,7 @@ object AppConstant {
         const val FROM_HOME = "from_home"
         const val LIVE_SHOW_ID = "live_Show_id"
         const val LIVE_SHOW_UPCOMING_LIST = "live_Show_upcoming"
+        const val CATEGORY_ID = "category_id"
     }
 
     object DateTime {

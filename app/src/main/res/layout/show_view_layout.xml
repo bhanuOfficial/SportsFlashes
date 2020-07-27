@@ -16,17 +16,15 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="invisible">
+            android:layout_height="wrap_content">
 
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/playerContainer"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:visibility="visible"
                 app:layout_constraintBottom_toTopOf="parent"
-                app:layout_constraintDimensionRatio="h,1:.8"
+                app:layout_constraintDimensionRatio="h,4:3"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -34,9 +32,8 @@
                 <FrameLayout
                     android:id="@+id/youtube_playerFragment"
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
+                    android:layout_height="match_parent"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintDimensionRatio="16:9"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -85,6 +82,7 @@
                             android:paddingLeft="@dimen/x_medium_padding">
 
                             <TextView
+                                android:fontFamily="@font/helvetica_now_display_bold"
                                 android:id="@+id/showTittle"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -93,6 +91,7 @@
                                 android:textSize="@dimen/large_size" />
 
                             <TextView
+                                android:fontFamily="@font/helvetica_now_display_regular"
                                 android:id="@+id/showDescription"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -112,12 +111,16 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:paddingTop="@dimen/small_padding"
+                            android:fontFamily="@font/helvetica_now_display_medium"
+                            android:id="@+id/creator"
                             android:paddingBottom="@dimen/xx_small_padding"
                             android:textColor="@color/white"
                             android:textSize="@dimen/medium_size" />
 
                         <TextView
                             android:layout_width="wrap_content"
+                            android:id="@+id/duration"
+                            android:fontFamily="@font/helvetica_now_display_medium"
                             android:layout_height="wrap_content"
                             android:textColor="@color/white"
                             android:textSize="@dimen/small_size" />
@@ -148,6 +151,7 @@
                             android:id="@+id/showDescriptionDetail"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:fontFamily="@font/helvetica_now_display_regular"
                             android:ellipsize="end"
                             android:maxLines="2"
                             android:textColor="@color/medium_light_gray"
@@ -158,6 +162,7 @@
                             android:id="@+id/readMore"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:fontFamily="@font/helvetica_now_display_regular"
                             android:ellipsize="end"
                             android:maxLines="2"
                             android:text="Read More"
@@ -167,6 +172,7 @@
 
 
                         <TextView
+                            android:fontFamily="@font/helvetica_now_display_medium"
                             android:id="@+id/reminderView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -188,6 +194,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentBottom="true"
                     android:layout_marginTop="@dimen/xx_large_margin"
+                    android:fontFamily="@font/helvetica_now_display_medium"
                     android:layout_marginBottom="@dimen/medium_margin"
                     android:drawableLeft="@drawable/ic_baseline_share_24"
                     android:drawablePadding="@dimen/small_padding"
@@ -197,7 +204,7 @@
                     android:text="@string/share"
                     android:textColor="@color/white"
                     android:textSize="@dimen/medium_size"
-                    android:textStyle="bold" />
+                    />
 
                 <RelativeLayout
                     android:id="@+id/moreEpisodesContainer"
@@ -214,6 +221,7 @@
 
                     <TextView
                         android:id="@+id/moreTv"
+                        android:fontFamily="@font/helvetica_now_display_bold"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
@@ -227,6 +235,7 @@
                         android:layout_alignParentEnd="true"
                         android:layout_marginTop="@dimen/medium_margin"
                         android:text="@string/see_all"
+                        android:visibility="gone"
                         android:textColor="@color/white" />
 
                 </RelativeLayout>

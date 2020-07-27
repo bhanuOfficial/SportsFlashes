@@ -14,10 +14,13 @@
         android:theme="@style/SF_Theme"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".view.activites.SettingsActivity"
+            android:label="@string/title_activity_settings"></activity>
+        <activity
             android:name=".view.activites.MainActivity"
+            android:configChanges="orientation|screenSize"
             android:screenOrientation="fullSensor"
-            android:windowSoftInputMode="adjustPan|adjustResize"
-            android:configChanges="orientation|screenSize">
+            android:windowSoftInputMode="adjustPan|adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

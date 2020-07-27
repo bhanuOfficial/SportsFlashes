@@ -3,10 +3,7 @@ package com.sports.sportsflashes.di
 import com.sports.sportsflashes.repository.factory.ApiFactory
 import com.sports.sportsflashes.repository.factory.RepositoryFactory
 import com.sports.sportsflashes.view.activites.MainActivity
-import com.sports.sportsflashes.view.adapters.EventsAdapter
-import com.sports.sportsflashes.view.adapters.LiveShowAdapter
-import com.sports.sportsflashes.view.adapters.ScheduleShowsAdapter
-import com.sports.sportsflashes.view.adapters.ScheduleViewPagerAdapter
+import com.sports.sportsflashes.view.adapters.*
 import com.sports.sportsflashes.view.fragments.*
 import com.sports.sportsflashes.viewmodel.MainActivityViewModel
 import dagger.Component
@@ -28,4 +25,6 @@ interface AppComponent {
     fun inject(scheduleShowsAdapter: ScheduleShowsAdapter)
     fun inject(liveShowsAdapter: LiveShowAdapter)
     fun inject(liveShowPagerFragment: LiveShowPagerFragment)
+    fun inject(categoryShowAdapter: CategoryShowAdapter)
+    fun inject(reminderFragment: ReminderFragment)
 }

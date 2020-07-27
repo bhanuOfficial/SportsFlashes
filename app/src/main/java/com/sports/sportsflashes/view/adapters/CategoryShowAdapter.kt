@@ -1,32 +1,37 @@
 package com.sports.sportsflashes.view.adapters
 
+import android.app.Activity
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
-import androidx.fragment.app.Fragment
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.google.gson.Gson
 import com.sports.sportsflashes.R
+import com.sports.sportsflashes.common.application.SFApplication
 import com.sports.sportsflashes.common.utils.AppConstant
 import com.sports.sportsflashes.common.utils.DateTimeUtils
 import com.sports.sportsflashes.model.FeaturedShows
-import com.sports.sportsflashes.model.SeasonsEpisode
-import com.sports.sportsflashes.view.fragments.ShowViewFragment
+import javax.inject.Inject
 
 /**
- *Created by Bhanu on 19-07-2020
+ *Created by Bhanu on 20-07-2020
  */
-class MoreEpisodeAdapter(
-    private val moreEpisodesList: List<SeasonsEpisode>,
-    val showViewFragment: Fragment
-) :
-    RecyclerView.Adapter<MoreEpisodeAdapter.MoreEpisodesHolder>() {
+class CategoryShowAdapter(private val list: ArrayList<FeaturedShows>) :
+    RecyclerView.Adapter<CategoryShowAdapter.ItemHolder>() {
+    @Inject
+    lateinit var gson: Gson
 
+    init {
+        SFApplication.getAppComponent().inject(this)
+    }
 
-    class MoreEpisodesHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class ItemHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val showImage: ImageView = itemView.findViewById(R.id.showImage)
         val showTime: TextView = itemView.findViewById(R.id.showTime)
         val showTittle: TextView = itemView.findViewById(R.id.showTittle)
@@ -35,24 +40,25 @@ class MoreEpisodeAdapter(
             itemView.findViewById(R.id.scheduleItemContainer)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MoreEpisodesHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemHolder {
         val rootView =
             LayoutInflater.from(parent.context).inflate(R.layout.schedule_show_item, parent, false)
-        return MoreEpisodesHolder(rootView)
+        return ItemHolder(rootView)
     }
+
 
     override fun getItemCount(): Int {
-        return moreEpisodesList.size
+        return list.size
     }
 
-    override fun onBindViewHolder(holder: MoreEpisodesHolder, position: Int) {
-        holder.showTittle.text = moreEpisodesList[position].title
-        holder.showDescription.text = moreEpisodesList[position].description
+    override fun onBindViewHolder(holder: ItemHolder, position: Int) {
+        holder.showTittle.text = list[position].title
+        holder.showDescription.text = list[position].description
         holder.showTime.text = DateTimeUtils.convertServerISOTime(
             AppConstant.DateTime.STD_DATE_FORMAT,
-            moreEpisodesList[position].releaseTime
+            list[position].releaseTime
         )
-        Glide.with(holder.itemView.context).load(moreEpisodesList[position].thumbnail)
+        Glide.with(holder.itemView.context).load(list[position].thumbnail)
             .placeholder(
                 holder.itemView.context.resources.getDrawable(
                     R.drawable.default_thumbnail,
@@ -60,12 +66,15 @@ class MoreEpisodeAdapter(
                 )
             )
             .into(holder.showImage)
-        holder.showImage.setOnClickListener {
-            (showViewFragment as ShowViewFragment).onSeasonClick(position)
-        }
-    }
 
-    interface OnSeasonItemClickedListener {
-        fun onSeasonClick(position: Int)
+        holder.scheduleItemContainer.setOnClickListener {
+            Navigation.findNavController(it.context as Activity, R.id.app_host_fragment)
+                .navigate(R.id.playableShowFragment, Bundle().apply {
+                    this.putString(
+                        AppConstant.BundleExtras.FEATURED_SHOW,
+                        gson.toJson(list[position])
+                    )
+                })
+        }
     }
 }

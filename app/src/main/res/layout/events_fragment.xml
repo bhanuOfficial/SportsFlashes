@@ -29,10 +29,12 @@
                 app:tabMode="auto"
                 app:tabTextColor="@color/white" />
 
+
             <TextView
                 android:id="@+id/selectView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/helvetica_now_display_medium"
                 android:layout_margin="@dimen/medium_margin"
                 android:gravity="right"
                 android:padding="@dimen/xx_small_padding"
@@ -48,6 +50,7 @@
                 android:layout_marginTop="@dimen/x_small_margin" />
 
             <TextView
+                android:fontFamily="@font/helvetica_now_display_bold"
                 android:id="@+id/noData"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

@@ -20,11 +20,10 @@
             android:paddingTop="@dimen/small_padding"
             android:paddingRight="@dimen/x_medium_padding"
             android:paddingBottom="@dimen/small_padding"
-            android:text="sadasdads"
             android:textAllCaps="true"
             android:textColor="@color/black"
             android:textSize="@dimen/medium_size"
-            android:textStyle="bold" />
+            android:fontFamily="@font/helvetica_now_display_bold" />
     </androidx.cardview.widget.CardView>
 
 </LinearLayout>

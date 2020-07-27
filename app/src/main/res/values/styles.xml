@@ -19,6 +19,7 @@
         <item name="android:windowAnimationStyle">@android:style/Animation</item>
     </style>
 
+
    <!-- <style name="Base.Widget.Design.TabLayout" parent="android:Widget">
         <item name="tabBackground">@drawable/tab_selector</item>
         <item name="tabIndicatorColor">@color/white</item>

@@ -2,6 +2,7 @@ package com.sports.sportsflashes.view.fragments
 
 import android.content.Context
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -44,6 +45,7 @@ class HomeFragment : Fragment(),
     private lateinit var viewModel: HomeFragmentViewModel
     private lateinit var attachedActivity: Context
     private var created = false
+    private var refreshed = false
 
     @Inject
     lateinit var mediaPlayer: ExoPlayer
@@ -69,8 +71,18 @@ class HomeFragment : Fragment(),
         attachedActivity = this.requireContext()
         initDashboard()
         setFeaturedShows()
+        initRefresh()
     }
 
+
+    private fun initRefresh() {
+        swipeRefresh.isRefreshing = true
+        swipeRefresh.setOnRefreshListener {
+//            refreshed = true
+            swipeRefresh.isRefreshing = true
+            setFeaturedShows()
+        }
+    }
 
     private fun initDashboard() {
         circularRecycler.setHasFixedSize(true)
@@ -132,8 +144,11 @@ class HomeFragment : Fragment(),
                     super.onScrollStateChanged(recyclerView, newState)
                 }
             }
-        imageCategory.addOnScrollListener(scrollListener)
-        circularRecycler.addOnScrollListener(scrollListener)
+        Handler().postDelayed({
+            imageCategory.addOnScrollListener(scrollListener)
+            circularRecycler.addOnScrollListener(scrollListener)
+        }, 1000)
+
 
         setAlphaForFeaturedChanged()
 
@@ -157,7 +172,11 @@ class HomeFragment : Fragment(),
         showTittle.text = featuredShow.title
         creatorName.text = featuredShow.description
         showTime.text = formatHoursAndMinutes(featuredShow.duration)
-        if (featuredShow.seasonsEpisodes[0].live && featuredShow.type.equals("podcast", true)) {
+        if (featuredShow.seasonsEpisodes.isNotEmpty() && featuredShow.seasonsEpisodes[0].live && featuredShow.type.equals(
+                "podcast",
+                true
+            )
+        ) {
             showLiveStatus.text = "Listen Live"
         } else {
             showLiveStatus.text = "Watch Live"
@@ -184,10 +203,10 @@ class HomeFragment : Fragment(),
                 it,
                 Observer<NetworkResponse> { t ->
                     if (t!!.status == STATUS.SUCCESS) {
+                        swipeRefresh.isRefreshing = false
                         created = true
                         featuredShowslist = t.data as List<FeaturedShows>
                         (attachedActivity as MainActivity).setShowsList(featuredShowslist)
-
                         imageCategory?.let {
                             it.adapter =
                                 ImageShowAdapter(featuredShowslist, {
@@ -200,23 +219,24 @@ class HomeFragment : Fragment(),
                                     CircularShowAdapter(featuredShowslist, {
                                         smallItemWidth = it
                                     }, requireActivity(), false)
-                                imageCategory.postDelayed({
-                                    try {
-                                        imageCategory.scrollToPosition(
-                                            circularRecycler.getChildAdapterPosition(
-                                                circularRecycler.findViewAtCenter()!!
+                                if (imageCategory != null)
+                                    imageCategory.postDelayed({
+                                        try {
+                                            imageCategory.scrollToPosition(
+                                                circularRecycler.getChildAdapterPosition(
+                                                    circularRecycler.findViewAtCenter()!!
+                                                )
                                             )
-                                        )
-                                        setFeaturedDetail(
-                                            featuredShowslist[circularRecycler.getChildAdapterPosition(
-                                                circularRecycler.findViewAtCenter()!!
-                                            )]
-                                        )
-                                    } catch (e: Exception) {
-                                        e.printStackTrace()
-                                    }
+                                            setFeaturedDetail(
+                                                featuredShowslist[circularRecycler.getChildAdapterPosition(
+                                                    circularRecycler.findViewAtCenter()!!
+                                                )]
+                                            )
+                                        } catch (e: Exception) {
+                                            e.printStackTrace()
+                                        }
 
-                                }, 50)
+                                    }, 50)
 
                             }, 1000)
                         }

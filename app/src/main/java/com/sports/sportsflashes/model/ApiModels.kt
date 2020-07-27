@@ -20,7 +20,9 @@ data class FeaturedShows(
     val thumbnail: String = "",
     val title: String = "",
     val type: String = "",
-    val updatedAt: String = ""
+    val updatedAt: String = "",
+    val radio: Boolean = false,
+    val link: String = ""
 )
 
 data class Category(

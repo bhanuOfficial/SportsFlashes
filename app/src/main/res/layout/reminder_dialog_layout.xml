@@ -14,12 +14,14 @@
         android:layout_height="match_parent"
         android:gravity="center"
         android:padding="@dimen/small_padding"
+        android:fontFamily="@font/helvetica_now_display_bold"
         android:textColor="@color/white"
         android:textSize="@dimen/medium_size"
         android:textStyle="bold" />
 
     <TextView
         android:id="@+id/message"
+        android:fontFamily="@font/helvetica_now_display_regular"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
@@ -30,6 +32,7 @@
 
     <Button
         android:visibility="gone"
+        android:fontFamily="@font/helvetica_now_display_medium"
         android:id="@+id/buttonOk"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -46,6 +49,7 @@
 
         <Button
             android:id="@+id/buttonYes"
+            android:fontFamily="@font/helvetica_now_display_medium"
             android:alpha="0.8"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
@@ -56,6 +60,7 @@
 
         <Button
             android:id="@+id/buttonNo"
+            android:fontFamily="@font/helvetica_now_display_medium"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
             android:layout_marginLeft="@dimen/medium_margin"

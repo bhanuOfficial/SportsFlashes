@@ -21,7 +21,10 @@ import com.google.android.youtube.player.YouTubePlayerSupportFragment.newInstanc
 import com.google.gson.Gson
 import com.sports.sportsflashes.R
 import com.sports.sportsflashes.common.application.SFApplication
+import com.sports.sportsflashes.common.utils.AlertDialogUtility
 import com.sports.sportsflashes.common.utils.AppConstant
+import com.sports.sportsflashes.common.utils.AppUtility
+import com.sports.sportsflashes.common.utils.DateTimeUtils
 import com.sports.sportsflashes.model.FeaturedShows
 import com.sports.sportsflashes.model.LiveSeasonModel
 import com.sports.sportsflashes.model.MessageEvent
@@ -42,8 +45,10 @@ import javax.inject.Inject
 /**
  *Created by Bhanu on 04-07-2020
  */
-class ShowViewFragment : Fragment() {
+class ShowViewFragment : Fragment(), MoreEpisodeAdapter.OnSeasonItemClickedListener {
 
+    private var isFromSeasonClick: Boolean = false
+    private var index: Int = 0
     private lateinit var featuredShows: FeaturedShows
     private lateinit var eventModel: MonthEventModel
     private lateinit var YPlayer: YouTubePlayer
@@ -105,7 +110,14 @@ class ShowViewFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initViewForShow()
         if (arguments?.getString(AppConstant.BundleExtras.FROM_HOME) != null) {
-            initYoutubePlayerView(featuredShows.seasonsEpisodes[0].link.split("v=")[1])
+            if (featuredShows.seasonsEpisodes.isNotEmpty() && featuredShows.seasonsEpisodes[0].link.contains(
+                    "youtube"
+                )
+            )
+                initYoutubePlayerView(featuredShows.seasonsEpisodes[0].link.split("v=")[1])
+            else {
+                activity?.let { AppUtility.showToast(it, "Source Error") }
+            }
         }
     }
 
@@ -117,7 +129,12 @@ class ShowViewFragment : Fragment() {
             it.orientation = RecyclerView.VERTICAL
         }
         moreEpisodesRecycler.adapter =
-            MoreEpisodeAdapter(featuredShows.seasonsEpisodes.subList(0, 1))
+            MoreEpisodeAdapter(
+                featuredShows.seasonsEpisodes.subList(
+                    1,
+                    featuredShows.seasonsEpisodes.size
+                ), this
+            )
     }
 
     private fun initYoutubePlayerView(videoCode: String) {
@@ -184,6 +201,10 @@ class ShowViewFragment : Fragment() {
             reminderView.visibility = View.GONE
         }
 
+        reminderView.setOnClickListener {
+            AlertDialogUtility.reminderAppDialog(R.layout.reminder_dialog_layout, requireActivity())
+        }
+
         if (featuredShows.seasonsEpisodes.size > 1 && !this::eventModel.isInitialized) {
             moreEpisodesContainer.visibility = View.VISIBLE
             moreEpisodesInit()
@@ -221,6 +242,17 @@ class ShowViewFragment : Fragment() {
         show_detail_layout.visibility = View.VISIBLE
         showDescriptionDetail.text = featuredShows.description
         showDescriptionDetail.tag = true
+        creator.text = featuredShows.creator
+        duration.text = DateTimeUtils.convertServerISOTime(
+            AppConstant.DateTime.STD_DATE_FORMAT,
+            featuredShows.releaseTime
+        )
+
+        if (showDescriptionDetail.lineCount > 3) {
+            readMore.visibility = View.VISIBLE
+        } else {
+            readMore.visibility = View.GONE
+        }
 
         readMore.setOnClickListener {
             if (showDescriptionDetail.tag as Boolean) {
@@ -234,26 +266,90 @@ class ShowViewFragment : Fragment() {
             }
         }
         playCurrentShow.setOnClickListener {
+            if (!isFromSeasonClick) {
+                index = 0
+            }
+            isFromSeasonClick = false
             if (featuredShows.type == "Video") {
                 if (mediaPlayer.playWhenReady)
                     mediaPlayer.playWhenReady = false
-                val videoCode = featuredShows.seasonsEpisodes[0].link.split("v=")[1]
+                if (featuredShows.seasonsEpisodes.isNotEmpty() && !featuredShows.seasonsEpisodes[index].link.contains(
+                        "youtube"
+                    )
+                ) {
+                    activity?.let { AppUtility.showToast(it, "Source Error") }
+                    return@setOnClickListener
+                }
+                val videoCode = featuredShows.seasonsEpisodes[index].link.split("v=")[1]
                 initYoutubePlayerView(videoCode)
-            } else
+            } else {
+                if (isFromSeasonClick) {
+                    EventBus.getDefault().post(
+                        MessageEvent(
+                            MessageEvent.PLAY_PODCAST_SOURCE_MORE,
+                            index
+                        )
+                    )
+                }
                 EventBus.getDefault().post(
                     MessageEvent(
                         MessageEvent.PLAY_PODCAST_SOURCE,
                         featuredShows
                     )
                 )
+            }
+        }
+
+        share.setOnClickListener {
+
+            if (featuredShows.radio) {
+                activity?.let { it1 ->
+                    AppUtility.shareAppContent(
+                        it1,
+                        "Listen to live commentary/discussion for ${featuredShows.title} on Sports Flashes ${"www.xyz.com"}"
+                    )
+                }
+            } else if (featuredShows.seasonsEpisodes.isNotEmpty() && featuredShows.type.equals(
+                    "podacast",
+                    true
+                )
+            ) {
+                activity?.let { it1 ->
+                    AppUtility.shareAppContent(
+                        it1,
+                        "Listen to podcast ${featuredShows.title} on Sports Flashes"
+                    )
+                }
+            } else if (featuredShows.seasonsEpisodes.isNotEmpty() && featuredShows.seasonsEpisodes[0].live) {
+                if (featuredShows.type.equals("podcast", true)) {
+                    activity?.let { it1 ->
+                        AppUtility.shareAppContent(
+                            it1,
+                            "Listen to podcast ${featuredShows.title} on Sports Flashes"
+                        )
+                    }
+                } else {
+                    activity?.let { it1 ->
+                        AppUtility.shareAppContent(
+                            it1,
+                            "Watch ${featuredShows.title} on Sports Flashes"
+                        )
+                    }
+                }
+            } else {
+                activity?.let { it1 ->
+                    AppUtility.shareAppContent(
+                        it1,
+                        "Watch ${featuredShows.title} on Sports Flashes"
+                    )
+                }
+            }
         }
     }
 
-    /*@Subscribe(threadMode = ThreadMode.MAIN)
-    fun onEvent(messageEvent: MessageEvent) {
-        if (messageEvent.type == MessageEvent.LIVE_SHOW) {
-            liveSeason = messageEvent.data as LiveSeasonModel.Live
-
-        }
-    }*/
+    override fun onSeasonClick(position: Int) {
+        isFromSeasonClick = true
+        index = position + 1
+        playCurrentShow.performClick()
+    }
 }

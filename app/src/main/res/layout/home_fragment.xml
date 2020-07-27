@@ -1,35 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
     android:id="@+id/nav_host_fragment_container"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <RelativeLayout
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/colorAccent">
+        android:id="@+id/swipeRefresh"
+        android:layout_height="match_parent">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/imageCategory"
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="visible" />
+            android:background="@color/colorAccent">
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="250dp"
-            android:layout_alignParentBottom="true"
-            android:background="@drawable/sliding_background" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/imageCategory"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="visible" />
 
-        <com.sports.sportsflashes.view.customviewimpl.CustomRecycler
-            android:id="@+id/circularRecycler"
-            android:layout_width="match_parent"
-            android:layout_height="190dp"
-            android:layout_alignParentBottom="true"
-            app:layoutManager="com.bekawestberg.loopinglayout.library.LoopingLayoutManager" />
-    </RelativeLayout>
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="250dp"
+                android:layout_alignParentBottom="true"
+                android:background="@drawable/sliding_background" />
 
-    <include layout="@layout/playable_item_layout"/>
+            <com.sports.sportsflashes.view.customviewimpl.CustomRecycler
+                android:id="@+id/circularRecycler"
+                android:layout_width="match_parent"
+                android:layout_height="190dp"
+                android:layout_alignParentBottom="true"
+                app:layoutManager="com.bekawestberg.loopinglayout.library.LoopingLayoutManager" />
+        </RelativeLayout>
 
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    <include layout="@layout/playable_item_layout" />
 </RelativeLayout>

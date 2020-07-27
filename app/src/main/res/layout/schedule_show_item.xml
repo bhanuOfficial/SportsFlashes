@@ -12,22 +12,35 @@
         android:layout_height="wrap_content"
         android:background="@color/medium_dark_gray">
 
-        <ImageView
-            android:id="@+id/showImage"
-            android:scaleType="fitXY"
-            android:layout_width="150dp"
-            android:layout_height="100dp"
-            android:layout_centerVertical="true" />
+        <RelativeLayout
+            android:id="@+id/imageContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/showImage"
+                android:scaleType="fitXY"
+                android:layout_width="150dp"
+                android:layout_height="100dp"
+                android:layout_centerVertical="true" />
+
+            <ImageView
+                android:background="@drawable/play_button"
+                android:layout_centerInParent="true"
+                android:layout_width="30dp"
+                android:layout_height="30dp"/>
+        </RelativeLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingLeft="@dimen/x_small_padding"
             android:layout_centerVertical="true"
-            android:layout_toRightOf="@+id/showImage"
+            android:layout_toRightOf="@+id/imageContainer"
             android:orientation="vertical">
 
             <TextView
+                android:fontFamily="@font/helvetica_now_display_regular"
                 android:id="@+id/showTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -36,6 +49,7 @@
                 android:textSize="@dimen/small_size" />
 
             <TextView
+                android:fontFamily="@font/helvetica_now_display_bold"
                 android:id="@+id/showTittle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -45,6 +59,7 @@
                 android:textStyle="bold" />
 
             <TextView
+                android:fontFamily="@font/helvetica_now_display_regular"
                 android:id="@+id/showDescription"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

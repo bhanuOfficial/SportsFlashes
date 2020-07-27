@@ -26,6 +26,7 @@
             app:tabBackground="@drawable/tab_selector"
             app:tabIndicatorColor="@color/white"
             app:tabMode="auto"
+            android:fontFamily="@font/helvetica_now_display_medium"
             app:tabTextColor="@color/white" />
 
         <androidx.viewpager.widget.ViewPager

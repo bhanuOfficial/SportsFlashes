@@ -2,14 +2,28 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
+    android:background="@color/black"
     android:layout_height="match_parent">
 
-    <ImageView
+    <com.sports.sportsflashes.view.customviewimpl.FadingImageView
         android:id="@+id/showImage"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:gravity="center_vertical|center"
-        android:scaleType="centerCrop"
+        android:scaleType="fitXY"
+        android:textColor="@android:color/white"
+        app:layout_constraintBottom_toTopOf="parent"
+        app:layout_constraintDimensionRatio="h,4:3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.sports.sportsflashes.view.customviewimpl.FadingImageView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center_vertical|center"
+        android:scaleType="fitXY"
+        android:background="@drawable/half_view_transparent_image"
         android:textColor="@android:color/white"
         app:layout_constraintBottom_toTopOf="parent"
         app:layout_constraintDimensionRatio="h,1:1"

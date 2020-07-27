@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "653512651468",
+    "firebase_url": "https://sportsflashes20.firebaseio.com",
+    "project_id": "sportsflashes20",
+    "storage_bucket": "sportsflashes20.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:653512651468:android:5a344bb9b868a35b1a4869",
+        "android_client_info": {
+          "package_name": "com.sports.sportsflashes"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "653512651468-tpjaa32flj9ftio7b8m5j681nn21mf7n.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sports.sportsflashes",
+            "certificate_hash": "a930232f988698abbb736debb8fb2ac8b8ae3f2d"
+          }
+        },
+        {
+          "client_id": "653512651468-3puie54h3n6rrp41lk3t80kredqfa0iq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBOFy9h9Qoix4NzBTKUYnj4WMCE1j8H_lY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "653512651468-3puie54h3n6rrp41lk3t80kredqfa0iq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

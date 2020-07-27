@@ -17,6 +17,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.tabs.TabLayout
 import com.sports.sportsflashes.R
 import com.sports.sportsflashes.common.helper.EventItemSelection
+import com.sports.sportsflashes.common.utils.AlertDialogUtility
+import com.sports.sportsflashes.common.utils.AppUtility
 import com.sports.sportsflashes.model.MonthEventModel
 import com.sports.sportsflashes.repository.api.STATUS
 import com.sports.sportsflashes.view.adapters.EventsAdapter
@@ -66,7 +68,7 @@ class EventsFragment : Fragment(), EventItemSelection {
 
     private fun initView() {
         submitReminder.setOnClickListener {
-            appDialog(R.layout.reminder_dialog_layout, requireActivity())
+            AlertDialogUtility.reminderAppDialog(R.layout.reminder_dialog_layout, requireActivity())
         }
     }
 
@@ -127,7 +129,8 @@ class EventsFragment : Fragment(), EventItemSelection {
             eventsFragmentViewModel.getEventsByMonth(month).observe(
                 it,
                 androidx.lifecycle.Observer {
-                    swipeRefresh.isRefreshing = false
+                    if (swipeRefresh != null)
+                        swipeRefresh.isRefreshing = false
                     if (it.status == STATUS.SUCCESS) {
                         val eventList = it.data as List<MonthEventModel>
                         if (eventList.isEmpty()) {
@@ -173,28 +176,6 @@ class EventsFragment : Fragment(), EventItemSelection {
                 eventRecycler.adapter!!.notifyDataSetChanged()
             }
         }
-    }
-
-
-    private fun appDialog(view: Int, context: Context): Dialog {
-        val dialog = Dialog(context)
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog.setCancelable(true)
-        dialog.setContentView(view)
-        val yesBtn = dialog.findViewById(R.id.buttonYes) as Button
-        val title = dialog.findViewById(R.id.title) as TextView
-        val message = dialog.findViewById(R.id.message) as TextView
-        val noBtn = dialog.findViewById(R.id.buttonNo) as Button
-        val okBtn = dialog.findViewById(R.id.buttonOk) as Button
-        title.text = "You have already set a reminder for this event"
-        message.text =
-            "Do you wish to cancel? "
-        yesBtn.setOnClickListener {
-            dialog.dismiss()
-        }
-        noBtn.setOnClickListener { dialog.dismiss() }
-        dialog.show()
-        return dialog
     }
 
 }

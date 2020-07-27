@@ -19,6 +19,7 @@ class MessageEvent() {
     companion object {
         const val HOME_FRAGMENT = "HomeFragment"
         const val PLAY_PODCAST_SOURCE = "playing_podcast"
+        const val PLAY_PODCAST_SOURCE_MORE = "playing_podcast_more"
         const val LIVE_SHOW = "live_show"
     }
 

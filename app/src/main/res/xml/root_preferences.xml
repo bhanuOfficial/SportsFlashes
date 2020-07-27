@@ -1,0 +1,27 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory
+        app:title="Notification">
+
+        <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:key="notify"
+            app:summaryOff="Turn on notification to get latest updates"
+            app:summaryOn="You are all set to get all latest updates"
+            app:title="App Notification" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="About">
+
+        <Preference app:title="Rate App" />
+        <Preference
+            app:summary="Sportsflashes is not just another sports content company, it is a thought, a vision that aims to create a democratic sporting environment that can reach all regions of this country and entertain its followers. When we say, EVERYTHING ABOUT SPORTS, we stand for every possible meaning that it holds."
+            app:title="About Us" />
+
+        <Preference app:title="Privacy Policy" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

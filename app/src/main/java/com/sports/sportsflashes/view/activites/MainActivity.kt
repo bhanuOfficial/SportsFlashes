@@ -1,6 +1,7 @@
 package com.sports.sportsflashes.view.activites
 
 import android.content.Context
+import android.content.Intent
 import android.media.AudioManager
 import android.net.Uri
 import android.os.Bundle
@@ -17,7 +18,6 @@ import androidx.navigation.ActivityNavigator
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory
 import com.google.android.exoplayer2.source.ExtractorMediaSource
@@ -33,6 +33,7 @@ import com.sports.sportsflashes.common.application.SFApplication
 import com.sports.sportsflashes.common.helper.CurrentShowClickListener
 import com.sports.sportsflashes.common.helper.FeaturedShowsListImpl
 import com.sports.sportsflashes.common.utils.AppConstant
+import com.sports.sportsflashes.common.utils.AppUtility
 import com.sports.sportsflashes.model.FeaturedShows
 import com.sports.sportsflashes.model.MessageEvent
 import com.sports.sportsflashes.model.SportCategories
@@ -41,7 +42,6 @@ import com.sports.sportsflashes.view.adapters.CategoryAdapter
 import com.sports.sportsflashes.view.adapters.CircularShowAdapter
 import com.sports.sportsflashes.viewmodel.MainActivityViewModel
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
-import jp.wasabeef.glide.transformations.BlurTransformation
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.menu_view.*
 import kotlinx.android.synthetic.main.podcast_play_view.*
@@ -49,12 +49,13 @@ import kotlinx.android.synthetic.main.podcast_play_view.view.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import java.util.*
 import javax.inject.Inject
 
 
-class MainActivity : AppCompatActivity(), FeaturedShowsListImpl, CurrentShowClickListener {
+class MainActivity : AppCompatActivity(), FeaturedShowsListImpl, CurrentShowClickListener,
+    CategoryAdapter.CategoryClickedListener {
 
+    private var seasonIndex: Int = 0
     private lateinit var viewModel: MainActivityViewModel
 
     @Inject
@@ -71,6 +72,7 @@ class MainActivity : AppCompatActivity(), FeaturedShowsListImpl, CurrentShowClic
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        window.navigationBarColor = resources.getColor(R.color.black, null)
         super.onCreate(savedInstanceState)
         EventBus.getDefault().register(this)
         SFApplication.getAppComponent().inject(this)
@@ -81,6 +83,10 @@ class MainActivity : AppCompatActivity(), FeaturedShowsListImpl, CurrentShowClic
         initMenuOptions()
         setCategories()
         onItemClickOptionMenu()
+
+        settings.setOnClickListener {
+            startActivity(Intent(this, SettingsActivity::class.java))
+        }
 //        https://pwdown.com/14448/Dj%20Waley%20Babu%20-%20Badshah.mp3
 //        https://file-examples.com/wp-content/uploads/2017/11/file_example_MP3_5MG.mp3
     }
@@ -146,19 +152,21 @@ class MainActivity : AppCompatActivity(), FeaturedShowsListImpl, CurrentShowClic
     }
 
     private fun initPodcastViewer(show: FeaturedShows) {
-        if (show.type.equals("podcast", true)) {
-            if (show.seasonsEpisodes[0].live) {
+        if (show.type.equals("podcast", true) || show.radio) {
+            if (show.radio || show.seasonsEpisodes[seasonIndex].live) {
                 backwardRadio.visibility = View.GONE
                 forwardRadio.visibility = View.GONE
                 linearLayout.setBackgroundResource(android.R.color.transparent)
             }
-            Glide.with(this)
-                .load(show.thumbnail)
-                .apply(RequestOptions.bitmapTransform(BlurTransformation(20, 2)))
-                .into(podcast_thumb)
+            /* Glide.with(this)
+                 .load(show.thumbnail)
+                 .apply(RequestOptions.bitmapTransform(BlurTransformation(20, 2)))
+                 .into(podcast_thumb)*/
             Glide.with(this)
                 .load(show.thumbnail)
                 .into(showIcon)
+            showName.text = show.title
+            showDisc.text = show.description
             play.setOnClickListener {
                 if (mediaPlayer.playbackState == Player.STATE_ENDED) {
                     mediaPlayer.seekTo(0)
@@ -174,9 +182,14 @@ class MainActivity : AppCompatActivity(), FeaturedShowsListImpl, CurrentShowClic
                         play_podcast.setBackgroundResource(R.drawable.stop_button)
                     }
             }
+            if (!show.radio) {
+                bottomSheet.rjNameRadio.text = show.creator
+                bottomSheet.showTimeRadio.text = show.releaseTime
+            } else {
+                bottomSheet.showTimeRadio.text = "Live Radio"
+            }
             bottomSheet.showNameRadio.text = show.title
-            bottomSheet.rjNameRadio.text = show.creator
-            bottomSheet.showTimeRadio.text = show.releaseTime
+
             try {
                 volume.setOnClickListener {
                     if (volumeSeekBar.visibility == View.VISIBLE)
@@ -214,7 +227,44 @@ class MainActivity : AppCompatActivity(), FeaturedShowsListImpl, CurrentShowClic
                 e.printStackTrace()
             }
             this.show = show
-            exoPlayerInit(show.seasonsEpisodes[0].link)
+            if (show.radio) {
+                exoPlayerInit(show.link)
+            } else
+                exoPlayerInit(show.seasonsEpisodes[seasonIndex].link)
+            sharePodcastAction.setOnClickListener {
+                if (show.radio) {
+                    AppUtility.shareAppContent(
+                        this,
+                        "Listen to live commentary/discussion for ${show.title} on Sports Flashes ${"www.xyz.com"}"
+                    )
+                } else if (show.seasonsEpisodes.isNotEmpty() && show.type.equals(
+                        "podacast",
+                        true
+                    )
+                ) {
+                    AppUtility.shareAppContent(
+                        this,
+                        "Listen to podcast ${show.title} on Sports Flashes  ${"www.xyz.com"}"
+                    )
+                } else if (show.seasonsEpisodes.isNotEmpty() && show.seasonsEpisodes[seasonIndex].live) {
+                    if (show.type.equals("podcast", true)) {
+                        AppUtility.shareAppContent(
+                            this,
+                            "Listen to podcast ${show.title} on Sports Flashes  ${"www.xyz.com"}"
+                        )
+                    } else {
+                        AppUtility.shareAppContent(
+                            this,
+                            "Watch ${show.title} on Sports Flashes  ${"www.xyz.com"}"
+                        )
+                    }
+                } else {
+                    AppUtility.shareAppContent(
+                        this,
+                        "Watch ${show.title} on Sports Flashes  ${"www.xyz.com"}"
+                    )
+                }
+            }
         } else {
 //            val video_id = show.seasonsEpisodes[0].link.split("v=")[1]
             findNavController(R.id.app_host_fragment).navigate(
@@ -329,20 +379,20 @@ class MainActivity : AppCompatActivity(), FeaturedShowsListImpl, CurrentShowClic
     }
 
     private fun initSeek() {
-        if (this.show.seasonsEpisodes[0].live) {
-            smallSeekBar.progress = 100F
+        if (show.radio || this.show.seasonsEpisodes[0].live) {
+//            smallSeekBar.progress = 100F
             largeSeekBar.progress = 100F
-            smallSeekBar.isEnabled = false
+//            smallSeekBar.isEnabled = false
             largeSeekBar.isEnabled = false
         } else {
             val duration: Long = mediaPlayer.duration
             val amountToUpdate = duration / 100
-            smallSeekBar.max = amountToUpdate.toFloat()
+//            smallSeekBar.max = amountToUpdate.toFloat()
             largeSeekBar.max = amountToUpdate.toFloat()
             updateSongTime = object : Runnable {
                 override fun run() {
                     val startTime = mediaPlayer.currentPosition
-                    smallSeekBar.progress = startTime.toFloat() / 100
+//                    smallSeekBar.progress = startTime.toFloat() / 100
                     largeSeekBar.progress = startTime.toFloat() / 100
                     seekBarHandler.postDelayed(this, 1000)
                 }
@@ -365,7 +415,6 @@ class MainActivity : AppCompatActivity(), FeaturedShowsListImpl, CurrentShowClic
 
         when (clickedView) {
             schedualView -> {
-                findNavController(R.id.app_host_fragment).navigateUp()
                 findNavController(R.id.app_host_fragment).navigate(
                     R.id.scheduleFragment,
                     Bundle().apply {
@@ -397,12 +446,6 @@ class MainActivity : AppCompatActivity(), FeaturedShowsListImpl, CurrentShowClic
                 findNavController(R.id.app_host_fragment).navigateUp()
                 findNavController(R.id.app_host_fragment).navigate(
                     R.id.eventsFragment, null
-                    /*Bundle().apply {
-                        this.putString(
-                            AppConstant.BundleExtras.FEATURED_SHOW_LIST,
-                            gson.toJson(featuredShows)
-                        )
-                    }*/
                 )
                 arrayOf(schedualView, downloadView, homeView, reminderView).forEach {
                     it.setBackgroundResource(R.drawable.circle_white)
@@ -414,6 +457,16 @@ class MainActivity : AppCompatActivity(), FeaturedShowsListImpl, CurrentShowClic
                 downloadIcon.background = resources.getDrawable(R.drawable.download, null)
             }
             reminderView -> {
+                findNavController(R.id.app_host_fragment).navigateUp()
+                findNavController(R.id.app_host_fragment).navigate(
+                    R.id.action_homeFragment_to_reminderFragment,
+                    Bundle().apply {
+                        this.putString(
+                            AppConstant.BundleExtras.FEATURED_SHOW_LIST,
+                            gson.toJson(featuredShows)
+                        )
+                    }
+                )
                 arrayOf(schedualView, downloadView, homeView, eventView).forEach {
                     it.setBackgroundResource(R.drawable.circle_white)
                 }
@@ -470,20 +523,39 @@ class MainActivity : AppCompatActivity(), FeaturedShowsListImpl, CurrentShowClic
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onEvent(messageEvent: MessageEvent) {
-        if (messageEvent.type == MessageEvent.HOME_FRAGMENT) {
-            homeView.setBackgroundResource(R.drawable.circle_red)
-            arrayOf(schedualView, downloadView, eventView, reminderView).forEach {
-                it.setBackgroundResource(R.drawable.circle_white)
+        when (messageEvent.type) {
+            MessageEvent.HOME_FRAGMENT -> {
+                homeView.setBackgroundResource(R.drawable.circle_red)
+                arrayOf(schedualView, downloadView, eventView, reminderView).forEach {
+                    it.setBackgroundResource(R.drawable.circle_white)
+                }
+                schedualIcon.background = resources.getDrawable(R.drawable.schedule, null)
+                eventIcon.background = resources.getDrawable(R.drawable.highlights, null)
+                homeIcon.background = resources.getDrawable(R.drawable.home_white, null)
+                reminderIcon.background = resources.getDrawable(R.drawable.reminder, null)
+                downloadIcon.background = resources.getDrawable(R.drawable.download, null)
             }
-            schedualIcon.background = resources.getDrawable(R.drawable.schedule, null)
-            eventIcon.background = resources.getDrawable(R.drawable.highlights, null)
-            homeIcon.background = resources.getDrawable(R.drawable.home_white, null)
-            reminderIcon.background = resources.getDrawable(R.drawable.reminder, null)
-            downloadIcon.background = resources.getDrawable(R.drawable.download, null)
-        } else if (messageEvent.type == MessageEvent.PLAY_PODCAST_SOURCE) {
-            val show = messageEvent.data as FeaturedShows
-            initPodcastViewer(show)
+            MessageEvent.PLAY_PODCAST_SOURCE -> {
+                val show = messageEvent.data as FeaturedShows
+                initPodcastViewer(show)
+            }
+            MessageEvent.PLAY_PODCAST_SOURCE_MORE -> {
+                seasonIndex = messageEvent.data as Int
+            }
         }
+    }
+
+    override fun categoryClicked(categoryId: String) {
+        findNavController(R.id.app_host_fragment).navigateUp()
+        findNavController(R.id.app_host_fragment).navigate(
+            R.id.action_homeFragment_to_categoryShowFragment,
+            Bundle().apply {
+                this.putString(
+                    AppConstant.BundleExtras.CATEGORY_ID,
+                    categoryId
+                )
+            })
+        menu_drawer.performClick()
     }
 
 }

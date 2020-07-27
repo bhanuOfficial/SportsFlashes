@@ -45,6 +45,7 @@
                     android:background="@drawable/in_app_logo" />
 
                 <ImageView
+                    android:id="@+id/settings"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"

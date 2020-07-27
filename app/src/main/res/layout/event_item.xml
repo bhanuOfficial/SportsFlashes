@@ -40,6 +40,7 @@
 
 
             <TextView
+                android:fontFamily="@font/helvetica_now_display_bold"
                 android:id="@+id/showTittle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -50,6 +51,7 @@
 
             <TextView
                 android:id="@+id/showTime"
+                android:fontFamily="@font/helvetica_now_display_regular"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/xx_small_padding"
@@ -60,12 +62,13 @@
                 android:id="@+id/setReminder"
                 android:layout_alignParentRight="true"
                 android:layout_width="wrap_content"
+                android:fontFamily="@font/helvetica_now_display_medium"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/x_small_padding"
                 android:text="@string/set_reminder"
                 android:textColor="@color/red"
                 android:textSize="@dimen/small_size"
-                android:textStyle="bold" />
+                />
         </LinearLayout>
 
 

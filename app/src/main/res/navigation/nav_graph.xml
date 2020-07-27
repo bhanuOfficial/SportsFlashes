@@ -57,6 +57,20 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
+        <action
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"
+            android:id="@+id/action_homeFragment_to_categoryShowFragment"
+            app:destination="@id/categoryShowFragment" />
+        <action
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"
+            android:id="@+id/action_homeFragment_to_reminderFragment"
+            app:destination="@id/reminderFragment" />
     </fragment>
     <fragment
         android:id="@+id/playableShowFragment"
@@ -101,4 +115,14 @@
         tools:layout="@layout/live_show_fragment"
         android:name="com.sports.sportsflashes.view.fragments.LiveShowFragment"
         android:label="LiveShowFragment" />
+    <fragment
+        tools:layout="@layout/category_show_fragment"
+        android:id="@+id/categoryShowFragment"
+        android:name="com.sports.sportsflashes.view.fragments.CategoryShowFragment"
+        android:label="CategoryShowFragment" />
+    <fragment
+        tools:layout="@layout/reminder_fragment"
+        android:id="@+id/reminderFragment"
+        android:name="com.sports.sportsflashes.view.fragments.ReminderFragment"
+        android:label="ReminderFragment" />
 </navigation>

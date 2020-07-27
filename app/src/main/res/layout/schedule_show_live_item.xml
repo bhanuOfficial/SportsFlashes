@@ -32,6 +32,7 @@
 
                 <TextView
                     android:id="@+id/onAir"
+                    android:fontFamily="@font/helvetica_now_display_medium"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@drawable/round_corner_button_white"
@@ -43,6 +44,7 @@
 
                 <TextView
                     android:id="@+id/showTime"
+                    android:fontFamily="@font/helvetica_now_display_regular"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingStart="@dimen/x_small_padding"
@@ -61,12 +63,14 @@
                 android:padding="@dimen/xx_small_padding"
                 android:text=""
                 android:id="@+id/showTittle"
+                android:fontFamily="@font/helvetica_now_display_bold"
                 android:textColor="@color/white"
                 android:textSize="@dimen/medium_size"
                 android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/showDescription"
+                android:fontFamily="@font/helvetica_now_display_regular"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/xx_small_padding"

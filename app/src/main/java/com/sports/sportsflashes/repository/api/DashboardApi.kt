@@ -5,6 +5,7 @@ import com.sports.sportsflashes.model.FeaturedShows
 import com.sports.sportsflashes.model.SportCategories
 import io.reactivex.Single
 import retrofit2.http.GET
+import retrofit2.http.Path
 
 interface DashboardApi {
     @GET("/api/shows")
@@ -12,4 +13,7 @@ interface DashboardApi {
 
     @GET("/api/categories")
     fun getCategories(): Single<BaseResponse<List<SportCategories>>>
+
+    @GET("/api/shows/category/{id}")
+    fun getShowsByCategories(@Path("id") categoryId: String): Single<BaseResponse<List<FeaturedShows>>>
 }
