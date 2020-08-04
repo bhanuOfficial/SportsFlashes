@@ -26,6 +26,8 @@
 
             <ImageView
                 android:background="@drawable/play_button"
+                android:visibility="gone"
+                android:id="@+id/playItem"
                 android:layout_centerInParent="true"
                 android:layout_width="30dp"
                 android:layout_height="30dp"/>
@@ -63,6 +65,7 @@
                 android:id="@+id/showDescription"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:maxLines="2"
                 android:padding="@dimen/xx_small_padding"
                 android:textColor="@color/white"
                 android:textSize="@dimen/small_size" />

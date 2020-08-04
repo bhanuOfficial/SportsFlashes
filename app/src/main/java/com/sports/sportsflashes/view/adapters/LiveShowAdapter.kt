@@ -30,11 +30,13 @@ class LiveShowAdapter(
         return when (position) {
             0 -> {
                 ShowViewFragment().apply {
-                    this.arguments = Bundle().also {
-                        it.putString(
-                            AppConstant.BundleExtras.FEATURED_SHOW,
-                            gson.toJson(liveSeasonModel.live[0])
-                        )
+                    if (liveSeasonModel.live.isNotEmpty()){
+                        this.arguments = Bundle().also {
+                            it.putString(
+                                AppConstant.BundleExtras.FEATURED_SHOW,
+                                gson.toJson(liveSeasonModel.live[0])
+                            )
+                        }
                     }
                 }
             }

@@ -80,17 +80,17 @@
                 android:background="@drawable/play_button"
                 android:clickable="false" />
 
-           <!-- <me.tankery.lib.circularseekbar.CircularSeekBar
-                android:id="@+id/smallSeekBar"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_centerVertical="true"
-                android:clickable="false"
-                app:cs_circle_color="@color/medium_light_gray"
-                app:cs_circle_progress_color="@color/black"
-                app:cs_circle_stroke_width="3dp"
-                app:cs_pointer_color="@color/sf_red"
-                app:cs_pointer_stroke_width="1dp" />-->
+            <!-- <me.tankery.lib.circularseekbar.CircularSeekBar
+                 android:id="@+id/smallSeekBar"
+                 android:layout_width="40dp"
+                 android:layout_height="40dp"
+                 android:layout_centerVertical="true"
+                 android:clickable="false"
+                 app:cs_circle_color="@color/medium_light_gray"
+                 app:cs_circle_progress_color="@color/black"
+                 app:cs_circle_stroke_width="3dp"
+                 app:cs_pointer_color="@color/sf_red"
+                 app:cs_pointer_stroke_width="1dp" />-->
 
             <View
                 android:id="@+id/play"
@@ -109,18 +109,23 @@
             android:paddingLeft="@dimen/large_padding">
 
             <TextView
-                android:fontFamily="@font/helvetica_now_display_bold"
                 android:id="@+id/showName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/helvetica_now_display_bold"
                 android:textColor="@color/white"
                 android:textSize="@dimen/small_size" />
 
             <TextView
-                android:fontFamily="@font/helvetica_now_display_regular"
                 android:id="@+id/showDisc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:ellipsize="marquee"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:fontFamily="@font/helvetica_now_display_regular"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:singleLine="true"
                 android:textColor="@color/medium_light_gray"
                 android:textSize="@dimen/x_small_size" />
         </LinearLayout>
@@ -151,10 +156,10 @@
         android:orientation="vertical">
 
         <TextView
-            android:fontFamily="@font/helvetica_now_display_bold"
             android:id="@+id/showNameRadio"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/helvetica_now_display_bold"
             android:gravity="center_vertical|center"
             android:padding="@dimen/small_padding"
             android:textColor="@color/white"
@@ -162,9 +167,9 @@
 
         <TextView
             android:id="@+id/rjNameRadio"
-            android:fontFamily="@font/helvetica_now_display_regular"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/helvetica_now_display_regular"
             android:gravity="center|center_vertical"
             android:textColor="@color/white"
             android:textSize="@dimen/medium_size" />
@@ -172,9 +177,9 @@
         <TextView
             android:id="@+id/showTimeRadio"
             android:layout_width="match_parent"
-            android:fontFamily="@font/helvetica_now_display_regular"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/large_margin"
+            android:fontFamily="@font/helvetica_now_display_regular"
             android:gravity="center_vertical|center"
             android:padding="@dimen/medium_padding"
             android:textColor="@color/white"
@@ -202,9 +207,9 @@
                 android:id="@+id/textView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/helvetica_now_display_regular"
                 android:padding="@dimen/small_padding"
                 android:text="Live Radio"
-                android:fontFamily="@font/helvetica_now_display_regular"
                 android:textColor="@color/white"
                 android:textSize="@dimen/medium_size"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -257,9 +262,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:fontFamily="@font/helvetica_now_display_regular"
                     android:gravity="center"
                     android:padding="@dimen/xx_small_padding"
-                    android:fontFamily="@font/helvetica_now_display_regular"
                     android:text="+20 sec"
                     android:textColor="@color/white"
                     android:textSize="@dimen/medium_size" />
@@ -294,9 +299,9 @@
             android:layout_centerVertical="true"
             android:layout_toStartOf="@+id/sharePodcastAction"
             android:layout_toEndOf="@+id/volume"
-            android:thumb="@drawable/seekbar_thumb"
             android:progressDrawable="@drawable/seekbar_progress"
-            android:visibility="visible" />
+            android:thumb="@drawable/seekbar_thumb"
+            android:visibility="gone" />
 
         <ImageView
             android:id="@+id/sharePodcastAction"

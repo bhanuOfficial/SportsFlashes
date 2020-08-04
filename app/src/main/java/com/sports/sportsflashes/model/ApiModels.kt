@@ -15,7 +15,7 @@ data class FeaturedShows(
     val original: Boolean = false,
     val playing: Playing = Playing(),
     val releaseTime: String = "",
-    val seasons: List<Season> = listOf(),
+    val seasons: List<Any> = listOf(),
     val seasonsEpisodes: List<SeasonsEpisode> = listOf(),
     val thumbnail: String = "",
     val title: String = "",

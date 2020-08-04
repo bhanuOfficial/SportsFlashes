@@ -17,14 +17,18 @@ data class ScheduleModel(
         val __v: Int = 0,
         val _id: String = "",
         val createdAt: String = "",
+        val creator: String = "",
         val description: String = "",
-        val duration: Int = 0,
-        val episodeNumber: Int = 0,
-        val link: String = "",
+        val featured: Boolean = false,
+        val icon: String = "",
+        val likes: Int = 0,
+        val live: Boolean = false,
+        val original: Boolean = false,
         val releaseTime: String = "",
+        val seasons: List<Any> = listOf(),
         val thumbnail: String = "",
         val title: String = "",
-        val updatedAt: String = "",
-        val live: Boolean = false
+        val type: String = "",
+        val updatedAt: String = ""
     )
 }

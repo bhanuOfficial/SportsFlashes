@@ -1,14 +1,10 @@
 package com.sports.sportsflashes.view.fragments
 
-import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.Window
-import android.widget.Button
-import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -18,9 +14,9 @@ import com.google.android.material.tabs.TabLayout
 import com.sports.sportsflashes.R
 import com.sports.sportsflashes.common.helper.EventItemSelection
 import com.sports.sportsflashes.common.utils.AlertDialogUtility
-import com.sports.sportsflashes.common.utils.AppUtility
 import com.sports.sportsflashes.model.MonthEventModel
 import com.sports.sportsflashes.repository.api.STATUS
+import com.sports.sportsflashes.view.activites.MainActivity
 import com.sports.sportsflashes.view.adapters.EventsAdapter
 import com.sports.sportsflashes.view.adapters.EventsAdapter.Companion.selected
 import com.sports.sportsflashes.viewmodel.EventFragmentViewModel
@@ -37,6 +33,7 @@ import kotlin.collections.ArrayList
  */
 class EventsFragment : Fragment(), EventItemSelection {
     private lateinit var eventsFragmentViewModel: EventFragmentViewModel
+    private lateinit var activity: MainActivity
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -54,8 +51,17 @@ class EventsFragment : Fragment(), EventItemSelection {
                 }
             }
         }
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback);
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
+        activity.appLogo.setCompoundDrawablesRelativeWithIntrinsicBounds(0,0,0,0)
+        activity.toolbar.setBackgroundColor(resources.getColor(R.color.black,null))
+        activity.appLogo.text= "Event"
+        activity.appLogo.setTextColor(resources.getColor(R.color.white,null))
         return layoutInflater.inflate(R.layout.events_fragment, container, false)
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        activity = context as MainActivity
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

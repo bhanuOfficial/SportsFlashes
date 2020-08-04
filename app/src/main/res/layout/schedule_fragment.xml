@@ -21,6 +21,7 @@
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/weekTabs"
             android:layout_width="match_parent"
+            app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"
             android:layout_height="wrap_content"
             android:background="@color/medium_dark_gray"
             app:tabBackground="@drawable/tab_selector"

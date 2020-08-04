@@ -47,7 +47,7 @@ class CircularShowAdapter(
 
     override fun onBindViewHolder(holder: ItemHolder, position: Int) {
         index = position
-        Glide.with(holder.itemView.context).load(featuredShowsList[position].thumbnail)
+        Glide.with(holder.itemView.context).load(featuredShowsList[position].icon)
             .placeholder(
                 holder.itemView.context.resources.getDrawable(
                     R.drawable.default_thumbnail,

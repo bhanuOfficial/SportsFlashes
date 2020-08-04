@@ -3,6 +3,7 @@ package com.sports.sportsflashes.repository.repo
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.sports.sportsflashes.model.BaseResponse
+import com.sports.sportsflashes.model.FirebaseRequest
 import com.sports.sportsflashes.repository.api.DashboardApi
 import com.sports.sportsflashes.repository.api.NetworkResponse
 import io.reactivex.Single
@@ -32,6 +33,15 @@ class HomeScreenRepo(private val apiService: DashboardApi, gson: Gson) : BaseNet
             null,
             null,
             apiService.getShowsByCategories(categoryId) as Single<BaseResponse<Any>>
+        )
+    }
+
+    fun registerFirebase(responseObserver: MutableLiveData<NetworkResponse>, request: FirebaseRequest) {
+        startNetworkService(
+            responseObserver,
+            null,
+            null,
+            apiService.registerFirebase(request) as Single<BaseResponse<Any>>
         )
     }
 

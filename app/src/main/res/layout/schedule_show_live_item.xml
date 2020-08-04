@@ -74,6 +74,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/xx_small_padding"
+                android:maxLines="2"
                 android:text=""
                 android:textColor="@color/white"
                 android:textSize="@dimen/small_size" />

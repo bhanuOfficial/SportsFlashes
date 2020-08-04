@@ -1,5 +1,6 @@
 package com.sports.sportsflashes.di
 
+import com.sports.sportsflashes.common.application.SFApplication
 import com.sports.sportsflashes.repository.factory.ApiFactory
 import com.sports.sportsflashes.repository.factory.RepositoryFactory
 import com.sports.sportsflashes.view.activites.MainActivity

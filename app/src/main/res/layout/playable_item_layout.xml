@@ -10,11 +10,12 @@
         android:orientation="vertical">
 
         <LinearLayout
+            android:id="@+id/playLayout"
             android:layout_width="match_parent"
+            android:paddingLeft="@dimen/small_padding"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:paddingLeft="@dimen/large_padding">
+            android:orientation="horizontal">
 
             <ImageView
                 android:id="@+id/playCurrentShow"
@@ -25,8 +26,7 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:paddingLeft="@dimen/x_medium_padding">
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/showLiveStatus"
@@ -48,29 +48,31 @@
         </LinearLayout>
 
         <LinearLayout
+            android:paddingLeft="@dimen/small_padding"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingLeft="@dimen/large_padding"
-            android:paddingRight="@dimen/large_padding">
+            android:paddingRight="@dimen/small_padding">
 
             <TextView
                 android:id="@+id/showTittle"
                 android:layout_width="wrap_content"
-                android:fontFamily="@font/helvetica_now_display_bold"
+                android:fontFamily="@font/helvetica_now_display_regular"
                 android:layout_height="wrap_content"
                 android:paddingTop="@dimen/small_padding"
                 android:paddingBottom="@dimen/xx_small_padding"
+                android:paddingLeft="@dimen/x_medium_padding"
                 android:textColor="@color/white"
-                android:textSize="@dimen/medium_size" />
+                android:textSize="@dimen/xx_large_size" />
 
             <TextView
                 android:id="@+id/creatorName"
                 android:layout_width="wrap_content"
-                android:fontFamily="@font/helvetica_now_display_medium"
+                android:fontFamily="@font/helvetica_now_display_regular"
                 android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/x_medium_padding"
                 android:textColor="@color/white"
-                android:textSize="@dimen/small_size" />
+                android:textSize="@dimen/large_size" />
 
             <LinearLayout
                 android:visibility="gone"

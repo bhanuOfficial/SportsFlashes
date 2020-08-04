@@ -1,8 +1,10 @@
 package com.sports.sportsflashes.di
 
+import com.facebook.stetho.okhttp3.StethoInterceptor
 import dagger.Module
 import dagger.Provides
 import okhttp3.HttpUrl
+import okhttp3.OkHttpClient
 import retrofit2.CallAdapter
 import retrofit2.Converter
 import retrofit2.Retrofit
@@ -18,12 +20,14 @@ class ApiModule {
     fun getRetrofitProvide(
         baseUrl: HttpUrl,
         converterFactory: Converter.Factory,
-        callAdapterFactory: CallAdapter.Factory
+        callAdapterFactory: CallAdapter.Factory,
+        okHttpClient: OkHttpClient
     ): Retrofit {
         return Retrofit.Builder()
             .baseUrl(baseUrl)
             .addConverterFactory(converterFactory)
             .addCallAdapterFactory(callAdapterFactory)
+            .client(okHttpClient)
             .build()
     }
 

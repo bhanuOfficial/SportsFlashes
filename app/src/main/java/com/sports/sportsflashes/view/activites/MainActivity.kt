@@ -11,7 +11,9 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.RelativeLayout
 import android.widget.SeekBar
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.ActivityNavigator
@@ -66,6 +68,8 @@ class MainActivity : AppCompatActivity(), FeaturedShowsListImpl, CurrentShowClic
     private lateinit var featuredShows: List<FeaturedShows>
     private lateinit var bottomSheet: RelativeLayout
     private lateinit var show: FeaturedShows
+    lateinit var appLogo: TextView
+    lateinit var toolbar: Toolbar
 
     @Inject
     lateinit var gson: Gson
@@ -78,6 +82,8 @@ class MainActivity : AppCompatActivity(), FeaturedShowsListImpl, CurrentShowClic
         SFApplication.getAppComponent().inject(this)
         viewModel = ViewModelProvider(this).get(MainActivityViewModel::class.java)
         setContentView(R.layout.activity_main)
+        appLogo = findViewById(R.id.appLogo)
+        toolbar = findViewById(R.id.toolbar)
         initPodcastBottomSheet()
         setSupportActionBar(toolbar)
         initMenuOptions()
@@ -230,7 +236,7 @@ class MainActivity : AppCompatActivity(), FeaturedShowsListImpl, CurrentShowClic
             if (show.radio) {
                 exoPlayerInit(show.link)
             } else
-                exoPlayerInit(show.seasonsEpisodes[seasonIndex].link)
+                exoPlayerInit(show.seasonsEpisodes[seasonIndex].link.trim())
             sharePodcastAction.setOnClickListener {
                 if (show.radio) {
                     AppUtility.shareAppContent(
@@ -290,10 +296,14 @@ class MainActivity : AppCompatActivity(), FeaturedShowsListImpl, CurrentShowClic
         menu_drawer.setOnClickListener {
             if (menu_item_.visibility == View.GONE) {
                 menu_item_.visibility = View.VISIBLE
+                settings.visibility = View.VISIBLE
+                menu_icon.setBackgroundResource(R.drawable.ic_baseline_arrow_back_ios_24)
                 val animSlideDown: Animation =
                     AnimationUtils.loadAnimation(this, R.anim.slide_down)
                 menu_item_.startAnimation(animSlideDown)
             } else {
+                settings.visibility = View.GONE
+                menu_icon.setBackgroundResource(R.drawable.menu_icon)
                 val animSlideUp: Animation =
                     AnimationUtils.loadAnimation(this, R.anim.slide_up)
                 menu_item_.startAnimation(animSlideUp)
@@ -418,10 +428,11 @@ class MainActivity : AppCompatActivity(), FeaturedShowsListImpl, CurrentShowClic
                 findNavController(R.id.app_host_fragment).navigate(
                     R.id.scheduleFragment,
                     Bundle().apply {
-                        this.putString(
-                            AppConstant.BundleExtras.FEATURED_SHOW_LIST,
-                            gson.toJson(featuredShows)
-                        )
+                        if (this@MainActivity::featuredShows.isInitialized)
+                            this.putString(
+                                AppConstant.BundleExtras.FEATURED_SHOW_LIST,
+                                gson.toJson(featuredShows)
+                            )
                     })
                 arrayOf(downloadView, eventView, homeView, reminderView).forEach {
                     it.setBackgroundResource(R.drawable.circle_white)
@@ -548,7 +559,7 @@ class MainActivity : AppCompatActivity(), FeaturedShowsListImpl, CurrentShowClic
     override fun categoryClicked(categoryId: String) {
         findNavController(R.id.app_host_fragment).navigateUp()
         findNavController(R.id.app_host_fragment).navigate(
-            R.id.action_homeFragment_to_categoryShowFragment,
+            R.id.categoryShowFragment,
             Bundle().apply {
                 this.putString(
                     AppConstant.BundleExtras.CATEGORY_ID,

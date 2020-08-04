@@ -1,11 +1,8 @@
 package com.sports.sportsflashes.repository.api
 
-import com.sports.sportsflashes.model.BaseResponse
-import com.sports.sportsflashes.model.FeaturedShows
-import com.sports.sportsflashes.model.SportCategories
+import com.sports.sportsflashes.model.*
 import io.reactivex.Single
-import retrofit2.http.GET
-import retrofit2.http.Path
+import retrofit2.http.*
 
 interface DashboardApi {
     @GET("/api/shows")
@@ -16,4 +13,8 @@ interface DashboardApi {
 
     @GET("/api/shows/category/{id}")
     fun getShowsByCategories(@Path("id") categoryId: String): Single<BaseResponse<List<FeaturedShows>>>
+
+    @POST("api/users/register/")
+//    @FormUrlEncoded
+    fun registerFirebase(@Body request: FirebaseRequest): Single<BaseResponse<FirebaseSubscribeModel>>
 }

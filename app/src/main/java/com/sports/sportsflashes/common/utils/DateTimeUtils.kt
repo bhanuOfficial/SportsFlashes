@@ -319,30 +319,30 @@ object DateTimeUtils {
     }
 
 
- /*   fun getMonthRange(): Pair<Long?, Long?>? {
-        var begining: Date
-        var end: Date
-        run {
-            val calendar: Calendar = getCalendarForNow()
-            calendar.set(
-                Calendar.DAY_OF_MONTH,
-                calendar.getActualMinimum(Calendar.DAY_OF_MONTH)
-            )
-            setTimeToBeginningOfDay(calendar)
-            begining = calendar.getTime()
-        }
-        run {
-            val calendar: Calendar = getCalendarForNow()
-            calendar.set(
-                Calendar.DAY_OF_MONTH,
-                calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
-            )
-            setTimeToEndofDay(calendar)
-            end = calendar.getTime()
-        }
-        return Pair.create(begining.getTime(), end.getTime())
-    }
-*/
+    /*   fun getMonthRange(): Pair<Long?, Long?>? {
+           var begining: Date
+           var end: Date
+           run {
+               val calendar: Calendar = getCalendarForNow()
+               calendar.set(
+                   Calendar.DAY_OF_MONTH,
+                   calendar.getActualMinimum(Calendar.DAY_OF_MONTH)
+               )
+               setTimeToBeginningOfDay(calendar)
+               begining = calendar.getTime()
+           }
+           run {
+               val calendar: Calendar = getCalendarForNow()
+               calendar.set(
+                   Calendar.DAY_OF_MONTH,
+                   calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
+               )
+               setTimeToEndofDay(calendar)
+               end = calendar.getTime()
+           }
+           return Pair.create(begining.getTime(), end.getTime())
+       }
+   */
     private fun getCalendarForNow(): Calendar {
         val calendar: Calendar = GregorianCalendar.getInstance()
         calendar.setTime(Date())
@@ -456,5 +456,14 @@ object DateTimeUtils {
         var min = 0
         var ampm: String? = null
 
+    }
+
+    fun getAdditionalTimeWithDuration(time: String, format: String, duration: Int): String {
+        val df = SimpleDateFormat(format)
+        val d: Date = df.parse(time)
+        val cal: Calendar = Calendar.getInstance()
+        cal.time = d
+        cal.add(Calendar.MINUTE, duration)
+        return df.format(cal.time)
     }
 }

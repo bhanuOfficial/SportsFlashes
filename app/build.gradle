@@ -22,9 +22,13 @@ android {
         debug {
             debuggable true
             resValue("string", "baseUrl", "https://sports-flashes-staging.herokuapp.com/")
+            resValue("string", "pref_key", "SPORTS_FLASHES_PREF")
+            resValue("string", "pref_key", "SPORTS_FLASHES_PREF")
         }
         release {
             minifyEnabled false
+            resValue("string", "pref_key", "SPORTS_FLASHES_PREF")
+
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -78,4 +82,7 @@ dependencies {
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
     implementation "androidx.navigation:navigation-dynamic-features-fragment:$nav_version"
     implementation 'com.google.firebase:firebase-analytics:17.4.4'
+    implementation 'com.google.firebase:firebase-messaging:20.2.4'
+    implementation 'com.facebook.stetho:stetho-okhttp3:1.5.1'
+    implementation 'com.facebook.stetho:stetho:1.5.1'
 }

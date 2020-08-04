@@ -30,6 +30,7 @@ class MoreEpisodeAdapter(
         val showImage: ImageView = itemView.findViewById(R.id.showImage)
         val showTime: TextView = itemView.findViewById(R.id.showTime)
         val showTittle: TextView = itemView.findViewById(R.id.showTittle)
+        val playItem: ImageView = itemView.findViewById(R.id.playItem)
         val showDescription: TextView = itemView.findViewById(R.id.showDescription)
         val scheduleItemContainer: RelativeLayout =
             itemView.findViewById(R.id.scheduleItemContainer)
@@ -48,6 +49,7 @@ class MoreEpisodeAdapter(
     override fun onBindViewHolder(holder: MoreEpisodesHolder, position: Int) {
         holder.showTittle.text = moreEpisodesList[position].title
         holder.showDescription.text = moreEpisodesList[position].description
+        holder.playItem.visibility = View.VISIBLE
         holder.showTime.text = DateTimeUtils.convertServerISOTime(
             AppConstant.DateTime.STD_DATE_FORMAT,
             moreEpisodesList[position].releaseTime

@@ -21,6 +21,7 @@ import kotlinx.android.synthetic.main.playable_item_layout.*
 import kotlinx.android.synthetic.main.playable_item_layout.playCurrentShow
 import kotlinx.android.synthetic.main.reminder_fragment.*
 import kotlinx.android.synthetic.main.show_view_layout.*
+import kotlinx.android.synthetic.main.show_view_layout.playLayout
 import kotlinx.android.synthetic.main.show_view_layout.readMore
 import kotlinx.android.synthetic.main.show_view_layout.showDescriptionDetail
 import kotlinx.android.synthetic.main.show_view_layout.showTittle
@@ -78,6 +79,7 @@ class ReminderFragment : Fragment(), ReminderShowAdapter.OnReminderItemClickList
         playCurrentShow.visibility = View.GONE
         reminderView.visibility = View.VISIBLE
         share.visibility = View.GONE
+        playLayout.visibility = View.GONE
         showTitleContainer.setPadding(0, 0, 0, 0)
         moreEpisodesContainer.visibility = View.INVISIBLE
         activity?.let {
@@ -90,22 +92,33 @@ class ReminderFragment : Fragment(), ReminderShowAdapter.OnReminderItemClickList
                 )
                 .into(showImage)
         }
+
         showTittle.text = featuredShows.title
-        showDescription.text = featuredShows.description
+        showTittle.textSize = 25f
+        showDate.textSize = 15f
+        showDate.text = DateTimeUtils.convertServerISOTime(
+            AppConstant.DateTime.REMINDER_FORMAT,
+            featuredShows.releaseTime
+        )
         show_detail_layout.visibility = View.VISIBLE
         showDescriptionDetail.text = featuredShows.description
         showDescriptionDetail.tag = true
-        creator.text = featuredShows.creator
-        duration.text = DateTimeUtils.convertServerISOTime(
-            AppConstant.DateTime.STD_DATE_FORMAT,
-            featuredShows.releaseTime
-        )
+        showType.text= featuredShows.type
 
-        if (showDescriptionDetail.lineCount > 3) {
-            readMore.visibility = View.VISIBLE
-        } else {
-            readMore.visibility = View.GONE
-        }
+        showDescriptionDetail.viewTreeObserver
+            .addOnPreDrawListener {
+                if (showDescriptionDetail != null) {
+                    val count = showDescriptionDetail.layout.lineCount
+                    if (count > 3) {
+                        readMore.visibility = View.VISIBLE
+                    } else {
+                        readMore.visibility = View.GONE
+                    }
+                }
+
+
+                true
+            }
         readMore.setOnClickListener {
             if (showDescriptionDetail.tag as Boolean) {
                 readMore.setText(R.string.hide_more)

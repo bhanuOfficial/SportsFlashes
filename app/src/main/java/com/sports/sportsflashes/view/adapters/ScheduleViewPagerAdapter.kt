@@ -5,6 +5,7 @@ import android.text.format.DateUtils
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
+import com.bumptech.glide.util.Preconditions
 import com.google.android.material.tabs.TabLayout
 import com.google.gson.Gson
 import com.sports.sportsflashes.common.application.SFApplication
@@ -27,8 +28,8 @@ class ScheduleViewPagerAdapter(
 ) : FragmentStatePagerAdapter(fm) {
     @Inject
     lateinit var gson: Gson
-    private val dateFormat = SimpleDateFormat("dd MMM")
-    private val dateFormatWithDay = SimpleDateFormat("EEE, dd MMM")
+    private val dateFormat = SimpleDateFormat("d")
+    private val dateFormatWithDay = SimpleDateFormat("EEE,")
     private val df: DateFormat = SimpleDateFormat("dd/MM/yyyy")
 
     init {
@@ -55,16 +56,19 @@ class ScheduleViewPagerAdapter(
         val date1 = SimpleDateFormat("dd/MM/yyyy").parse(weekdayList[position])
         return when {
             isYesterday(date1!!) -> {
-                "Yesterday, ${dateFormat.format(df.parse(weekdayList[position])!!)}"
+                "Yesterday, ${dateFormat.format(df.parse(weekdayList[position])!!)+getDayOfMonthSuffix(dateFormat.format(df.parse(weekdayList[position])!!).toInt())}"
             }
             isTomorrow(date1) -> {
-                "Tomorrow, ${dateFormat.format(df.parse(weekdayList[position])!!)}"
+                "Tomorrow, ${dateFormat.format(df.parse(weekdayList[position])!!)+getDayOfMonthSuffix(dateFormat.format(df.parse(weekdayList[position])!!).toInt())}"
             }
             isToday(date1) -> {
-                "Today, ${dateFormat.format(df.parse(weekdayList[position])!!)}"
+                "Today, ${dateFormat.format(df.parse(weekdayList[position])!!)+getDayOfMonthSuffix(dateFormat.format(df.parse(weekdayList[position])!!).toInt())}"
             }
             else -> {
-                dateFormatWithDay.format(df.parse(weekdayList[position])!!)
+                "${dateFormatWithDay.format(df.parse(weekdayList[position])!!)} " +dateFormat.format(df.parse(weekdayList[position])!!)+
+                        "${getDayOfMonthSuffix(dateFormat.format(df.parse(weekdayList[position])!!).toInt())}"
+
+
             }
         }
     }
@@ -79,6 +83,18 @@ class ScheduleViewPagerAdapter(
 
     private fun isToday(d: Date): Boolean {
         return DateUtils.isToday(d.time)
+    }
+
+    private fun getDayOfMonthSuffix(n: Int): String? {
+        Preconditions.checkArgument(n in 1..31, "illegal day of month: $n")
+        return if (n in 11..13) {
+            "th"
+        } else when (n % 10) {
+            1 -> "st"
+            2 -> "nd"
+            3 -> "rd"
+            else -> "th"
+        }
     }
 
 }

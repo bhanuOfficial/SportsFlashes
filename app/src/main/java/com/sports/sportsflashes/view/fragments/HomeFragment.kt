@@ -1,8 +1,10 @@
 package com.sports.sportsflashes.view.fragments
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,10 +17,15 @@ import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.bekawestberg.loopinglayout.library.LoopingLayoutManager
 import com.google.android.exoplayer2.ExoPlayer
+import com.google.gson.Gson
 import com.sports.sportsflashes.R
 import com.sports.sportsflashes.common.application.SFApplication
 import com.sports.sportsflashes.common.helper.FeaturedShowsImpl
+import com.sports.sportsflashes.common.utils.AppConstant
+import com.sports.sportsflashes.common.utils.DateTimeUtils
 import com.sports.sportsflashes.model.FeaturedShows
+import com.sports.sportsflashes.model.FirebaseRequest
+import com.sports.sportsflashes.model.FirebaseSubscribeModel
 import com.sports.sportsflashes.model.MessageEvent
 import com.sports.sportsflashes.repository.api.NetworkResponse
 import com.sports.sportsflashes.repository.api.STATUS
@@ -37,6 +44,7 @@ import javax.inject.Inject
  */
 class HomeFragment : Fragment(),
     FeaturedShowsImpl {
+    private var token: String? = null
     var smallItemWidth: Int = 0
     var mainItemWidth: Int = 0
     private var draggingView = -1
@@ -46,6 +54,9 @@ class HomeFragment : Fragment(),
     private lateinit var attachedActivity: Context
     private var created = false
     private var refreshed = false
+    private lateinit var preferences: SharedPreferences
+    private lateinit var activity: MainActivity
+    private lateinit var scrollListener: RecyclerView.OnScrollListener
 
     @Inject
     lateinit var mediaPlayer: ExoPlayer
@@ -55,6 +66,11 @@ class HomeFragment : Fragment(),
         EventBus.getDefault().post(MessageEvent(MessageEvent.HOME_FRAGMENT))
     }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        activity = context as MainActivity
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -62,6 +78,14 @@ class HomeFragment : Fragment(),
     ): View? {
         viewModel = ViewModelProvider(this).get(HomeFragmentViewModel::class.java)
         SFApplication.getAppComponent().inject(this)
+        activity.appLogo.setCompoundDrawablesRelativeWithIntrinsicBounds(
+            R.drawable.in_app_logo,
+            0,
+            0,
+            0
+        )
+        activity.toolbar.setBackgroundColor(resources.getColor(android.R.color.transparent, null))
+        activity.appLogo.text = ""
         return inflater.inflate(R.layout.home_fragment, null, false)
 
     }
@@ -69,11 +93,26 @@ class HomeFragment : Fragment(),
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         attachedActivity = this.requireContext()
+        subscribeFirebase()
         initDashboard()
         setFeaturedShows()
         initRefresh()
     }
 
+    private fun subscribeFirebase() {
+        preferences = requireActivity().getSharedPreferences(
+            getString(R.string.pref_key),
+            Context.MODE_PRIVATE
+        )
+        token = preferences.getString(AppConstant.FIREBASE_INSTANCE, "")!!
+        viewModel.subscribeFirebase(FirebaseRequest(token!!))
+            .observe(requireActivity(), Observer<NetworkResponse> {
+                if (it.status == STATUS.SUCCESS) {
+                    val firebaseSubscription = it.data as FirebaseSubscribeModel
+                    Log.d("BHANU", "FIREBASE----> " + Gson().toJson(firebaseSubscription))
+                }
+            })
+    }
 
     private fun initRefresh() {
         swipeRefresh.isRefreshing = true
@@ -82,19 +121,32 @@ class HomeFragment : Fragment(),
             swipeRefresh.isRefreshing = true
             setFeaturedShows()
         }
+
+        /* imageCategory.setOnTouchListener(View.OnTouchListener { v, event ->
+             swipeRefresh.isEnabled = false
+             when (event.action) {
+                 MotionEvent.ACTION_UP -> swipeRefresh.isEnabled = true
+                 MotionEvent.ACTION_DOWN->swipeRefresh.isEnabled=true
+             }
+             true
+         })
+         circularRecycler.setOnTouchListener(View.OnTouchListener { v, event ->
+             swipeRefresh.isEnabled = false
+             when (event.action) {
+                 MotionEvent.ACTION_UP -> swipeRefresh.isEnabled = true
+             }
+             false
+         })*/
     }
 
     private fun initDashboard() {
         circularRecycler.setHasFixedSize(true)
-        circularRecycler.layoutManager = activity?.let {
-            LoopingLayoutManager(it).also {
+        circularRecycler.layoutManager= activity?.let {
+            LinearLayoutManager(it).also {
                 it.reverseLayout = false
                 it.orientation = LinearLayoutManager.HORIZONTAL
             }
         }
-        circularRecycler.mViewMode = CircularHorizontalMode()
-        circularRecycler.mNeedCenterForce = true
-
         imageCategory.setHasFixedSize(true)
         imageCategory.layoutManager = activity?.let {
             LoopingLayoutManager(it).also {
@@ -104,7 +156,7 @@ class HomeFragment : Fragment(),
         }
         val snapHelper = PagerSnapHelper()
         snapHelper.attachToRecyclerView(imageCategory)
-        val scrollListener: RecyclerView.OnScrollListener =
+        scrollListener =
             object : RecyclerView.OnScrollListener() {
                 var state: Int = -1
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -112,6 +164,8 @@ class HomeFragment : Fragment(),
                     if (draggingView == 1 && recyclerView == imageCategory) {
                         circularRecycler.scrollBy(dx / (mainItemWidth / smallItemWidth), 0)
                         if (state == RecyclerView.SCROLL_STATE_SETTLING) {
+//                            circularRecycler.smoothScrollToView(imageCategory.getChildAt(imageCategory.getChildLayoutPosition(circularRecycler.findViewAtCenter()!!)))
+
                             circularRecycler.smoothScrollToView(circularRecycler.findViewAtCenter()!!)
                             circularRecycler.smoothScrollToPosition(
                                 (imageCategory.adapter as ImageShowAdapter).getItemPosition()
@@ -144,18 +198,27 @@ class HomeFragment : Fragment(),
                     super.onScrollStateChanged(recyclerView, newState)
                 }
             }
+
         Handler().postDelayed({
+            circularRecycler.layoutManager = activity?.let {
+                LoopingLayoutManager(it).also {
+                    it.reverseLayout = false
+                    it.orientation = LinearLayoutManager.HORIZONTAL
+                }
+            }
+            circularRecycler.mViewMode = CircularHorizontalMode()
+            circularRecycler.mNeedCenterForce = true
             imageCategory.addOnScrollListener(scrollListener)
             circularRecycler.addOnScrollListener(scrollListener)
         }, 1000)
 
-
         setAlphaForFeaturedChanged()
 
         playCurrentShow.setOnClickListener {
-            (attachedActivity as MainActivity).onCurrentShowClicked(featuredShowslist[imageCategory.layoutManager.let { t ->
-                t!!.getPosition(circularRecycler.findViewAtCenter()!!)
-            }])
+            if (featuredShowslist.isNotEmpty())
+                (attachedActivity as MainActivity).onCurrentShowClicked(featuredShowslist[imageCategory.layoutManager.let { t ->
+                    t!!.getPosition(circularRecycler.findViewAtCenter()!!)
+                }])
         }
     }
 
@@ -170,8 +233,20 @@ class HomeFragment : Fragment(),
     override fun setFeaturedDetail(featuredShow: FeaturedShows) {
         animation1.startNow()
         showTittle.text = featuredShow.title
-        creatorName.text = featuredShow.description
-        showTime.text = formatHoursAndMinutes(featuredShow.duration)
+        creatorName.text = featuredShow.creator
+        if (featuredShow.releaseTime.isNotEmpty()) {
+            val time = DateTimeUtils.convertServerISOTime(
+                AppConstant.DateTime.TIME_FORMAT_HOURS,
+                featuredShow.releaseTime
+            )
+            showTime.text = "$time - ${DateTimeUtils.getAdditionalTimeWithDuration(
+                time!!,
+                AppConstant.DateTime.TIME_FORMAT_HOURS,
+                featuredShow.duration
+            )}"
+        } else {
+            showTime.text = formatHoursAndMinutes(featuredShow.duration)
+        }
         if (featuredShow.seasonsEpisodes.isNotEmpty() && featuredShow.seasonsEpisodes[0].live && featuredShow.type.equals(
                 "podcast",
                 true
@@ -208,36 +283,39 @@ class HomeFragment : Fragment(),
                         featuredShowslist = t.data as List<FeaturedShows>
                         (attachedActivity as MainActivity).setShowsList(featuredShowslist)
                         imageCategory?.let {
-                            it.adapter =
-                                ImageShowAdapter(featuredShowslist, {
-                                    mainItemWidth = it
-                                }, requireContext())
+                            if (featuredShowslist.isNotEmpty())
+                                it.adapter =
+                                    ImageShowAdapter(featuredShowslist, {
+                                        mainItemWidth = it
+                                    }, requireContext())
                         }
                         circularRecycler?.let {
                             it.postDelayed({
-                                it.adapter =
-                                    CircularShowAdapter(featuredShowslist, {
-                                        smallItemWidth = it
-                                    }, requireActivity(), false)
-                                if (imageCategory != null)
-                                    imageCategory.postDelayed({
-                                        try {
-                                            imageCategory.scrollToPosition(
-                                                circularRecycler.getChildAdapterPosition(
-                                                    circularRecycler.findViewAtCenter()!!
+                                if (featuredShowslist.isNotEmpty()) {
+                                    it.adapter =
+                                        CircularShowAdapter(featuredShowslist, {
+                                            smallItemWidth = it
+                                        }, requireActivity(), false)
+
+                                    if (imageCategory != null)
+                                        imageCategory.postDelayed({
+                                            try {
+                                                imageCategory.scrollToPosition(
+                                                    circularRecycler.getChildAdapterPosition(
+                                                        circularRecycler.findViewAtCenter()!!
+                                                    )
                                                 )
-                                            )
-                                            setFeaturedDetail(
-                                                featuredShowslist[circularRecycler.getChildAdapterPosition(
-                                                    circularRecycler.findViewAtCenter()!!
-                                                )]
-                                            )
-                                        } catch (e: Exception) {
-                                            e.printStackTrace()
-                                        }
+                                                setFeaturedDetail(
+                                                    featuredShowslist[circularRecycler.getChildAdapterPosition(
+                                                        circularRecycler.findViewAtCenter()!!
+                                                    )]
+                                                )
+                                            } catch (e: Exception) {
+                                                e.printStackTrace()
+                                            }
 
-                                    }, 50)
-
+                                        }, 50)
+                                }
                             }, 1000)
                         }
                     }

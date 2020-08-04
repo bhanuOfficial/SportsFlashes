@@ -158,4 +158,6 @@ class ScheduleRecyclerFragment : Fragment() {
         return outFormat.format(date)
     }
 
+
+
 }

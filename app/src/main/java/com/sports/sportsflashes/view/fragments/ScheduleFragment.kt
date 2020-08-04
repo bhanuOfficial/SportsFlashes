@@ -1,10 +1,12 @@
 package com.sports.sportsflashes.view.fragments
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
+import android.view.View.OnTouchListener
 import android.view.ViewGroup
-import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,6 +19,7 @@ import com.sports.sportsflashes.common.utils.AppConstant
 import com.sports.sportsflashes.model.FeaturedShows
 import com.sports.sportsflashes.model.ScheduleModel
 import com.sports.sportsflashes.repository.api.STATUS
+import com.sports.sportsflashes.view.activites.MainActivity
 import com.sports.sportsflashes.view.adapters.CircularShowAdapter
 import com.sports.sportsflashes.view.adapters.ScheduleViewPagerAdapter
 import com.sports.sportsflashes.viewmodel.ScheduleFragmentViewModel
@@ -27,7 +30,6 @@ import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 
 private const val ARG_PARAM1 = "param1"
@@ -39,10 +41,16 @@ class ScheduleFragment : Fragment() {
     private lateinit var scheduleFragmentViewModel: ScheduleFragmentViewModel
     private lateinit var scheduleModel: ScheduleModel
     private lateinit var viewPageAdapter: ScheduleViewPagerAdapter
+    private lateinit var activity:MainActivity
 
 
     @Inject
     lateinit var gson: Gson
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        activity = context as MainActivity
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,6 +72,10 @@ class ScheduleFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
+        activity.appLogo.setCompoundDrawablesRelativeWithIntrinsicBounds(0,0,0,0)
+        activity.toolbar.setBackgroundColor(resources.getColor(R.color.black,null))
+        activity.appLogo.text= "Schedule"
+        activity.appLogo.setTextColor(resources.getColor(R.color.red,null))
         return inflater.inflate(R.layout.schedule_fragment, container, false)
     }
 
@@ -79,7 +91,8 @@ class ScheduleFragment : Fragment() {
         activity?.let {
             scheduleFragmentViewModel.getScheduleShows()
                 .observe(it, androidx.lifecycle.Observer {
-                    swipeRefresh.isRefreshing = false
+                    if (swipeRefresh != null)
+                        swipeRefresh.isRefreshing = false
                     if (it.status == STATUS.SUCCESS) {
                         scheduleModel = it.data as ScheduleModel
                         viewPageAdapter = ScheduleViewPagerAdapter(
@@ -101,7 +114,16 @@ class ScheduleFragment : Fragment() {
             swipeRefresh.isRefreshing = true
             getShowsFromNetwork()
         }
+
+        scheduleViewPager.setOnTouchListener(OnTouchListener { v, event ->
+            swipeRefresh.isEnabled = false
+            when (event.action) {
+                MotionEvent.ACTION_UP -> swipeRefresh.isEnabled = true
+            }
+            false
+        })
     }
+
 
     private fun initScheduleShowRecycler() {
         schedule_shows_recycler.setHasFixedSize(true)
@@ -109,12 +131,13 @@ class ScheduleFragment : Fragment() {
             this.orientation = LinearLayoutManager.HORIZONTAL
             this.reverseLayout = false
         }
-        schedule_shows_recycler.adapter =
-            activity?.let {
-                CircularShowAdapter(featuredShows, {
-                    var smallItemWidth = it
-                }, it, true)
-            }
+        if (featuredShows.isNotEmpty())
+            schedule_shows_recycler.adapter =
+                activity?.let {
+                    CircularShowAdapter(featuredShows, {
+                        var smallItemWidth = it
+                    }, it, true)
+                }
     }
 
     private fun getWeekList() {

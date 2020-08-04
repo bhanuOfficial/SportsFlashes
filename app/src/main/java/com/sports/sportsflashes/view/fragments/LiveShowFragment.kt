@@ -19,9 +19,7 @@ import kotlinx.android.synthetic.main.live_show_fragment.*
  *Created by Bhanu on 20-07-2020
  */
 class LiveShowFragment : Fragment() {
-    private val sessionId by lazy {
-        arguments?.getString(AppConstant.BundleExtras.LIVE_SHOW_ID)
-    }
+    private lateinit var sessionId: String
     private val liveShowViewModel by lazy {
         ViewModelProvider(this).get(LiveShowFragmentViewModel::class.java)
     }
@@ -31,6 +29,9 @@ class LiveShowFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
+        sessionId = arguments?.getString(AppConstant.BundleExtras.LIVE_SHOW_ID).toString()
+
         val rootView = inflater.inflate(R.layout.live_show_fragment, container, false)
         return rootView
     }
