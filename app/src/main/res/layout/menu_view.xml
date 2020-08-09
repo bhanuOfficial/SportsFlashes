@@ -137,17 +137,17 @@
 
 
                 <LinearLayout
-                    android:id="@+id/downloadView"
+                    android:id="@+id/fansCornerView"
                     android:layout_width="@dimen/circle_size"
                     android:layout_height="@dimen/circle_size"
                     android:background="@drawable/circle_white"
                     android:gravity="center">
 
                     <ImageView
-                        android:id="@+id/downloadIcon"
+                        android:id="@+id/fansCornerIcon"
                         android:layout_width="@dimen/home_icon_size"
                         android:layout_height="@dimen/home_icon_size"
-                        android:background="@drawable/download" />
+                        android:background="@drawable/fans_corner_black" />
                 </LinearLayout>
 
 

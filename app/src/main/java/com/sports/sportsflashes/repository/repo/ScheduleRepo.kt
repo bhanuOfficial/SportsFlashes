@@ -3,6 +3,7 @@ package com.sports.sportsflashes.repository.repo
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.sports.sportsflashes.model.BaseResponse
+import com.sports.sportsflashes.model.ReminderReqModel
 import com.sports.sportsflashes.repository.api.NetworkResponse
 import com.sports.sportsflashes.repository.api.ScheduleApi
 import io.reactivex.Single
@@ -35,6 +36,33 @@ class ScheduleRepo(private val apiService: ScheduleApi, gson: Gson) : BaseNetwor
             null,
             null,
             apiService.getSeasonById(seasonId) as Single<BaseResponse<Any>>
+        )
+    }
+
+    fun getRadioById(responseObserver: MutableLiveData<NetworkResponse>, radioId: String) {
+        startNetworkService(
+            responseObserver,
+            null,
+            null,
+            apiService.getRadioDetails(radioId) as Single<BaseResponse<Any>>
+        )
+    }
+
+    fun setReminder(responseObserver: MutableLiveData<NetworkResponse>, request: ReminderReqModel) {
+        startNetworkService(
+            responseObserver,
+            null,
+            null,
+            apiService.setReminderForShow(request) as Single<BaseResponse<Any>>
+        )
+    }
+
+    fun removeReminder(responseObserver: MutableLiveData<NetworkResponse>, request: ReminderReqModel) {
+        startNetworkService(
+            responseObserver,
+            null,
+            null,
+            apiService.removeReminderForShow(request) as Single<BaseResponse<Any>>
         )
     }
 }

@@ -28,6 +28,7 @@ android {
         release {
             minifyEnabled false
             resValue("string", "pref_key", "SPORTS_FLASHES_PREF")
+            resValue("string", "baseUrl", "https://sports-flashes-staging.herokuapp.com/")
 
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
@@ -76,7 +77,8 @@ dependencies {
     implementation 'com.google.android.exoplayer:exoplayer:2.9.1'
     implementation 'io.github.inflationx:calligraphy3:3.1.1'
     implementation 'io.github.inflationx:viewpump:2.0.3'
-    implementation 'me.tankery.lib:circularSeekBar:1.3.0'
+    implementation 'com.github.feeeei:CircleSeekbar:v1.1.2'
+
 
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"

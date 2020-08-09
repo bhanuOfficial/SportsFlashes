@@ -16,6 +16,8 @@ data class LiveSeasonModel(
     val seasonNumber: Int = 0,
     val thumbnail: String = "",
     val title: String = "",
+    val link: String = "",
+    val icon: String = "",
     val upcoming: List<GenericUpcomingShows> = listOf(),
     val updatedAt: String = ""
 ) {
@@ -51,10 +53,12 @@ data class LiveSeasonModel(
         val description: String = "",
         val duration: Int = 0,
         val episodeNumber: Int = 0,
-        val link: String = "",
+        var link: String = "",
         val releaseTime: String = "",
         val thumbnail: String = "",
         val title: String = "",
+        val live: Boolean = false,
+        val radio: Boolean = false,
         val updatedAt: String = ""
     )
 
@@ -63,14 +67,15 @@ data class LiveSeasonModel(
         val _id: String = "",
         val category: String = "",
         val createdAt: String = "",
-        val description: String = "",
+        var description: String = "",
         val duration: Int = 0,
         val episodeNumber: Int = 0,
         val link: String = "",
         val releaseTime: String = "",
         val thumbnail: String = "",
         val title: String = "",
-        val updatedAt: String = ""
+        val updatedAt: String = "",
+        val startTime: String = ""
     )
 
 

@@ -30,17 +30,30 @@ class LiveShowAdapter(
         return when (position) {
             0 -> {
                 ShowViewFragment().apply {
-                    if (liveSeasonModel.live.isNotEmpty()){
+                    if (liveSeasonModel.live.isNotEmpty()) {
                         this.arguments = Bundle().also {
+                            if (liveSeasonModel.live[0].radio){
+                                liveSeasonModel.live[0].link = liveSeasonModel.link
+                            }
                             it.putString(
                                 AppConstant.BundleExtras.FEATURED_SHOW,
                                 gson.toJson(liveSeasonModel.live[0])
+                            )
+                            it.putBoolean(
+                                AppConstant.BundleExtras.FROM_SCHEDULE_LIVE,
+                                true
                             )
                         }
                     }
                 }
             }
             1 -> {
+                if (liveSeasonModel.live[0].radio) {
+                    for (i in liveSeasonModel.scheduled) {
+                        i.description = liveSeasonModel.description
+                    }
+                }
+
                 LiveShowPagerFragment().apply {
                     this.arguments = Bundle().also {
                         it.putString(
@@ -51,6 +64,11 @@ class LiveShowAdapter(
                 }
             }
             else -> {
+                if (liveSeasonModel.live[0].radio) {
+                    for (i in liveSeasonModel.upcoming) {
+                        i.description = liveSeasonModel.description
+                    }
+                }
                 LiveShowPagerFragment().apply {
                     this.arguments = Bundle().also {
                         it.putString(

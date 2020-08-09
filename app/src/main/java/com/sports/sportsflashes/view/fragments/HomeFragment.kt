@@ -23,6 +23,7 @@ import com.sports.sportsflashes.common.application.SFApplication
 import com.sports.sportsflashes.common.helper.FeaturedShowsImpl
 import com.sports.sportsflashes.common.utils.AppConstant
 import com.sports.sportsflashes.common.utils.DateTimeUtils
+import com.sports.sportsflashes.common.utils.DateTimeUtils.formatHoursAndMinutes
 import com.sports.sportsflashes.model.FeaturedShows
 import com.sports.sportsflashes.model.FirebaseRequest
 import com.sports.sportsflashes.model.FirebaseSubscribeModel
@@ -141,7 +142,7 @@ class HomeFragment : Fragment(),
 
     private fun initDashboard() {
         circularRecycler.setHasFixedSize(true)
-        circularRecycler.layoutManager= activity?.let {
+        circularRecycler.layoutManager = activity?.let {
             LinearLayoutManager(it).also {
                 it.reverseLayout = false
                 it.orientation = LinearLayoutManager.HORIZONTAL
@@ -210,7 +211,7 @@ class HomeFragment : Fragment(),
             circularRecycler.mNeedCenterForce = true
             imageCategory.addOnScrollListener(scrollListener)
             circularRecycler.addOnScrollListener(scrollListener)
-        }, 1000)
+        }, 100)
 
         setAlphaForFeaturedChanged()
 
@@ -247,24 +248,30 @@ class HomeFragment : Fragment(),
         } else {
             showTime.text = formatHoursAndMinutes(featuredShow.duration)
         }
-        if (featuredShow.seasonsEpisodes.isNotEmpty() && featuredShow.seasonsEpisodes[0].live && featuredShow.type.equals(
+        if (featuredShow.seasonsEpisodes.isNotEmpty() && featuredShow.seasonsEpisodes[0].live &&
+            featuredShow.type.equals(
                 "podcast",
                 true
             )
         ) {
             showLiveStatus.text = "Listen Live"
+        } else if (featuredShow.radio) {
+            showLiveStatus.text = "Listen Live"
+        } else if (featuredShow.type.equals(
+                "podcast",
+                true
+            )
+        ) {
+            showLiveStatus.text = "Listen"
+        } else if (featuredShow.type.equals(
+                "video",
+                true
+            )
+        ) {
+            showLiveStatus.text = "Watch"
         } else {
             showLiveStatus.text = "Watch Live"
         }
-    }
-
-    private fun formatHoursAndMinutes(totalMinutes: Int): String? {
-        var minutes = (totalMinutes % 60).toString()
-        minutes = if (minutes.length == 1) "0$minutes" else minutes
-        return if ((totalMinutes / 60).toString() == "0") {
-            if (minutes.length == 1) "$minutes min" else "$minutes mins"
-        } else
-            ((totalMinutes / 60).toString()) + "h " + minutes + "m"
     }
 
 

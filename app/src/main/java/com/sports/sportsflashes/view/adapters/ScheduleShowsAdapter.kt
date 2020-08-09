@@ -2,6 +2,7 @@ package com.sports.sportsflashes.view.adapters
 
 import android.app.Activity
 import android.content.Context
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,6 +14,7 @@ import android.widget.Toast
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.google.android.exoplayer2.ExoPlayer
 import com.google.gson.Gson
 import com.sports.sportsflashes.R
 import com.sports.sportsflashes.common.application.SFApplication
@@ -31,6 +33,8 @@ class ScheduleShowsAdapter(
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     @Inject
     lateinit var gson: Gson
+    @Inject
+    lateinit var mediaPlayer: ExoPlayer
 
     init {
         SFApplication.getAppComponent().inject(this)
@@ -95,10 +99,18 @@ class ScheduleShowsAdapter(
         if (holder is ShowItemHolder) {
             holder.showTittle.text = scheduleShowsList[position].title
             holder.showDescription.text = scheduleShowsList[position].description
-            holder.showTime.text = DateTimeUtils.convertServerISOTime(
-                AppConstant.DateTime.TIME_FORMAT_HOURS,
-                scheduleShowsList[position].releaseTime
-            )
+            if (scheduleShowsList[position].radio) {
+                holder.showTime.text = DateTimeUtils.convertServerISOTime(
+                    AppConstant.DateTime.TIME_FORMAT_HOURS,
+                    scheduleShowsList[position].startTime
+                )
+            } else {
+                holder.showTime.text = DateTimeUtils.convertServerISOTime(
+                    AppConstant.DateTime.TIME_FORMAT_HOURS,
+                    scheduleShowsList[position].releaseTime
+                )
+            }
+
             Glide.with(holder.itemView.context).load(scheduleShowsList[position].thumbnail)
                 .placeholder(
                     holder.itemView.context.resources.getDrawable(
@@ -120,14 +132,26 @@ class ScheduleShowsAdapter(
             }
         } else if (holder is LiveShowItemHolder) {
             holder.showTittle.text = scheduleShowsList[position].title
-            holder.showDescription.text = DateTimeUtils.convertServerISOTime(
-                AppConstant.DateTime.ADD_DONATION_SERVER_FORMAT,
-                scheduleShowsList[position].releaseTime
-            )
-            holder.showTime.text = DateTimeUtils.convertServerISOTime(
-                AppConstant.DateTime.TIME_FORMAT_HOURS,
-                scheduleShowsList[position].releaseTime
-            )
+            if (scheduleShowsList[position].radio) {
+                holder.showTime.text = DateTimeUtils.convertServerISOTime(
+                    AppConstant.DateTime.TIME_FORMAT_HOURS,
+                    scheduleShowsList[position].startTime
+                )
+                holder.showDescription.text = DateTimeUtils.convertServerISOTime(
+                    AppConstant.DateTime.ADD_DONATION_SERVER_FORMAT,
+                    scheduleShowsList[position].startTime
+                )
+            } else {
+                holder.showTime.text = DateTimeUtils.convertServerISOTime(
+                    AppConstant.DateTime.TIME_FORMAT_HOURS,
+                    scheduleShowsList[position].releaseTime
+                )
+                holder.showDescription.text = DateTimeUtils.convertServerISOTime(
+                    AppConstant.DateTime.ADD_DONATION_SERVER_FORMAT,
+                    scheduleShowsList[position].releaseTime
+                )
+            }
+
             Glide.with(holder.itemView.context).load(scheduleShowsList[position].thumbnail)
                 .placeholder(
                     holder.itemView.context.resources.getDrawable(
@@ -146,6 +170,14 @@ class ScheduleShowsAdapter(
                                 scheduleShowsList[position].seasons[0].toString()
                             )
 
+                        })
+                }else if (scheduleShowsList[position].radio){
+                    Navigation.findNavController(context as Activity, R.id.app_host_fragment)
+                        .navigate(R.id.action_scheduleFragment_to_liveShowFragment, Bundle().apply {
+                            this.putString(
+                                AppConstant.BundleExtras.LIVE_RADIO_ID,
+                                scheduleShowsList[position]._id
+                            )
                         })
                 } else {
                     Toast.makeText(

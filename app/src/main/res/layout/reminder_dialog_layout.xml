@@ -8,22 +8,22 @@
     android:padding="@dimen/medium_padding">
 
     <TextView
-        android:layout_marginTop="@dimen/large_margin"
         android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/large_margin"
+        android:fontFamily="@font/helvetica_now_display_bold"
         android:gravity="center"
         android:padding="@dimen/small_padding"
-        android:fontFamily="@font/helvetica_now_display_bold"
         android:textColor="@color/white"
         android:textSize="@dimen/medium_size"
         android:textStyle="bold" />
 
     <TextView
         android:id="@+id/message"
-        android:fontFamily="@font/helvetica_now_display_regular"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:fontFamily="@font/helvetica_now_display_regular"
         android:gravity="center"
         android:padding="@dimen/small_padding"
         android:textColor="@color/white"
@@ -31,40 +31,41 @@
         android:textStyle="bold" />
 
     <Button
-        android:visibility="gone"
-        android:fontFamily="@font/helvetica_now_display_medium"
+        android:layout_marginTop="@dimen/large_margin"
         android:id="@+id/buttonOk"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:background="@drawable/round_corner_button_white"
-        android:text="@string/ok"
-        android:textColor="@color/red" />
+        android:fontFamily="@font/helvetica_now_display_medium"
+        android:text="Ok"
+        android:textColor="@color/red"
+        android:visibility="visible" />
 
     <LinearLayout
-        android:layout_marginTop="@dimen/large_margin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/large_margin"
         android:gravity="center"
         android:padding="@dimen/small_padding">
 
         <Button
             android:id="@+id/buttonYes"
-            android:fontFamily="@font/helvetica_now_display_medium"
-            android:alpha="0.8"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
             android:layout_marginRight="@dimen/medium_margin"
+            android:alpha="0.8"
             android:background="@drawable/round_corner_button_white"
+            android:fontFamily="@font/helvetica_now_display_medium"
             android:text="@string/yes"
             android:textColor="@color/red" />
 
         <Button
             android:id="@+id/buttonNo"
-            android:fontFamily="@font/helvetica_now_display_medium"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
             android:layout_marginLeft="@dimen/medium_margin"
             android:background="@drawable/round_corner_button_white"
+            android:fontFamily="@font/helvetica_now_display_medium"
             android:text="@string/no"
             android:textColor="@color/red" />
     </LinearLayout>

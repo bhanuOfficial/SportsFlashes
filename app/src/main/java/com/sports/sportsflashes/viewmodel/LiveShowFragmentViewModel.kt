@@ -21,4 +21,9 @@ class LiveShowFragmentViewModel : ViewModel(){
         scheduleRepoFactory.getLiveSeason(liveShowResponseObserver,seasonId)
         return liveShowResponseObserver
     }
+
+    fun getRadioById(radioId: String): MutableLiveData<NetworkResponse> {
+        scheduleRepoFactory.getRadioById(liveShowResponseObserver, radioId)
+        return liveShowResponseObserver
+    }
 }

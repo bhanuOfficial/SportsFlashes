@@ -162,6 +162,8 @@ class MainActivity : AppCompatActivity(), FeaturedShowsListImpl, CurrentShowClic
             if (show.radio || show.seasonsEpisodes[seasonIndex].live) {
                 backwardRadio.visibility = View.GONE
                 forwardRadio.visibility = View.GONE
+                if (!show.radio)
+                    showTimeRadio.visibility = View.GONE
                 linearLayout.setBackgroundResource(android.R.color.transparent)
             }
             /* Glide.with(this)
@@ -234,9 +236,9 @@ class MainActivity : AppCompatActivity(), FeaturedShowsListImpl, CurrentShowClic
             }
             this.show = show
             if (show.radio) {
-                exoPlayerInit(show.link)
+                exoPlayerInit(show.link, 0)
             } else
-                exoPlayerInit(show.seasonsEpisodes[seasonIndex].link.trim())
+                exoPlayerInit(show.seasonsEpisodes[seasonIndex].link.trim(), show.duration)
             sharePodcastAction.setOnClickListener {
                 if (show.radio) {
                     AppUtility.shareAppContent(
@@ -319,7 +321,7 @@ class MainActivity : AppCompatActivity(), FeaturedShowsListImpl, CurrentShowClic
     }
 
 
-    private fun exoPlayerInit(streamUrl: String) {
+    private fun exoPlayerInit(streamUrl: String, duration: Int) {
         mediaPlayer.addListener(object : Player.EventListener {
 
             override fun onPlaybackParametersChanged(playbackParameters: PlaybackParameters?) {
@@ -389,31 +391,33 @@ class MainActivity : AppCompatActivity(), FeaturedShowsListImpl, CurrentShowClic
     }
 
     private fun initSeek() {
-        if (show.radio || this.show.seasonsEpisodes[0].live) {
+        var duration: Long = mediaPlayer.duration
+        var amountToUpdate = duration / 100
+        if (show.radio) {
 //            smallSeekBar.progress = 100F
-            largeSeekBar.progress = 100F
+            largeSeekBar.curProcess = 100
 //            smallSeekBar.isEnabled = false
             largeSeekBar.isEnabled = false
-        } else {
-            val duration: Long = mediaPlayer.duration
-            val amountToUpdate = duration / 100
-//            smallSeekBar.max = amountToUpdate.toFloat()
-            largeSeekBar.max = amountToUpdate.toFloat()
-            updateSongTime = object : Runnable {
-                override fun run() {
-                    val startTime = mediaPlayer.currentPosition
-//                    smallSeekBar.progress = startTime.toFloat() / 100
-                    largeSeekBar.progress = startTime.toFloat() / 100
-                    seekBarHandler.postDelayed(this, 1000)
-                }
-            }
-            seekBarHandler.post(updateSongTime)
         }
+
+
+//            smallSeekBar.max = amountToUpdate.toFloat()
+        largeSeekBar.maxProcess = amountToUpdate.toInt()
+        updateSongTime = object : Runnable {
+            override fun run() {
+                val startTime = mediaPlayer.currentPosition
+//                    smallSeekBar.progress = startTime.toFloat() / 100
+                largeSeekBar.curProcess = startTime.toInt() / 100
+                seekBarHandler.postDelayed(this, 1000)
+            }
+        }
+        seekBarHandler.post(updateSongTime)
+
     }
 
     private fun onItemClickOptionMenu() {
         schedualView.setOnClickListener { v -> changeViewOfOptionMenuClick(v) }
-        downloadView.setOnClickListener { v -> changeViewOfOptionMenuClick(v) }
+        fansCornerView.setOnClickListener { v -> changeViewOfOptionMenuClick(v) }
         eventView.setOnClickListener { v -> changeViewOfOptionMenuClick(v) }
         reminderView.setOnClickListener { v -> changeViewOfOptionMenuClick(v) }
         homeView.setOnClickListener { v -> changeViewOfOptionMenuClick(v) }
@@ -434,16 +438,16 @@ class MainActivity : AppCompatActivity(), FeaturedShowsListImpl, CurrentShowClic
                                 gson.toJson(featuredShows)
                             )
                     })
-                arrayOf(downloadView, eventView, homeView, reminderView).forEach {
+                arrayOf(fansCornerView, eventView, homeView, reminderView).forEach {
                     it.setBackgroundResource(R.drawable.circle_white)
                 }
-                downloadIcon.background = resources.getDrawable(R.drawable.download, null)
+                fansCornerIcon.background = resources.getDrawable(R.drawable.fans_corner_black, null)
                 eventIcon.background = resources.getDrawable(R.drawable.highlights, null)
                 homeIcon.background = resources.getDrawable(R.drawable.home_black, null)
                 reminderIcon.background = resources.getDrawable(R.drawable.reminder, null)
                 schedualIcon.background = resources.getDrawable(R.drawable.schedule_white, null)
             }
-            downloadView -> {
+            fansCornerView -> {
                 arrayOf(schedualView, eventView, homeView, reminderView).forEach {
                     it.setBackgroundResource(R.drawable.circle_white)
                 }
@@ -451,21 +455,21 @@ class MainActivity : AppCompatActivity(), FeaturedShowsListImpl, CurrentShowClic
                 eventIcon.background = resources.getDrawable(R.drawable.highlights, null)
                 homeIcon.background = resources.getDrawable(R.drawable.home_black, null)
                 reminderIcon.background = resources.getDrawable(R.drawable.reminder, null)
-                downloadIcon.background = resources.getDrawable(R.drawable.download_white, null)
+                fansCornerIcon.background = resources.getDrawable(R.drawable.fans_corner_white, null)
             }
             eventView -> {
                 findNavController(R.id.app_host_fragment).navigateUp()
                 findNavController(R.id.app_host_fragment).navigate(
                     R.id.eventsFragment, null
                 )
-                arrayOf(schedualView, downloadView, homeView, reminderView).forEach {
+                arrayOf(schedualView, fansCornerView, homeView, reminderView).forEach {
                     it.setBackgroundResource(R.drawable.circle_white)
                 }
                 schedualIcon.background = resources.getDrawable(R.drawable.schedule, null)
                 eventIcon.background = resources.getDrawable(R.drawable.highlights_white, null)
                 homeIcon.background = resources.getDrawable(R.drawable.home_black, null)
                 reminderIcon.background = resources.getDrawable(R.drawable.reminder, null)
-                downloadIcon.background = resources.getDrawable(R.drawable.download, null)
+                fansCornerIcon.background = resources.getDrawable(R.drawable.fans_corner_black, null)
             }
             reminderView -> {
                 findNavController(R.id.app_host_fragment).navigateUp()
@@ -478,25 +482,25 @@ class MainActivity : AppCompatActivity(), FeaturedShowsListImpl, CurrentShowClic
                         )
                     }
                 )
-                arrayOf(schedualView, downloadView, homeView, eventView).forEach {
+                arrayOf(schedualView, fansCornerView, homeView, eventView).forEach {
                     it.setBackgroundResource(R.drawable.circle_white)
                 }
                 schedualIcon.background = resources.getDrawable(R.drawable.schedule, null)
                 eventIcon.background = resources.getDrawable(R.drawable.highlights, null)
                 homeIcon.background = resources.getDrawable(R.drawable.home_black, null)
                 reminderIcon.background = resources.getDrawable(R.drawable.reminder_white, null)
-                downloadIcon.background = resources.getDrawable(R.drawable.download, null)
+                fansCornerIcon.background = resources.getDrawable(R.drawable.fans_corner_black, null)
             }
             homeView -> {
                 findNavController(R.id.app_host_fragment).popBackStack()
-                arrayOf(schedualView, downloadView, eventView, reminderView).forEach {
+                arrayOf(schedualView, fansCornerView, eventView, reminderView).forEach {
                     it.setBackgroundResource(R.drawable.circle_white)
                 }
                 schedualIcon.background = resources.getDrawable(R.drawable.schedule, null)
                 eventIcon.background = resources.getDrawable(R.drawable.highlights, null)
                 homeIcon.background = resources.getDrawable(R.drawable.home_white, null)
                 reminderIcon.background = resources.getDrawable(R.drawable.reminder, null)
-                downloadIcon.background = resources.getDrawable(R.drawable.download, null)
+                fansCornerIcon.background = resources.getDrawable(R.drawable.fans_corner_black, null)
             }
         }
         menu_drawer.performClick()
@@ -512,8 +516,7 @@ class MainActivity : AppCompatActivity(), FeaturedShowsListImpl, CurrentShowClic
     }
 
     override fun onCurrentShowClicked(featuredShows: FeaturedShows) {
-        showName.text = featuredShows.title
-        showDisc.text = featuredShows.description
+        seasonIndex = 0
         initPodcastViewer(featuredShows)
     }
 
@@ -537,14 +540,14 @@ class MainActivity : AppCompatActivity(), FeaturedShowsListImpl, CurrentShowClic
         when (messageEvent.type) {
             MessageEvent.HOME_FRAGMENT -> {
                 homeView.setBackgroundResource(R.drawable.circle_red)
-                arrayOf(schedualView, downloadView, eventView, reminderView).forEach {
+                arrayOf(schedualView, fansCornerView, eventView, reminderView).forEach {
                     it.setBackgroundResource(R.drawable.circle_white)
                 }
                 schedualIcon.background = resources.getDrawable(R.drawable.schedule, null)
                 eventIcon.background = resources.getDrawable(R.drawable.highlights, null)
                 homeIcon.background = resources.getDrawable(R.drawable.home_white, null)
                 reminderIcon.background = resources.getDrawable(R.drawable.reminder, null)
-                downloadIcon.background = resources.getDrawable(R.drawable.download, null)
+                fansCornerIcon.background = resources.getDrawable(R.drawable.fans_corner_black, null)
             }
             MessageEvent.PLAY_PODCAST_SOURCE -> {
                 val show = messageEvent.data as FeaturedShows

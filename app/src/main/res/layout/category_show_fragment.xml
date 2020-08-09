@@ -9,4 +9,19 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="?actionBarSize" />
+
+    <TextView
+        android:visibility="gone"
+        android:id="@+id/noData"
+        android:fontFamily="@font/helvetica_now_display_bold"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/categoryShowRecycler"
+        android:gravity="center_vertical|center"
+        android:text="No data found"
+        android:layout_marginBottom="?actionBarSize"
+        android:textColor="@color/white"
+        android:textSize="@dimen/medium_size"
+        />
+
 </RelativeLayout>

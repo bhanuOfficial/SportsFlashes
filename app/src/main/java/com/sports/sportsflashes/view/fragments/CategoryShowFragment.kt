@@ -7,13 +7,11 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.observe
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.sports.sportsflashes.R
 import com.sports.sportsflashes.common.utils.AppConstant
 import com.sports.sportsflashes.model.FeaturedShows
-import com.sports.sportsflashes.model.LiveSeasonModel
 import com.sports.sportsflashes.repository.api.STATUS
 import com.sports.sportsflashes.view.adapters.CategoryShowAdapter
 import com.sports.sportsflashes.viewmodel.CategoryShowViewModel
@@ -54,11 +52,21 @@ class CategoryShowFragment : Fragment() {
 
     private fun getShowsByCategory() {
         categoryId?.let {
-            activity?.let { it1 ->
-                viewModel.getCategoryShow(it).observe(it1, Observer {
+            activity?.let { activity ->
+                viewModel.getCategoryShow(it).observe(activity, Observer {
                     if (it.status == STATUS.SUCCESS) {
-                        categoryShowRecycler.adapter =
-                            CategoryShowAdapter(it.data as ArrayList<FeaturedShows>)
+                        val categoryListData = it.data as ArrayList<FeaturedShows>
+                        if (noData != null)
+                            if (categoryListData.isEmpty()) {
+                                noData.visibility = View.VISIBLE
+                            } else
+                                noData.visibility = View.GONE
+                        if (categoryShowRecycler != null)
+                            categoryShowRecycler.adapter =
+                                CategoryShowAdapter(it.data as ArrayList<FeaturedShows>)
+                    } else if (it.status == STATUS.ERROR) {
+                        if (noData != null)
+                            noData.visibility = View.VISIBLE
                     }
                 })
             }

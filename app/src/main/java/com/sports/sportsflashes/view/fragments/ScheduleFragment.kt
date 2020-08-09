@@ -10,7 +10,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.material.tabs.TabLayout
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.sports.sportsflashes.R
@@ -41,7 +40,7 @@ class ScheduleFragment : Fragment() {
     private lateinit var scheduleFragmentViewModel: ScheduleFragmentViewModel
     private lateinit var scheduleModel: ScheduleModel
     private lateinit var viewPageAdapter: ScheduleViewPagerAdapter
-    private lateinit var activity:MainActivity
+    private lateinit var activity: MainActivity
 
 
     @Inject
@@ -72,10 +71,10 @@ class ScheduleFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        activity.appLogo.setCompoundDrawablesRelativeWithIntrinsicBounds(0,0,0,0)
-        activity.toolbar.setBackgroundColor(resources.getColor(R.color.black,null))
-        activity.appLogo.text= "Schedule"
-        activity.appLogo.setTextColor(resources.getColor(R.color.red,null))
+        activity.appLogo.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0)
+        activity.toolbar.setBackgroundColor(resources.getColor(R.color.black, null))
+        activity.appLogo.text = "Schedule"
+        activity.appLogo.setTextColor(resources.getColor(R.color.red, null))
         return inflater.inflate(R.layout.schedule_fragment, container, false)
     }
 
@@ -88,7 +87,7 @@ class ScheduleFragment : Fragment() {
     }
 
     private fun getShowsFromNetwork() {
-        activity?.let {
+        activity.let {
             scheduleFragmentViewModel.getScheduleShows()
                 .observe(it, androidx.lifecycle.Observer {
                     if (swipeRefresh != null)
@@ -102,7 +101,14 @@ class ScheduleFragment : Fragment() {
                             weekdayList
                         )
                         scheduleViewPager.adapter = viewPageAdapter
-                        scheduleViewPager.setCurrentItem(3, true)
+                        if (scheduleViewPager != null)
+                            scheduleViewPager.postDelayed(Runnable {
+                                scheduleViewPager.setCurrentItem(
+                                    3,
+                                    true
+                                )
+                            }, 200)
+                        scheduleViewPager.offscreenPageLimit = weekdayList.size
                     }
                 })
         }
@@ -178,19 +184,5 @@ class ScheduleFragment : Fragment() {
 
         Collections.sort(weekdayList, byDate)
         weekTabs.setupWithViewPager(scheduleViewPager)
-        weekTabs.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabReselected(tab: TabLayout.Tab?) {
-            }
-
-            override fun onTabUnselected(tab: TabLayout.Tab?) {
-            }
-
-            override fun onTabSelected(tab: TabLayout.Tab?) {
-                scheduleViewPager.setCurrentItem(weekTabs.selectedTabPosition, true)
-            }
-
-        })
     }
-
-
 }

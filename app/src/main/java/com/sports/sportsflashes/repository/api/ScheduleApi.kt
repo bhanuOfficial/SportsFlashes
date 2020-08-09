@@ -1,13 +1,8 @@
 package com.sports.sportsflashes.repository.api
 
-import com.sports.sportsflashes.model.BaseResponse
-import com.sports.sportsflashes.model.LiveSeasonModel
-import com.sports.sportsflashes.model.MonthEventModel
-import com.sports.sportsflashes.model.ScheduleModel
+import com.sports.sportsflashes.model.*
 import io.reactivex.Single
-import retrofit2.http.GET
-import retrofit2.http.Path
-import retrofit2.http.Query
+import retrofit2.http.*
 
 /**
  *Created by Bhanu on 06-07-2020
@@ -21,4 +16,15 @@ interface ScheduleApi {
 
     @GET("/api/seasons/{id}")
     fun getSeasonById(@Path("id") seasonId: String): Single<BaseResponse<LiveSeasonModel>>
+
+    @PUT("api/users/subscribe")
+    fun setReminderForShow(@Body requestBody: ReminderReqModel): Single<BaseResponse<ReminderRespose>>
+
+    @PUT("/api/users/unsubscribe")
+    fun removeReminderForShow(@Body requestBody: ReminderReqModel): Single<BaseResponse<ReminderRespose>>
+
+    @GET("/api/radio/{id}/details")
+    fun getRadioDetails(@Path("id") radioId: String): Single<BaseResponse<LiveSeasonModel>>
+
+
 }

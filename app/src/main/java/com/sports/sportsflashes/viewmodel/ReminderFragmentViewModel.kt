@@ -8,21 +8,10 @@ import com.sports.sportsflashes.repository.api.STATUS
 import com.sports.sportsflashes.repository.factory.RepositoryFactory
 
 /**
- *Created by Bhanu on 06-07-2020
+ *Created by Bhanu on 09-08-2020
  */
-class EventFragmentViewModel : ViewModel() {
+class ReminderFragmentViewModel : ViewModel(){
     private val scheduleRepoFactory = RepositoryFactory().scheduleRepo
-    private val eventsResponseObserver = MutableLiveData(
-        NetworkResponse(
-            STATUS.NOT_REQUESTED
-        )
-    )
-
-    fun getEventsByMonth(month : Int): MutableLiveData<NetworkResponse> {
-        scheduleRepoFactory.getEvents(eventsResponseObserver,month)
-        return eventsResponseObserver
-    }
-
     private val reminderResponseObserver = MutableLiveData(
         NetworkResponse(
             STATUS.NOT_REQUESTED

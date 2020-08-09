@@ -29,6 +29,10 @@ data class ScheduleModel(
         val thumbnail: String = "",
         val title: String = "",
         val type: String = "",
-        val updatedAt: String = ""
+        val updatedAt: String = "",
+        val link: String = "",
+        val startTime: String = "",
+        val endTime: String = "",
+        val radio: Boolean = false
     )
 }

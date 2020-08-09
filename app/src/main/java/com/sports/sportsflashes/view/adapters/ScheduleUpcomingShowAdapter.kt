@@ -41,10 +41,17 @@ class ScheduleUpcomingShowAdapter(private val list: ArrayList<LiveSeasonModel.Ge
     override fun onBindViewHolder(holder: ItemHolder, position: Int) {
         holder.showTittle.text = list[position].title
         holder.showDescription.text = list[position].description
-        holder.showTime.text = DateTimeUtils.convertServerISOTime(
-            AppConstant.DateTime.STD_DATE_FORMAT,
-            list[position].releaseTime
-        )
+        if (list[position].startTime.isNotEmpty()){
+            holder.showTime.text = DateTimeUtils.convertServerISOTime(
+                AppConstant.DateTime.STD_DATE_FORMAT,
+                list[position].startTime
+            )
+        }else{
+            holder.showTime.text = DateTimeUtils.convertServerISOTime(
+                AppConstant.DateTime.STD_DATE_FORMAT,
+                list[position].releaseTime
+            )
+        }
         Glide.with(holder.itemView.context).load(list[position].thumbnail)
             .placeholder(
                 holder.itemView.context.resources.getDrawable(

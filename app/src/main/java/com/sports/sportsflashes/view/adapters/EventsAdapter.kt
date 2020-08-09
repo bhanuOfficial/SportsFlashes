@@ -35,7 +35,7 @@ class EventsAdapter(
     }
 
     companion object {
-        var listOfSelectedIndex = ArrayList<Int>()
+        var listOfSelectedIndex = ArrayList<String>()
         var selected = false
     }
 
@@ -63,7 +63,8 @@ class EventsAdapter(
     }
 
     override fun onBindViewHolder(holder: EventItemHolder, position: Int) {
-        holder.checkedItem.isChecked = listOfSelectedIndex.contains(position)
+        holder.checkedItem.isChecked = listOfSelectedIndex.contains(eventList[position]._id)
+
         holder.showTittle.text = eventList[position].title
         holder.showTime.text = DateTimeUtils.convertServerISOTime(
             AppConstant.DateTime.STD_DATE_FORMAT,
@@ -88,10 +89,10 @@ class EventsAdapter(
 
         holder.showImage.setOnClickListener {
             if (selected)
-                if (listOfSelectedIndex.contains(position)) {
-                    listOfSelectedIndex.remove(position)
+                if (listOfSelectedIndex.contains(eventList[position]._id)) {
+                    listOfSelectedIndex.remove(eventList[position]._id)
                 } else {
-                    listOfSelectedIndex.add(position)
+                    listOfSelectedIndex.add(eventList[position]._id)
                 }
             (attachedContext as EventsFragment).onEventSelected(
                 position,
@@ -109,6 +110,14 @@ class EventsAdapter(
                 })
         }
 */
+
+        if (!holder.setReminder.text.contains("More")){
+            if (eventList[position].subscribed){
+                holder.setReminder.text= "Remove reminder"
+            }else{
+                holder.setReminder.text= "Set Reminder"
+            }
+        }
         holder.setReminder.setOnClickListener {
             if (holder.setReminder.text.contains("More")) {
                 Navigation.findNavController(it.context as Activity, R.id.app_host_fragment)
@@ -125,7 +134,6 @@ class EventsAdapter(
                 notifyDataSetChanged()
                 (attachedContext as EventsFragment).setSelectionVisible(true)
             }
-
         }
     }
 }

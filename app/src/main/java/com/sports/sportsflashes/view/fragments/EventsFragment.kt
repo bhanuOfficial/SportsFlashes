@@ -1,6 +1,7 @@
 package com.sports.sportsflashes.view.fragments
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,7 +15,9 @@ import com.google.android.material.tabs.TabLayout
 import com.sports.sportsflashes.R
 import com.sports.sportsflashes.common.helper.EventItemSelection
 import com.sports.sportsflashes.common.utils.AlertDialogUtility
+import com.sports.sportsflashes.common.utils.AppConstant
 import com.sports.sportsflashes.model.MonthEventModel
+import com.sports.sportsflashes.model.ReminderReqModel
 import com.sports.sportsflashes.repository.api.STATUS
 import com.sports.sportsflashes.view.activites.MainActivity
 import com.sports.sportsflashes.view.adapters.EventsAdapter
@@ -34,13 +37,19 @@ import kotlin.collections.ArrayList
 class EventsFragment : Fragment(), EventItemSelection {
     private lateinit var eventsFragmentViewModel: EventFragmentViewModel
     private lateinit var activity: MainActivity
-
+    private var selectedShows = listOf<String>()
+    private lateinit var sharedPreferences: SharedPreferences
+    private var currentMonthIndex = -1
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         eventsFragmentViewModel = ViewModelProvider(this).get(EventFragmentViewModel::class.java)
+        sharedPreferences = requireActivity().getSharedPreferences(
+            getString(R.string.pref_key),
+            Context.MODE_PRIVATE
+        )
         val callback = object :
             OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
@@ -51,11 +60,17 @@ class EventsFragment : Fragment(), EventItemSelection {
                 }
             }
         }
+        if (selectView != null)
+            selectView.setOnClickListener {
+                if (selectView.text == "cancel") {
+                    setSelectionVisible(false)
+                }
+            }
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
-        activity.appLogo.setCompoundDrawablesRelativeWithIntrinsicBounds(0,0,0,0)
-        activity.toolbar.setBackgroundColor(resources.getColor(R.color.black,null))
-        activity.appLogo.text= "Event"
-        activity.appLogo.setTextColor(resources.getColor(R.color.white,null))
+        activity.appLogo.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0)
+        activity.toolbar.setBackgroundColor(resources.getColor(R.color.black, null))
+        activity.appLogo.text = "Event"
+        activity.appLogo.setTextColor(resources.getColor(R.color.white, null))
         return layoutInflater.inflate(R.layout.events_fragment, container, false)
     }
 
@@ -74,7 +89,30 @@ class EventsFragment : Fragment(), EventItemSelection {
 
     private fun initView() {
         submitReminder.setOnClickListener {
-            AlertDialogUtility.reminderAppDialog(R.layout.reminder_dialog_layout, requireActivity())
+            val request = ReminderReqModel(
+                sharedPreferences.getString(
+                    AppConstant.FIREBASE_INSTANCE,
+                    ""
+                )!!, selectedShows
+            )
+
+            activity.let { it1 ->
+                eventsFragmentViewModel.setReminder(request)
+                    .observe(it1, androidx.lifecycle.Observer {
+                        if (it.status == STATUS.SUCCESS) {
+                            setSelectionVisible(false)
+                            getEventsByMonth(currentMonthIndex + 1)
+                        } else if (it.status == STATUS.ERROR) {
+
+                        }
+                    })
+                AlertDialogUtility.reminderAppDialog(
+                    R.layout.reminder_dialog_layout, requireActivity(),
+                    "", "Your reminder has been set"
+                    , false, null
+                )
+
+            }
         }
     }
 
@@ -97,7 +135,7 @@ class EventsFragment : Fragment(), EventItemSelection {
     private fun getMonths() {
         val dateFormat: DateFormat = SimpleDateFormat("MMMM")
         val date = Date()
-        var currentMonthIndex = -1
+
         val months: Array<String> = DateFormatSymbols().months
         for (i in months.indices) {
             val month = months[i]
@@ -156,8 +194,9 @@ class EventsFragment : Fragment(), EventItemSelection {
     override fun onEventSelected(
         position: Int,
         eventModel: MonthEventModel,
-        listOfSelectedEvent: ArrayList<Int>
+        listOfSelectedEvent: ArrayList<String>
     ) {
+        selectedShows = listOfSelectedEvent
         if (listOfSelectedEvent.size == 0) {
             selectView.text = resources.getText(R.string.select)
             selectView.setTextColor(resources.getColor(R.color.white, null))
@@ -177,7 +216,7 @@ class EventsFragment : Fragment(), EventItemSelection {
             monthTabs.visibility = View.VISIBLE
             submitContainer.visibility = View.GONE
             selected = false
-            EventsAdapter.listOfSelectedIndex = ArrayList<Int>()
+            EventsAdapter.listOfSelectedIndex = ArrayList<String>()
             if (eventRecycler.adapter != null) {
                 eventRecycler.adapter!!.notifyDataSetChanged()
             }

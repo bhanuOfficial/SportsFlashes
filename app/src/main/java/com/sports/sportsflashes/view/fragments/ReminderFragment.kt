@@ -1,10 +1,14 @@
 package com.sports.sportsflashes.view.fragments
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.google.gson.Gson
@@ -15,7 +19,10 @@ import com.sports.sportsflashes.common.utils.AlertDialogUtility
 import com.sports.sportsflashes.common.utils.AppConstant
 import com.sports.sportsflashes.common.utils.DateTimeUtils
 import com.sports.sportsflashes.model.FeaturedShows
+import com.sports.sportsflashes.model.ReminderReqModel
+import com.sports.sportsflashes.repository.api.STATUS
 import com.sports.sportsflashes.view.adapters.ReminderShowAdapter
+import com.sports.sportsflashes.viewmodel.ReminderFragmentViewModel
 import kotlinx.android.synthetic.main.dashboard_full_image_show.*
 import kotlinx.android.synthetic.main.playable_item_layout.*
 import kotlinx.android.synthetic.main.playable_item_layout.playCurrentShow
@@ -33,6 +40,9 @@ import javax.inject.Inject
  *Created by Bhanu on 27-07-2020
  */
 class ReminderFragment : Fragment(), ReminderShowAdapter.OnReminderItemClickListner {
+    private lateinit var reminderFragmentViewModel: ReminderFragmentViewModel
+    private lateinit var sharedPreferences: SharedPreferences
+
     init {
         SFApplication.getAppComponent().inject(this)
     }
@@ -45,6 +55,12 @@ class ReminderFragment : Fragment(), ReminderShowAdapter.OnReminderItemClickList
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        reminderFragmentViewModel =
+            ViewModelProvider(this).get(ReminderFragmentViewModel::class.java)
+        sharedPreferences = requireActivity().getSharedPreferences(
+            getString(R.string.pref_key),
+            Context.MODE_PRIVATE
+        )
         arguments?.let {
             val featuredListType: Type = object : TypeToken<ArrayList<FeaturedShows?>?>() {}.type
             featuredShows =
@@ -103,7 +119,7 @@ class ReminderFragment : Fragment(), ReminderShowAdapter.OnReminderItemClickList
         show_detail_layout.visibility = View.VISIBLE
         showDescriptionDetail.text = featuredShows.description
         showDescriptionDetail.tag = true
-        showType.text= featuredShows.type
+        showType.text = featuredShows.type
 
         showDescriptionDetail.viewTreeObserver
             .addOnPreDrawListener {
@@ -130,8 +146,66 @@ class ReminderFragment : Fragment(), ReminderShowAdapter.OnReminderItemClickList
                 showDescriptionDetail.tag = true
             }
         }
+        if (featuredShows.subscribed) {
+            reminderView.text = "Remove Reminder"
+        } else {
+            reminderView.text = "Set Reminder"
+        }
+
         reminderView.setOnClickListener {
-            AlertDialogUtility.reminderAppDialog(R.layout.reminder_dialog_layout, requireActivity())
+            if (featuredShows.subscribed) {
+                AlertDialogUtility.reminderAppDialog(
+                    R.layout.reminder_dialog_layout, requireActivity(),
+                    "You have already set a reminder for this event", "Do you wish to cancel? ",
+                    true,
+                    Runnable {
+                        val showIds = ArrayList<String>()
+                        showIds.add(featuredShows._id)
+
+                        val request = ReminderReqModel(
+                            sharedPreferences.getString(
+                                AppConstant.FIREBASE_INSTANCE,
+                                ""
+                            )!!, showIds
+                        )
+                        activity?.let { it1 ->
+                            reminderFragmentViewModel.removeReminder(request)
+                                .observe(it1, Observer {
+                                    if (it.status == STATUS.SUCCESS) {
+                                        reminderView.text = "Set Reminder"
+                                    } else if (it.status == STATUS.ERROR) {
+
+                                    }
+                                })
+                        }
+                    })
+            } else {
+                val showIds = ArrayList<String>()
+                showIds.add(featuredShows._id)
+
+                val request = ReminderReqModel(
+                    sharedPreferences.getString(
+                        AppConstant.FIREBASE_INSTANCE,
+                        ""
+                    )!!, showIds
+                )
+
+                activity?.let { it1 ->
+                    reminderFragmentViewModel.setReminder(request).observe(it1, Observer {
+                        if (it.status == STATUS.SUCCESS) {
+                            reminderView.text = "Remove Reminder"
+                        } else if (it.status == STATUS.ERROR) {
+
+                        }
+                    })
+                    AlertDialogUtility.reminderAppDialog(
+                        R.layout.reminder_dialog_layout, requireActivity(),
+                        featuredShows.title, "Your reminder has been set"
+                        , false, null
+                    )
+                }
+            }
+            featuredShows.subscribed = !featuredShows.subscribed
         }
 
     }

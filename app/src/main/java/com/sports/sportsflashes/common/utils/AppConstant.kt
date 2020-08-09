@@ -1,25 +1,27 @@
 package com.sports.sportsflashes.common.utils
 
 object AppConstant {
-    const val MIN_BUFFER=  5 * 60 * 1000
-    const val MAX_BUFFER= 10 * 60 * 1000
-    const val YOUTUBE_API_KEY= "AIzaSyBOFy9h9Qoix4NzBTKUYnj4WMCE1j8H_lY"
-    const val FIREBASE_INSTANCE= "firebase_id"
+    const val MIN_BUFFER = 5 * 60 * 1000
+    const val MAX_BUFFER = 10 * 60 * 1000
+    const val YOUTUBE_API_KEY = "AIzaSyBOFy9h9Qoix4NzBTKUYnj4WMCE1j8H_lY"
+    const val FIREBASE_INSTANCE = "firebase_id"
 
 
-    object BundleExtras{
-        const val FEATURED_SHOW= "featured_show"
-        const val EVENT_ITEM= "event_item"
-        const val FEATURED_SHOW_LIST= "featured_show_list"
-        const val YOUTUBE_VIDEO_CODE= "youtube_video_code"
-        const val SCHEDULE_MODEL= "schedule_model"
-        const val SCHEDULE_POSITION= "schedule_position"
-        const val WEEKDAY_LIST= "weekday_list"
+    object BundleExtras {
+        const val FEATURED_SHOW = "featured_show"
+        const val EVENT_ITEM = "event_item"
+        const val FEATURED_SHOW_LIST = "featured_show_list"
+        const val YOUTUBE_VIDEO_CODE = "youtube_video_code"
+        const val SCHEDULE_MODEL = "schedule_model"
+        const val SCHEDULE_POSITION = "schedule_position"
+        const val WEEKDAY_LIST = "weekday_list"
         const val FROM_HOME = "from_home"
         const val LIVE_SHOW_ID = "live_Show_id"
+        const val LIVE_RADIO_ID = "live_radio_id"
         const val LIVE_SHOW_UPCOMING_LIST = "live_Show_upcoming"
         const val CATEGORY_ID = "category_id"
         const val REMINDER = "reminder"
+        const val FROM_SCHEDULE_LIVE = "schedule_live"
     }
 
     object DateTime {

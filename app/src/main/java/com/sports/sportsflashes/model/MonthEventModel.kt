@@ -13,5 +13,6 @@ data class MonthEventModel(
     val seasonNumber: Int = 0,
     val thumbnail: String = "",
     val title: String = "",
-    val updatedAt: String = ""
+    val updatedAt: String = "",
+    val subscribed: Boolean = false
 )

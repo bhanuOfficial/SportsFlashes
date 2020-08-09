@@ -466,4 +466,13 @@ object DateTimeUtils {
         cal.add(Calendar.MINUTE, duration)
         return df.format(cal.time)
     }
+     fun formatHoursAndMinutes(totalMinutes: Int): String? {
+        var minutes = (totalMinutes % 60).toString()
+        minutes = if (minutes.length == 1) "0$minutes" else minutes
+        return if ((totalMinutes / 60).toString() == "0") {
+            if (minutes.length == 1) "$minutes min" else "$minutes mins"
+        } else
+            ((totalMinutes / 60).toString()) + "h " + minutes + "m"
+    }
+
 }
