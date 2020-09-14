@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "artifactType": {
+    "type": "APK",
+    "kind": "Directory"
+  },
+  "applicationId": "com.supersports.sportsflashes",
+  "variantName": "release",
+  "elements": [
+    {
+      "type": "SINGLE",
+      "filters": [],
+      "properties": [],
+      "versionCode": 72,
+      "versionName": "5.9",
+      "enabled": true,
+      "outputFile": "app-release.apk"
+    }
+  ]
+}

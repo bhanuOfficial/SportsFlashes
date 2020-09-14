@@ -25,7 +25,6 @@
             android:layout_height="wrap_content"
             android:background="@color/medium_dark_gray"
             app:tabBackground="@drawable/tab_selector"
-            app:tabIndicatorColor="@color/white"
             app:tabMode="auto"
             android:fontFamily="@font/helvetica_now_display_medium"
             app:tabTextColor="@color/white" />

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/small_margin"
+    android:orientation="vertical">
+
+
+    <RelativeLayout
+        android:id="@+id/scheduleItemContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/medium_dark_gray">
+
+        <RelativeLayout
+            android:id="@+id/imageContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/showImage"
+                android:layout_width="150dp"
+                android:layout_height="112dp"
+                android:layout_centerVertical="true"
+                android:scaleType="fitXY" />
+
+            <ImageView
+                android:id="@+id/playItem"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_centerInParent="true"
+                android:background="@drawable/play_button"
+                android:visibility="gone" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/imageContainer"
+            android:orientation="vertical"
+            android:paddingLeft="@dimen/x_small_padding">
+
+            <TextView
+                android:id="@+id/showTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/helvetica_now_display_bold"
+                android:padding="@dimen/xx_small_padding"
+                android:textColor="@color/white"
+                android:textSize="@dimen/medium_size" />
+
+            <TextView
+                android:id="@+id/showTittle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/helvetica_now_display_regular"
+                android:padding="@dimen/xx_small_padding"
+                android:textColor="@color/medium_light_gray"
+                android:textSize="@dimen/medium_size"
+                />
+
+            <TextView
+                android:id="@+id/showDescription"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/helvetica_now_display_regular"
+                android:maxLines="2"
+                android:padding="@dimen/xx_small_padding"
+                android:textColor="@color/medium_light_gray"
+                android:textSize="@dimen/small_size" />
+        </LinearLayout>
+    </RelativeLayout>
+
+
+</LinearLayout>

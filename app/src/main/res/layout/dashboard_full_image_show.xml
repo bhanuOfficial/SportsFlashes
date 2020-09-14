@@ -5,7 +5,7 @@
     android:background="@color/black"
     android:layout_height="match_parent">
 
-    <com.sports.sportsflashes.view.customviewimpl.FadingImageView
+    <com.supersports.sportsflashes.view.customviewimpl.FadingImageView
         android:id="@+id/showImage"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -18,7 +18,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.sports.sportsflashes.view.customviewimpl.FadingImageView
+    <com.supersports.sportsflashes.view.customviewimpl.FadingImageView
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:gravity="center_vertical|center"

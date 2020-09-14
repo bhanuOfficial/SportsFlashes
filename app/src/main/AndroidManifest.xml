@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.sports.sportsflashes">
+    package="com.supersports.sportsflashes">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
-        android:name=".common.application.SFApplication"
+        android:name="com.supersports.sportsflashes.common.application.SFApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_sf"
         android:label="@string/app_name"
@@ -14,10 +14,10 @@
         android:theme="@style/SF_Theme"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".view.activites.SettingsActivity"
+            android:name="com.supersports.sportsflashes.view.activites.SettingsActivity"
             android:label="@string/title_activity_settings"></activity>
         <activity
-            android:name=".view.activites.MainActivity"
+            android:name="com.supersports.sportsflashes.view.activites.MainActivity"
             android:configChanges="orientation|screenSize"
             android:windowSoftInputMode="adjustPan|adjustResize">
             <intent-filter>
@@ -28,7 +28,7 @@
         </activity>
 
         <service
-            android:name="com.sports.sportsflashes.common.application.AppFirebaseMessagingService"
+            android:name="com.supersports.sportsflashes.common.application.AppFirebaseMessagingService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />

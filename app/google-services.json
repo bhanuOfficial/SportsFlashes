@@ -8,17 +8,17 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:653512651468:android:5a344bb9b868a35b1a4869",
+        "mobilesdk_app_id": "1:653512651468:android:2c071b152fd9ef181a4869",
         "android_client_info": {
-          "package_name": "com.sports.sportsflashes"
+          "package_name": "com.supersports.sportsflashes"
         }
       },
       "oauth_client": [
         {
-          "client_id": "653512651468-tpjaa32flj9ftio7b8m5j681nn21mf7n.apps.googleusercontent.com",
+          "client_id": "653512651468-smdfjqouok7af0poh5bk8lb1k5p6dpne.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.sports.sportsflashes",
+            "package_name": "com.supersports.sportsflashes",
             "certificate_hash": "a930232f988698abbb736debb8fb2ac8b8ae3f2d"
           }
         },
@@ -29,7 +29,7 @@
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBOFy9h9Qoix4NzBTKUYnj4WMCE1j8H_lY"
+          "current_key": "AIzaSyAgzARU-eK8-7e19wSRqdmYoOZ23g3E3kg"
         }
       ],
       "services": {

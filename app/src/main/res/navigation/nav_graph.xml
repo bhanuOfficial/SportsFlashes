@@ -6,7 +6,7 @@
     app:startDestination="@id/homeFragment">
     <fragment
         android:id="@+id/scheduleFragment"
-        android:name="com.sports.sportsflashes.view.fragments.ScheduleFragment"
+        android:name="com.supersports.sportsflashes.view.fragments.ScheduleFragment"
         android:label="fragment_schedule"
         tools:layout="@layout/schedule_fragment">
         <action
@@ -33,7 +33,7 @@
     </fragment>
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.sports.sportsflashes.view.fragments.HomeFragment"
+        android:name="com.supersports.sportsflashes.view.fragments.HomeFragment"
         android:label="HomeFragment"
         tools:layout="@layout/home_fragment">
         <action
@@ -74,12 +74,12 @@
     </fragment>
     <fragment
         android:id="@+id/playableShowFragment"
-        android:name="com.sports.sportsflashes.view.fragments.ShowViewFragment"
+        android:name="com.supersports.sportsflashes.view.fragments.ShowViewFragment"
         android:label="PlayableShowFragment"
         tools:layout="@layout/show_view_layout" />
     <fragment
         android:id="@+id/eventsFragment"
-        android:name="com.sports.sportsflashes.view.fragments.EventsFragment"
+        android:name="com.supersports.sportsflashes.view.fragments.EventsFragment"
         android:label="EventsFragment"
         tools:layout="@layout/events_fragment">
         <action
@@ -99,7 +99,7 @@
     </fragment>
     <fragment
         android:id="@+id/scheduleRecyclerFragment"
-        android:name="com.sports.sportsflashes.view.fragments.ScheduleRecyclerFragment"
+        android:name="com.supersports.sportsflashes.view.fragments.ScheduleRecyclerFragment"
         android:label="ScheduleRecyclerFragment"
         tools:layout="@layout/schedule_recycler_fragment">
         <action
@@ -113,16 +113,16 @@
     <fragment
         android:id="@+id/liveShowFragment"
         tools:layout="@layout/live_show_fragment"
-        android:name="com.sports.sportsflashes.view.fragments.LiveShowFragment"
+        android:name="com.supersports.sportsflashes.view.fragments.LiveShowFragment"
         android:label="LiveShowFragment" />
     <fragment
         tools:layout="@layout/category_show_fragment"
         android:id="@+id/categoryShowFragment"
-        android:name="com.sports.sportsflashes.view.fragments.CategoryShowFragment"
+        android:name="com.supersports.sportsflashes.view.fragments.CategoryShowFragment"
         android:label="CategoryShowFragment" />
     <fragment
         tools:layout="@layout/reminder_fragment"
         android:id="@+id/reminderFragment"
-        android:name="com.sports.sportsflashes.view.fragments.ReminderFragment"
+        android:name="com.supersports.sportsflashes.view.fragments.ReminderFragment"
         android:label="ReminderFragment" />
 </navigation>

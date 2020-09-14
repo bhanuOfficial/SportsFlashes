@@ -156,7 +156,7 @@
                     android:layout_height="wrap_content"
                     android:padding="@dimen/small_padding"
                     android:fontFamily="@font/helvetica_now_display_medium"
-                    android:text="@string/download"
+                    android:text="@string/fans_corner"
                     android:textColor="@color/white"
                     android:textSize="17sp" />
             </LinearLayout>
