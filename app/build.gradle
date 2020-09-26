@@ -12,8 +12,8 @@ android {
         applicationId "com.supersports.sportsflashes"
         minSdkVersion 23
         targetSdkVersion 29
-        versionCode 72
-        versionName "5.9"
+        versionCode 73
+        versionName "5.9.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -21,13 +21,16 @@ android {
     buildTypes {
         debug {
             debuggable true
-            resValue("string", "baseUrl", "https://sports-flashes-staging.herokuapp.com/")
+            resValue("string", "baseUrl", "http://api.sportsflashes.com/")
             resValue("string", "pref_key", "SPORTS_FLASHES_PREF")
+            resValue("string", "app_url", "https://play.google.com/store/apps/details?id=com.supersports.sportsflashes&hl=en_IN")
         }
         release {
             minifyEnabled false
             resValue("string", "pref_key", "SPORTS_FLASHES_PREF")
-            resValue("string", "baseUrl", "https://sports-flashes-staging.herokuapp.com/")
+            resValue("string", "baseUrl", "http://api.sportsflashes.com/")
+            resValue("string", "app_url", "https://play.google.com/store/apps/details?id=com.supersports.sportsflashes&hl=en_IN")
+
 
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }

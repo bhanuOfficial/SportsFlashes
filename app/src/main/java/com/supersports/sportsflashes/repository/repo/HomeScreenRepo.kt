@@ -56,5 +56,17 @@ class HomeScreenRepo(private val apiService: DashboardApi, gson: Gson) : BaseNet
         )
     }
 
+    fun getSearchResult(
+        responseObserver: MutableLiveData<NetworkResponse>,
+        search: String
+    ) {
+        startNetworkService(
+            responseObserver,
+            null,
+            null,
+            apiService.getSearchShows(search) as Single<BaseResponse<Any>>
+        )
+    }
+
 
 }

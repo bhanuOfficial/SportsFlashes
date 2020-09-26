@@ -9,7 +9,7 @@ import com.supersports.sportsflashes.R
 import com.supersports.sportsflashes.model.SportCategories
 import com.supersports.sportsflashes.view.activites.MainActivity
 
-class CategoryAdapter(private val listOfCategory: List<SportCategories>) :
+class CategoryAdapter(private val listOfCategory: List<SportCategories.SportsCategoriesList>) :
     RecyclerView.Adapter<CategoryAdapter.CategoryItemHolder>() {
 
 

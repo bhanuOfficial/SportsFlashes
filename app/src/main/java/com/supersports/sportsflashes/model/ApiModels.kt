@@ -3,7 +3,7 @@ package com.supersports.sportsflashes.model
 data class FeaturedShows(
     val __v: Int = 0,
     val _id: String = "",
-    val category: Category = Category(),
+    val category: Any = Any(),
     val comments: List<Any> = listOf(),
     val createdAt: String = "",
     val creator: String = "",
@@ -15,13 +15,13 @@ data class FeaturedShows(
     val original: Boolean = false,
     val playing: Playing = Playing(),
     val releaseTime: String = "",
-    val seasons: List<Seasons> = listOf(),
+    val seasons: List<Any> = listOf(),
     val seasonsEpisodes: List<SeasonsEpisode> = listOf(),
     var thumbnail: String = "",
     val title: String = "",
     val type: String = "",
     val updatedAt: String = "",
-    val thumbnailData: Any = Any() ,
+    val thumbnailData: Any = Any(),
     val radio: Boolean = false,
     var subscribed: Boolean = false,
     val link: String = ""
@@ -92,12 +92,17 @@ data class SeasonsEpisode(
 )
 
 data class SportCategories(
-    val __v: Int,
-    val _id: String,
-    val category: String,
-    val createdAt: String,
-    val updatedAt: String
-)
+    val categories: List<SportsCategoriesList> = listOf()
+) {
+    data class SportsCategoriesList(
+        val __v: Int,
+        val _id: String,
+        val category: String,
+        val createdAt: String,
+        val updatedAt: String
+    )
+
+}
 
 data class WeekDays(
     val date: String,

@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class CircularHorizontalMode implements ItemViewMode {
 
-    private int mCircleOffset = 700;
+    private int mCircleOffset = 500;
     private float mDegToRad = 1.0f / 270.0f * (float) Math.PI;
     private float mScalingRatio = 0.0001f;
     private float mTranslationRatio = 0.19f;

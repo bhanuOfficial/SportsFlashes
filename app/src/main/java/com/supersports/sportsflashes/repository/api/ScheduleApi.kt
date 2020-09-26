@@ -25,6 +25,4 @@ interface ScheduleApi {
 
     @GET("/api/radio/{id}/details")
     fun getRadioDetails(@Path("id") radioId: String): Single<BaseResponse<LiveSeasonModel>>
-
-
 }

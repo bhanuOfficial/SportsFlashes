@@ -12,10 +12,14 @@ import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.supersports.sportsflashes.R
 import com.supersports.sportsflashes.common.application.SFApplication
 import com.supersports.sportsflashes.common.utils.AppConstant
 import com.supersports.sportsflashes.model.FeaturedShows
+import com.supersports.sportsflashes.model.Seasons
+import com.supersports.sportsflashes.model.ThumbnailData
+import java.lang.reflect.Type
 import javax.inject.Inject
 
 /**
@@ -51,9 +55,17 @@ class CategoryShowAdapter(private val list: ArrayList<FeaturedShows>) :
     }
 
     override fun onBindViewHolder(holder: ItemHolder, position: Int) {
-        if(list[position].seasons.isNotEmpty() && list[position].seasons[list[position].seasons.size - 1].episodes.isNotEmpty()){
-            holder.showTittle.text =
-                "Season ${list[position].seasons.size}, Episode ${list[position].seasons[list[position].seasons.size - 1].episodes.size}"
+        if (list[position].seasons.isNotEmpty() && (list[position].seasons[list[position].seasons.size - 1]) !is String) {
+            val seasonToken: Type = object : TypeToken<Seasons?>() {}.type
+            val seasons: Seasons =
+                gson.fromJson(
+                    gson.toJson(list[position].seasons[list[position].seasons.size - 1]),
+                    seasonToken
+                )
+            if (list[position].seasons.isNotEmpty() && seasons.episodes.isNotEmpty()) {
+                holder.showTittle.text =
+                    "Season ${list[position].seasons.size}, Episode ${seasons.episodes.size}"
+            }
         }
         holder.showDescription.text = "Play Time: " + list[position].duration
         holder.showTime.text = list[position].title

@@ -63,7 +63,7 @@ class ShowViewFragment : Fragment(), MoreEpisodeAdapter.OnSeasonItemClickedListe
     private var index: Int = 0
     private lateinit var featuredShows: FeaturedShows
     private lateinit var eventModel: MonthEventModel
-    private lateinit var YPlayer: YouTubePlayer
+    private lateinit var youTubePlayer: YouTubePlayer
     private lateinit var liveSeason: LiveSeasonModel.Live
     private var reminder: Boolean = false
     private lateinit var activity: MainActivity
@@ -80,6 +80,7 @@ class ShowViewFragment : Fragment(), MoreEpisodeAdapter.OnSeasonItemClickedListe
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var moreEpidsodeAdapter: MoreEpisodeAdapter
     private var moreEpisodesList = arrayListOf<SeasonsEpisode>()
+    private lateinit var seasons: Seasons
 
     init {
         SFApplication.getAppComponent().inject(this)
@@ -101,12 +102,16 @@ class ShowViewFragment : Fragment(), MoreEpisodeAdapter.OnSeasonItemClickedListe
                 val userListType: Type = object : TypeToken<ArrayList<SeasonsEpisode>?>() {}.type
                 val userArray: ArrayList<SeasonsEpisode> =
                     gson.fromJson(gson.toJson(data.episodes), userListType)
+                if (userArray.isEmpty()){
+                    moreEpisodesContainer.visibility = View.INVISIBLE
+                }
                 moreEpisodesList.addAll(userArray)
                 if (this::moreEpidsodeAdapter.isInitialized)
                     moreEpidsodeAdapter.notifyDataSetChanged()
 //                /moreEpisodesList.addAll()
             } else if (it.status == STATUS.ERROR) {
                 hideProgress()
+                moreEpisodesContainer.visibility = View.INVISIBLE
             }
         })
     }
@@ -128,12 +133,14 @@ class ShowViewFragment : Fragment(), MoreEpisodeAdapter.OnSeasonItemClickedListe
             Context.MODE_PRIVATE
         )
         arguments?.let {
-            if (it.getString(AppConstant.BundleExtras.FEATURED_SHOW) != null)
+            if (it.getString(AppConstant.BundleExtras.FEATURED_SHOW) != null) {
                 featuredShows =
                     gson.fromJson(
                         it.getString(AppConstant.BundleExtras.FEATURED_SHOW),
                         FeaturedShows::class.java
                     )
+            }
+
             fromLiveSchedule = it.getBoolean(AppConstant.BundleExtras.FROM_SCHEDULE_LIVE)
             if (it.getString(AppConstant.BundleExtras.EVENT_ITEM) != null) {
                 eventModel = gson.fromJson(
@@ -149,9 +156,9 @@ class ShowViewFragment : Fragment(), MoreEpisodeAdapter.OnSeasonItemClickedListe
 
         mediaPlayer.addListener(object : Player.EventListener {
             override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
-                if (playWhenReady && this@ShowViewFragment::YPlayer.isInitialized && isVisibleToUser) {
-                    if (YPlayer.isPlaying)
-                        YPlayer.pause()
+                if (playWhenReady && this@ShowViewFragment::youTubePlayer.isInitialized && isVisibleToUser) {
+                    if (youTubePlayer.isPlaying)
+                        youTubePlayer.pause()
                 }
             }
         })
@@ -167,8 +174,8 @@ class ShowViewFragment : Fragment(), MoreEpisodeAdapter.OnSeasonItemClickedListe
             override fun handleOnBackPressed() {
                 if (activity.resources?.configuration?.orientation == Configuration.ORIENTATION_LANDSCAPE) {
                     activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-                    if (playerContainer.visibility == View.VISIBLE && this@ShowViewFragment::YPlayer.isInitialized) {
-                        YPlayer.setFullscreen(false)
+                    if (playerContainer.visibility == View.VISIBLE && this@ShowViewFragment::youTubePlayer.isInitialized) {
+                        youTubePlayer.setFullscreen(false)
                     }
                 } else {
                     findNavController().popBackStack()
@@ -179,7 +186,6 @@ class ShowViewFragment : Fragment(), MoreEpisodeAdapter.OnSeasonItemClickedListe
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
         activity.appLogo.setBackgroundResource(
             R.drawable.in_app_logo
-
         )
         activity.toolbar.setBackgroundColor(resources.getColor(R.color.black, null))
         activity.appLogo.text = ""
@@ -192,11 +198,12 @@ class ShowViewFragment : Fragment(), MoreEpisodeAdapter.OnSeasonItemClickedListe
         for (i in 1..featuredShows.seasons.size) {
             seasonArray.add("Season $i")
         }
-        val aa = ArrayAdapter(activity, android.R.layout.simple_spinner_item, seasonArray)
-        aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        val seasonDropDown =
+            ArrayAdapter(activity, android.R.layout.simple_spinner_item, seasonArray)
+        seasonDropDown.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         //Setting the ArrayAdapter data on the Spinner
         //Setting the ArrayAdapter data on the Spinner
-        seasonSpinner.adapter = aa
+        seasonSpinner.adapter = seasonDropDown
         seasonSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(p0: AdapterView<*>?) {
 
@@ -216,7 +223,19 @@ class ShowViewFragment : Fragment(), MoreEpisodeAdapter.OnSeasonItemClickedListe
                 )
                 showProgress()
                 selectedSeason = position
-                getSeasonById(featuredShows.seasons[selectedSeason]._id)
+
+                if ((featuredShows.seasons[selectedSeason]) is String) {
+                    getSeasonById((featuredShows.seasons[selectedSeason]) as String)
+                } else {
+                    val seasonType: Type = object : TypeToken<Seasons?>() {}.type
+                    seasons =
+                        gson.fromJson(
+                            gson.toJson(featuredShows.seasons[selectedSeason]),
+                            seasonType
+                        )
+                    getSeasonById(seasons._id)
+                }
+
             }
 
         }
@@ -255,6 +274,13 @@ class ShowViewFragment : Fragment(), MoreEpisodeAdapter.OnSeasonItemClickedListe
     }
 
     private fun initYoutubePlayerView(videoCode: String) {
+        if (isFromSeasonClick) {
+            if (this@ShowViewFragment::youTubePlayer.isInitialized) {
+                youTubePlayer.loadVideo(videoCode)
+                youTubePlayer.play()
+            }
+            return
+        }
         if (this@ShowViewFragment::activity.isInitialized) {
             val a: Activity? = activity
             if (a != null) a.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
@@ -281,12 +307,13 @@ class ShowViewFragment : Fragment(), MoreEpisodeAdapter.OnSeasonItemClickedListe
                 wasRestored: Boolean
             ) {
                 if (!wasRestored) {
-                    YPlayer = player
+                    youTubePlayer = player
 //                    YPlayer.setFullscreen(true)
-                     YPlayer.loadVideo(videoCode)
-                    YPlayer.play()
+                    youTubePlayer.loadVideo(videoCode)
+                    youTubePlayer.play()
 
-                    YPlayer.setPlaybackEventListener(object : YouTubePlayer.PlaybackEventListener {
+                    youTubePlayer.setPlaybackEventListener(object :
+                        YouTubePlayer.PlaybackEventListener {
                         override fun onSeekTo(p0: Int) {
 
                         }
@@ -319,19 +346,17 @@ class ShowViewFragment : Fragment(), MoreEpisodeAdapter.OnSeasonItemClickedListe
         })
         val transaction: FragmentTransaction = childFragmentManager.beginTransaction()
         transaction.add(R.id.youtube_playerFragment, youTubePlayerFragment).commit()
-
-
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
-            if (this@ShowViewFragment::YPlayer.isInitialized) {
-                YPlayer.setFullscreen(false)
+            if (this@ShowViewFragment::youTubePlayer.isInitialized) {
+                youTubePlayer.setFullscreen(false)
             }
         } else {
-            if (this@ShowViewFragment::YPlayer.isInitialized) {
-                YPlayer.setFullscreen(true)
+            if (this@ShowViewFragment::youTubePlayer.isInitialized) {
+                youTubePlayer.setFullscreen(true)
             }
         }
     }
@@ -417,7 +442,7 @@ class ShowViewFragment : Fragment(), MoreEpisodeAdapter.OnSeasonItemClickedListe
             featuredShows.subscribed = !featuredShows.subscribed
         }
 
-        if (this::featuredShows.isInitialized && featuredShows.seasonsEpisodes.size > 1 && !this::eventModel.isInitialized) {
+        if (this::featuredShows.isInitialized && !this::eventModel.isInitialized && !featuredShows.radio) {
             moreEpisodesContainer.visibility = View.VISIBLE
             moreEpisodesInit()
         } else {
@@ -516,8 +541,8 @@ class ShowViewFragment : Fragment(), MoreEpisodeAdapter.OnSeasonItemClickedListe
                         val videoCode = featuredShows.link.split("v=")[1]
                         initYoutubePlayerView(videoCode)
                     } else {
-                        if (this@ShowViewFragment::YPlayer.isInitialized && YPlayer.isPlaying) {
-                            YPlayer.pause()
+                        if (this@ShowViewFragment::youTubePlayer.isInitialized && youTubePlayer.isPlaying) {
+                            youTubePlayer.pause()
                         }
                         EventBus.getDefault().post(
                             MessageEvent(
@@ -537,14 +562,14 @@ class ShowViewFragment : Fragment(), MoreEpisodeAdapter.OnSeasonItemClickedListe
                                 "youtube"
                             )
                         ) {
-                            activity?.let { AppUtility.showToast(it, "Source Error") }
+                            activity.let { AppUtility.showToast(it, "Source Error") }
                             return@setOnClickListener
                         }
                         val videoCode = featuredShows.seasonsEpisodes[index].link.split("v=")[1]
                         initYoutubePlayerView(videoCode)
                     } else {
-                        if (this@ShowViewFragment::YPlayer.isInitialized && YPlayer.isPlaying) {
-                            YPlayer.pause()
+                        if (this@ShowViewFragment::youTubePlayer.isInitialized && youTubePlayer.isPlaying) {
+                            youTubePlayer.pause()
                         }
                         if (isFromSeasonClick) {
                             EventBus.getDefault().post(
@@ -572,7 +597,7 @@ class ShowViewFragment : Fragment(), MoreEpisodeAdapter.OnSeasonItemClickedListe
                     activity?.let { it1 ->
                         AppUtility.shareAppContent(
                             it1,
-                            "Listen to live commentary/discussion for ${featuredShows.title} on Sports Flashes ${"www.xyz.com"}"
+                            "Listen to live commentary/discussion for ${featuredShows.title} on Sports Flashes ${resources.getString(R.string.app_url)}"
                         )
                     }
                 } else if (featuredShows.seasonsEpisodes.isNotEmpty() && featuredShows.type.equals(
@@ -583,7 +608,7 @@ class ShowViewFragment : Fragment(), MoreEpisodeAdapter.OnSeasonItemClickedListe
                     activity?.let { it1 ->
                         AppUtility.shareAppContent(
                             it1,
-                            "Listen to podcast ${featuredShows.title} on Sports Flashes"
+                            "Listen to podcast ${featuredShows.title} on Sports Flashes ${resources.getString(R.string.app_url)}"
                         )
                     }
                 } else if (featuredShows.seasonsEpisodes.isNotEmpty() && featuredShows.seasonsEpisodes[selectedSeason].live) {
@@ -591,14 +616,14 @@ class ShowViewFragment : Fragment(), MoreEpisodeAdapter.OnSeasonItemClickedListe
                         activity?.let { it1 ->
                             AppUtility.shareAppContent(
                                 it1,
-                                "Listen to podcast ${featuredShows.title} on Sports Flashes"
+                                "Listen to podcast ${featuredShows.title} on Sports Flashes ${resources.getString(R.string.app_url)}"
                             )
                         }
                     } else {
                         activity?.let { it1 ->
                             AppUtility.shareAppContent(
                                 it1,
-                                "Watch ${featuredShows.title} on Sports Flashes"
+                                "Watch ${featuredShows.title} on Sports Flashes ${resources.getString(R.string.app_url)}"
                             )
                         }
                     }
@@ -606,7 +631,7 @@ class ShowViewFragment : Fragment(), MoreEpisodeAdapter.OnSeasonItemClickedListe
                     activity?.let { it1 ->
                         AppUtility.shareAppContent(
                             it1,
-                            "Watch ${featuredShows.title} on Sports Flashes"
+                            "Watch ${featuredShows.title} on Sports Flashes ${resources.getString(R.string.app_url)}"
                         )
                     }
                 }

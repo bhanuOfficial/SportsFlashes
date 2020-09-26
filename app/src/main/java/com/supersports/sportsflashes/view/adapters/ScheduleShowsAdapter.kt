@@ -63,7 +63,7 @@ class ScheduleShowsAdapter(
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (scheduleShowsList[position].live) {
+        return if (scheduleShowsList[position].radio) {
             ShowView.LIVE_SHOW.ordinal
         } else {
             ShowView.SHOW.ordinal
@@ -161,29 +161,33 @@ class ScheduleShowsAdapter(
                 .into(holder.showImage)
 
             holder.scheduleItemContainer.setOnClickListener {
-                if (scheduleShowsList[position].seasons.isNotEmpty()) {
-                    Navigation.findNavController(context as Activity, R.id.app_host_fragment)
-                        .navigate(R.id.action_scheduleFragment_to_liveShowFragment, Bundle().apply {
-                            this.putString(
-                                AppConstant.BundleExtras.LIVE_SHOW_ID,
-                                scheduleShowsList[position].seasons[0].toString()
-                            )
+                when {
+                    scheduleShowsList[position].seasons.isNotEmpty() -> {
+                        Navigation.findNavController(context as Activity, R.id.app_host_fragment)
+                            .navigate(R.id.action_scheduleFragment_to_liveShowFragment, Bundle().apply {
+                                this.putString(
+                                    AppConstant.BundleExtras.LIVE_SHOW_ID,
+                                    scheduleShowsList[position].seasons[scheduleShowsList[position].seasons.size-1].toString()
+                                )
 
-                        })
-                }else if (scheduleShowsList[position].radio){
-                    Navigation.findNavController(context as Activity, R.id.app_host_fragment)
-                        .navigate(R.id.action_scheduleFragment_to_liveShowFragment, Bundle().apply {
-                            this.putString(
-                                AppConstant.BundleExtras.LIVE_RADIO_ID,
-                                scheduleShowsList[position]._id
-                            )
-                        })
-                } else {
-                    Toast.makeText(
-                        context,
-                        "Invalid show - show has not any season to play",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                            })
+                    }
+                    scheduleShowsList[position].radio -> {
+                        Navigation.findNavController(context as Activity, R.id.app_host_fragment)
+                            .navigate(R.id.action_scheduleFragment_to_liveShowFragment, Bundle().apply {
+                                this.putString(
+                                    AppConstant.BundleExtras.LIVE_RADIO_ID,
+                                    scheduleShowsList[position]._id
+                                )
+                            })
+                    }
+                    else -> {
+                        Toast.makeText(
+                            context,
+                            "Invalid show - show has not any season to play",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
                 }
 
             }

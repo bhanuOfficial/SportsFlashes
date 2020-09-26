@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorAccent"
+    android:orientation="vertical"
+    tools:context=".view.activites.SearchActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?actionBarSize">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:id="@+id/back_drawer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:paddingRight="@dimen/large_padding">
+
+                    <ImageView
+                        android:id="@+id/back"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:layout_gravity="center_vertical"
+                        android:background="@drawable/ic_baseline_arrow_back_24" />
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/appLogo"
+                    android:layout_width="170dp"
+                    android:layout_height="30dp"
+                    android:layout_centerInParent="true"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/in_app_logo"
+                    android:fontFamily="@font/helvetica_now_display_bold"
+                    android:gravity="center_vertical|center"
+                    android:textSize="@dimen/large_size" />
+
+                <ProgressBar
+                    android:id="@+id/progressBar"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="@dimen/medium_margin"
+                    android:indeterminate="true"
+                    android:indeterminateTint="@color/white"
+                    android:visibility="gone" />
+
+            </RelativeLayout>
+        </androidx.appcompat.widget.Toolbar>
+
+        <EditText
+            android:id="@+id/searchViewEt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/small_margin"
+            android:background="@drawable/round_corner_button_white"
+            android:drawableStart="@drawable/ic_baseline_search_black_24"
+            android:drawablePadding="@dimen/medium_padding"
+            android:fontFamily="@font/helvetica_now_display_regular"
+            android:hint="Search"
+            android:imeOptions="actionSearch"
+            android:padding="@dimen/small_padding"
+            android:singleLine="true" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/searchRecycler"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="@dimen/small_padding" />
+
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/noData"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:fontFamily="@font/helvetica_now_display_medium"
+        android:text="No result found for this search"
+        android:textColor="@color/white"
+        android:textSize="@dimen/medium_size"
+        android:visibility="gone" />
+</RelativeLayout>

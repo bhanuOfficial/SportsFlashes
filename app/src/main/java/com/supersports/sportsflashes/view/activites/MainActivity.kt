@@ -6,7 +6,6 @@ import android.media.AudioManager
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
@@ -18,6 +17,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.ActivityNavigator
+import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
@@ -109,7 +109,9 @@ class MainActivity : AppCompatActivity(), FeaturedShowsListImpl, CurrentShowClic
     private fun setCategories() {
         viewModel.getCategories().observe(this, Observer {
             if (it.status == STATUS.SUCCESS) {
-                val categories = it.data as ArrayList<SportCategories>
+
+                val categoriesData = it.data as SportCategories
+                val categories = categoriesData.categories
                 category_recyclerView.adapter = CategoryAdapter(categories)
             }
         })
@@ -218,7 +220,6 @@ class MainActivity : AppCompatActivity(), FeaturedShowsListImpl, CurrentShowClic
                     val userArray: ArrayList<ThumbnailData> =
                         gson.fromJson(gson.toJson(thumb), userListType)
 
-                    Log.d("BHANU", "DATA ---> " + userArray[0])
                     bottomSheet.showTimeRadio.text = DateTimeUtils.calculateTimeBetweenTwoDates(
                         AppConstant.DateTime.DATE_TIME_FORMAT_ISO,
                         userArray[0].endTime,
@@ -285,7 +286,7 @@ class MainActivity : AppCompatActivity(), FeaturedShowsListImpl, CurrentShowClic
                 if (show.radio) {
                     AppUtility.shareAppContent(
                         this,
-                        "Listen to live commentary/discussion for ${show.title} on Sports Flashes ${"www.xyz.com"}"
+                        "Listen to live commentary/discussion for ${show.title} on Sports Flashes ${resources.getString(R.string.app_url)}"
                     )
                 } else if (show.seasonsEpisodes.isNotEmpty() && show.type.equals(
                         "podacast",
@@ -294,24 +295,24 @@ class MainActivity : AppCompatActivity(), FeaturedShowsListImpl, CurrentShowClic
                 ) {
                     AppUtility.shareAppContent(
                         this,
-                        "Listen to podcast ${show.title} on Sports Flashes  ${"www.xyz.com"}"
+                        "Listen to podcast ${show.title} on Sports Flashes ${resources.getString(R.string.app_url)}"
                     )
                 } else if (show.seasonsEpisodes.isNotEmpty() && show.seasonsEpisodes[seasonIndex].live) {
                     if (show.type.equals("podcast", true)) {
                         AppUtility.shareAppContent(
                             this,
-                            "Listen to podcast ${show.title} on Sports Flashes  ${"www.xyz.com"}"
+                            "Listen to podcast ${show.title} on Sports Flashes ${resources.getString(R.string.app_url)}"
                         )
                     } else {
                         AppUtility.shareAppContent(
                             this,
-                            "Watch ${show.title} on Sports Flashes  ${"www.xyz.com"}"
+                            "Watch ${show.title} on Sports Flashes ${resources.getString(R.string.app_url)}"
                         )
                     }
                 } else {
                     AppUtility.shareAppContent(
                         this,
-                        "Watch ${show.title} on Sports Flashes  ${"www.xyz.com"}"
+                        "Watch ${show.title} on Sports Flashes ${resources.getString(R.string.app_url)}"
                     )
                 }
             }
@@ -341,6 +342,10 @@ class MainActivity : AppCompatActivity(), FeaturedShowsListImpl, CurrentShowClic
 
 
     private fun initMenuOptions() {
+        searchView.setOnClickListener {
+            startActivity(Intent(this, SearchActivity::class.java))
+        }
+
         category_recyclerView.setHasFixedSize(true)
         category_recyclerView.layoutManager = LinearLayoutManager(this).also {
             it.orientation = LinearLayoutManager.HORIZONTAL
@@ -638,6 +643,17 @@ class MainActivity : AppCompatActivity(), FeaturedShowsListImpl, CurrentShowClic
             MessageEvent.PLAY_PODCAST_SOURCE_MORE -> {
                 seasonIndex = messageEvent.data as Int
             }
+            MessageEvent.SEARCH_RESULT -> {
+                val searchResult = messageEvent.data as String
+                Navigation.findNavController(this, R.id.app_host_fragment)
+                    .navigate(R.id.playableShowFragment, Bundle().apply {
+                        this.putString(
+                            AppConstant.BundleExtras.FEATURED_SHOW,
+                            searchResult
+                        )
+                        this.putBoolean(AppConstant.BundleExtras.REMINDER, false)
+                    })
+            }
         }
     }
 
@@ -657,7 +673,8 @@ class MainActivity : AppCompatActivity(), FeaturedShowsListImpl, CurrentShowClic
     private fun getLiveRadio() {
         viewModel.getLiveRadio().observe(this, Observer<NetworkResponse> {
             if (it.status == STATUS.SUCCESS) {
-                val radioModel = it.data as ArrayList<LiveRadioModel>
+                val radioData = it.data as LiveRadioModel
+                val radioModel = radioData.radio
                 if (radioModel.isNotEmpty()) {
                     val featuredShows =
                         gson.fromJson(gson.toJson(radioModel[0]), FeaturedShows::class.java)

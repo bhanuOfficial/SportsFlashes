@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
@@ -35,7 +36,7 @@ class ReminderShowAdapter(
 
     override fun onBindViewHolder(holder: ItemHolder, position: Int) {
         index = position
-        Glide.with(holder.itemView.context).load(featuredShowsList[position].thumbnail)
+        Glide.with(holder.itemView.context).load(featuredShowsList[position].icon)
             .placeholder(
                 holder.itemView.context.resources.getDrawable(
                     R.drawable.default_thumbnail,
@@ -51,7 +52,7 @@ class ReminderShowAdapter(
 
     inner class ItemHolder(view: View) : RecyclerView.ViewHolder(view) {
         val image: ImageView = view.findViewById(R.id.imageCategory)
-        val circularItemContainer: CardView = view.findViewById(R.id.circularItemContainer)
+        val circularItemContainer: LinearLayout = view.findViewById(R.id.circularItemContainer)
     }
 
     override fun getItemPosition(): Int {

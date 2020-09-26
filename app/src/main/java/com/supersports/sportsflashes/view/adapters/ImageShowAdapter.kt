@@ -67,6 +67,10 @@ class ImageShowAdapter(
                 Glide.with(context).load(thumbData.thumbnail)
                     .placeholder(R.drawable.default_thumbnail)
                     .into(holder.showThumb)
+            }else{
+                Glide.with(context).load(featuredShowsList[position].icon)
+                    .placeholder(R.drawable.default_thumbnail)
+                    .into(holder.showThumb)
             }
         } else {
             if (featuredShowsList[position].thumbnail != null && featuredShowsList[position].thumbnail.isNotEmpty()) {

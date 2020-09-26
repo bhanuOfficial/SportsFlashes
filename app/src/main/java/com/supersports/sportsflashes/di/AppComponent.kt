@@ -28,4 +28,5 @@ interface AppComponent {
     fun inject(categoryShowAdapter: CategoryShowAdapter)
     fun inject(reminderFragment: ReminderFragment)
     fun inject(imageShowAdapter: ImageShowAdapter)
+    fun inject(searchAdapter: SearchAdapter)
 }
