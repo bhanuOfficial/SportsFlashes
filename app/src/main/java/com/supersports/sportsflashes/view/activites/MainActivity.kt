@@ -286,7 +286,11 @@ class MainActivity : AppCompatActivity(), FeaturedShowsListImpl, CurrentShowClic
                 if (show.radio) {
                     AppUtility.shareAppContent(
                         this,
-                        "Listen to live commentary/discussion for ${show.title} on Sports Flashes ${resources.getString(R.string.app_url)}"
+                        "Listen to live commentary/discussion for ${show.title} on Sports Flashes ${
+                            resources.getString(
+                                R.string.app_url
+                            )
+                        }"
                     )
                 } else if (show.seasonsEpisodes.isNotEmpty() && show.type.equals(
                         "podacast",
@@ -301,7 +305,11 @@ class MainActivity : AppCompatActivity(), FeaturedShowsListImpl, CurrentShowClic
                     if (show.type.equals("podcast", true)) {
                         AppUtility.shareAppContent(
                             this,
-                            "Listen to podcast ${show.title} on Sports Flashes ${resources.getString(R.string.app_url)}"
+                            "Listen to podcast ${show.title} on Sports Flashes ${
+                                resources.getString(
+                                    R.string.app_url
+                                )
+                            }"
                         )
                     } else {
                         AppUtility.shareAppContent(
@@ -472,8 +480,8 @@ class MainActivity : AppCompatActivity(), FeaturedShowsListImpl, CurrentShowClic
     }
 
     private fun initSeek() {
-        var duration: Long = mediaPlayer.duration
-        var amountToUpdate = duration / 100
+        val duration: Long = mediaPlayer.duration
+        val amountToUpdate = duration / 100
         if (show.radio) {
 //            smallSeekBar.progress = 100F
             largeSeekBar.curProcess = 100
@@ -533,6 +541,9 @@ class MainActivity : AppCompatActivity(), FeaturedShowsListImpl, CurrentShowClic
                 arrayOf(schedualView, eventView, homeView, reminderView).forEach {
                     it.setBackgroundResource(R.drawable.circle_white)
                 }
+                findNavController(R.id.app_host_fragment).navigate(
+                    R.id.fansCorner
+                )
                 schedualIcon.background = resources.getDrawable(R.drawable.schedule, null)
                 eventIcon.background = resources.getDrawable(R.drawable.highlights, null)
                 homeIcon.background = resources.getDrawable(R.drawable.home_black, null)
@@ -560,10 +571,11 @@ class MainActivity : AppCompatActivity(), FeaturedShowsListImpl, CurrentShowClic
                 findNavController(R.id.app_host_fragment).navigate(
                     R.id.reminderFragment,
                     Bundle().apply {
-                        this.putString(
-                            AppConstant.BundleExtras.FEATURED_SHOW_LIST,
-                            gson.toJson(featuredShows)
-                        )
+                        if (this@MainActivity::featuredShows.isInitialized)
+                            this.putString(
+                                AppConstant.BundleExtras.FEATURED_SHOW_LIST,
+                                gson.toJson(featuredShows)
+                            )
                     }
                 )
                 arrayOf(schedualView, fansCornerView, homeView, eventView).forEach {
@@ -678,6 +690,7 @@ class MainActivity : AppCompatActivity(), FeaturedShowsListImpl, CurrentShowClic
                 if (radioModel.isNotEmpty()) {
                     val featuredShows =
                         gson.fromJson(gson.toJson(radioModel[0]), FeaturedShows::class.java)
+                    featuredShows.radio = true
 //                    backwardRadio.visibility = View.GONE
 //                    forwardRadio.visibility = View.GONE
 //                    if (!show.radio)

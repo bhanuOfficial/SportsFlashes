@@ -172,7 +172,7 @@ class HomeFragment : Fragment(),
                             }
                         }
 
-                    } catch (exception: java.lang.Exception) {
+                    } catch (exception: Exception) {
                         exception.printStackTrace()
                     }
 
@@ -230,18 +230,20 @@ class HomeFragment : Fragment(),
 //            circularRecycler.smoothScrollToView(imageCategory.getChildAt((imageCategory.adapter as ImageShowAdapter).getItemPosition()))
 
         } else if (draggingView == 2) {
-            imageCategory.smoothScrollToPosition(
-                circularRecycler.getChildAdapterPosition(circularRecycler.findViewAtCenter()!!)
-            )
-            imageCategory.postDelayed({
-                imageCategory.scrollToPosition(
-                    circularRecycler.getChildAdapterPosition(
-                        circularRecycler.findViewAtCenter()!!
-                    )
+            try {
+                imageCategory.smoothScrollToPosition(
+                    circularRecycler.getChildAdapterPosition(circularRecycler.findViewAtCenter()!!)
                 )
-            }, 500)
-//
-
+                imageCategory.postDelayed({
+                    imageCategory.scrollToPosition(
+                        circularRecycler.getChildAdapterPosition(
+                            circularRecycler.findViewAtCenter()!!
+                        )
+                    )
+                }, 500)
+            } catch (exception: java.lang.Exception) {
+                exception.printStackTrace()
+            }
         }
 //        animation1.startNow()
         showTittle.text = featuredShow.title

@@ -21,14 +21,14 @@ android {
     buildTypes {
         debug {
             debuggable true
-            resValue("string", "baseUrl", "http://api.sportsflashes.com/")
+            resValue("string", "baseUrl", "https://api.sportsflashes.com/")
             resValue("string", "pref_key", "SPORTS_FLASHES_PREF")
             resValue("string", "app_url", "https://play.google.com/store/apps/details?id=com.supersports.sportsflashes&hl=en_IN")
         }
         release {
             minifyEnabled false
             resValue("string", "pref_key", "SPORTS_FLASHES_PREF")
-            resValue("string", "baseUrl", "http://api.sportsflashes.com/")
+            resValue("string", "baseUrl", "https://api.sportsflashes.com/")
             resValue("string", "app_url", "https://play.google.com/store/apps/details?id=com.supersports.sportsflashes&hl=en_IN")
 
 
@@ -90,4 +90,5 @@ dependencies {
     implementation 'com.facebook.stetho:stetho-okhttp3:1.5.1'
     implementation 'com.facebook.stetho:stetho:1.5.1'
     implementation 'com.github.sodalabs:android-looping-pager-layoutmanager:v1.0.4'
+    implementation 'com.google.android.exoplayer:exoplayer:2.9.1'
 }

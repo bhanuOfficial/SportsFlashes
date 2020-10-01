@@ -17,19 +17,19 @@
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
         <action
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/slide_out_left"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"
             android:id="@+id/action_scheduleFragment_to_eventsFragment"
-            app:destination="@id/eventsFragment" />
-        <action
+            app:destination="@id/eventsFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"
+            app:popExitAnim="@anim/slide_out_right" />
+        <action
             android:id="@+id/action_scheduleFragment_to_liveShowFragment"
-            app:destination="@id/liveShowFragment" />
+            app:destination="@id/liveShowFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/homeFragment"
@@ -58,19 +58,22 @@
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
         <action
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/slide_out_left"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"
             android:id="@+id/action_homeFragment_to_categoryShowFragment"
-            app:destination="@id/categoryShowFragment" />
-        <action
+            app:destination="@id/categoryShowFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"
+            app:popExitAnim="@anim/slide_out_right" />
+        <action
             android:id="@+id/action_homeFragment_to_reminderFragment"
-            app:destination="@id/reminderFragment" />
+            app:destination="@id/reminderFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_homeFragment_to_fansCorner"
+            app:destination="@id/fansCorner" />
     </fragment>
     <fragment
         android:id="@+id/playableShowFragment"
@@ -108,21 +111,35 @@
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"/>
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/liveShowFragment"
-        tools:layout="@layout/live_show_fragment"
         android:name="com.supersports.sportsflashes.view.fragments.LiveShowFragment"
-        android:label="LiveShowFragment" />
+        android:label="LiveShowFragment"
+        tools:layout="@layout/live_show_fragment" />
     <fragment
-        tools:layout="@layout/category_show_fragment"
         android:id="@+id/categoryShowFragment"
         android:name="com.supersports.sportsflashes.view.fragments.CategoryShowFragment"
-        android:label="CategoryShowFragment" />
+        android:label="CategoryShowFragment"
+        tools:layout="@layout/category_show_fragment" />
     <fragment
-        tools:layout="@layout/reminder_fragment"
         android:id="@+id/reminderFragment"
         android:name="com.supersports.sportsflashes.view.fragments.ReminderFragment"
-        android:label="ReminderFragment" />
+        android:label="ReminderFragment"
+        tools:layout="@layout/reminder_fragment" />
+    <fragment
+        android:id="@+id/fansCorner"
+        android:name="com.supersports.sportsflashes.view.fragments.FansCorner"
+        android:label="FansCorner"
+        tools:layout="@layout/fans_corner_fragment">
+
+        <action
+            android:id="@+id/action_homeFragment_to_fansCorner"
+            app:destination="@id/reminderFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
 </navigation>

@@ -101,14 +101,15 @@ class ScheduleFragment : Fragment() {
                             weekdayList
                         )
                         scheduleViewPager.adapter = viewPageAdapter
-                        if (scheduleViewPager != null)
+                        if (scheduleViewPager != null) {
                             scheduleViewPager.postDelayed(Runnable {
                                 scheduleViewPager.setCurrentItem(
                                     3,
                                     true
                                 )
                             }, 200)
-                        scheduleViewPager.offscreenPageLimit = weekdayList.size
+                            scheduleViewPager.offscreenPageLimit = weekdayList.size
+                        }
                     }
                 })
         }

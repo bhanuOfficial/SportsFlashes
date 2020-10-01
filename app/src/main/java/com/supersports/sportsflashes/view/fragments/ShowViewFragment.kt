@@ -1,18 +1,19 @@
 package com.supersports.sportsflashes.view.fragments
 
 import android.app.Activity
+import android.app.Dialog
 import android.content.Context
 import android.content.SharedPreferences
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.TextView
+import android.widget.*
 import androidx.activity.OnBackPressedCallback
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Observer
@@ -22,8 +23,19 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import com.google.android.exoplayer2.ExoPlayer
-import com.google.android.exoplayer2.Player
+import com.google.android.exoplayer2.*
+import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory
+import com.google.android.exoplayer2.source.ExtractorMediaSource
+import com.google.android.exoplayer2.source.MediaSource
+import com.google.android.exoplayer2.source.TrackGroupArray
+import com.google.android.exoplayer2.source.hls.HlsMediaSource
+import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
+import com.google.android.exoplayer2.trackselection.TrackSelection
+import com.google.android.exoplayer2.trackselection.TrackSelectionArray
+import com.google.android.exoplayer2.ui.PlayerView
+import com.google.android.exoplayer2.upstream.*
+import com.google.android.exoplayer2.util.Util
 import com.google.android.youtube.player.YouTubeInitializationResult
 import com.google.android.youtube.player.YouTubePlayer
 import com.google.android.youtube.player.YouTubePlayerSupportFragment.newInstance
@@ -59,6 +71,7 @@ import javax.inject.Inject
  */
 class ShowViewFragment : Fragment(), MoreEpisodeAdapter.OnSeasonItemClickedListener {
 
+    private var mFullScreenDialog: Dialog? = null
     private var isFromSeasonClick: Boolean = false
     private var index: Int = 0
     private lateinit var featuredShows: FeaturedShows
@@ -81,6 +94,15 @@ class ShowViewFragment : Fragment(), MoreEpisodeAdapter.OnSeasonItemClickedListe
     private lateinit var moreEpidsodeAdapter: MoreEpisodeAdapter
     private var moreEpisodesList = arrayListOf<SeasonsEpisode>()
     private lateinit var seasons: Seasons
+    private val stopPlayerReInit = false
+    private var simpleExoPlayerView: PlayerView? = null
+    private var mediaDataSourceFactory: DataSource.Factory? = null
+    private var trackSelector: DefaultTrackSelector? = null
+    private var shouldAutoPlay = false
+    private var bandwidthMeter: BandwidthMeter? = null
+    private var player: SimpleExoPlayer? = null
+    private lateinit var playerContainer: ConstraintLayout
+    private lateinit var video_load_progress_overView: ProgressBar
 
     init {
         SFApplication.getAppComponent().inject(this)
@@ -102,8 +124,9 @@ class ShowViewFragment : Fragment(), MoreEpisodeAdapter.OnSeasonItemClickedListe
                 val userListType: Type = object : TypeToken<ArrayList<SeasonsEpisode>?>() {}.type
                 val userArray: ArrayList<SeasonsEpisode> =
                     gson.fromJson(gson.toJson(data.episodes), userListType)
-                if (userArray.isEmpty()){
-                    moreEpisodesContainer.visibility = View.INVISIBLE
+                if (userArray.isEmpty()) {
+                    if (moreEpisodesContainer != null)
+                        moreEpisodesContainer.visibility = View.INVISIBLE
                 }
                 moreEpisodesList.addAll(userArray)
                 if (this::moreEpidsodeAdapter.isInitialized)
@@ -160,6 +183,9 @@ class ShowViewFragment : Fragment(), MoreEpisodeAdapter.OnSeasonItemClickedListe
                     if (youTubePlayer.isPlaying)
                         youTubePlayer.pause()
                 }
+                if (player != null && player?.playWhenReady!! && simpleExoPlayerView != null && simpleExoPlayerView?.visibility == View.VISIBLE) {
+                    player?.playWhenReady = false
+                }
             }
         })
     }
@@ -174,7 +200,7 @@ class ShowViewFragment : Fragment(), MoreEpisodeAdapter.OnSeasonItemClickedListe
             override fun handleOnBackPressed() {
                 if (activity.resources?.configuration?.orientation == Configuration.ORIENTATION_LANDSCAPE) {
                     activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-                    if (playerContainer.visibility == View.VISIBLE && this@ShowViewFragment::youTubePlayer.isInitialized) {
+                    if (youtube_playerFragment.visibility == View.VISIBLE && this@ShowViewFragment::youTubePlayer.isInitialized) {
                         youTubePlayer.setFullscreen(false)
                     }
                 } else {
@@ -192,8 +218,43 @@ class ShowViewFragment : Fragment(), MoreEpisodeAdapter.OnSeasonItemClickedListe
         return inflater.inflate(R.layout.show_view_layout, container, false)
     }
 
+    private fun setFullScreenForPlayer() {
+        /* val set = ConstraintSet()
+         set.clone(playerContainer)
+         set.setDimensionRatio(simpleExoPlayerView?.id!!, "16:9")
+         set.applyTo(playerContainer)*/
+
+        mFullScreenDialog =
+            object : Dialog(activity, android.R.style.Theme_Black_NoTitleBar_Fullscreen) {
+                override fun onBackPressed() {
+                    activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+                    closeFullscreenDialog()
+                    super.onBackPressed()
+                }
+            }
+        (simpleExoPlayerView!!.parent as ViewGroup).removeView(simpleExoPlayerView)
+        (mFullScreenDialog as Dialog).addContentView(
+            simpleExoPlayerView!!,
+            ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
+            )
+        )
+        (mFullScreenDialog as Dialog).show()
+    }
+
+    private fun closeFullscreenDialog() {
+        (simpleExoPlayerView!!.parent as ViewGroup).removeView(simpleExoPlayerView)
+        (playerContainer).addView(simpleExoPlayerView)
+        if (mFullScreenDialog != null)
+            mFullScreenDialog!!.dismiss()
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        simpleExoPlayerView = view.findViewById(R.id.player_view)
+        playerContainer = view.findViewById(R.id.playerContainer)
+        video_load_progress_overView = view.findViewById(R.id.video_load_progress_overView)
         val seasonArray = ArrayList<String>()
         for (i in 1..featuredShows.seasons.size) {
             seasonArray.add("Season $i")
@@ -243,13 +304,12 @@ class ShowViewFragment : Fragment(), MoreEpisodeAdapter.OnSeasonItemClickedListe
         if (arguments?.getString(AppConstant.BundleExtras.FROM_HOME) != null) {
             selectedSeason = 0
             seasonSpinner.setSelection(0, true)
-            if (featuredShows.seasonsEpisodes.isNotEmpty() && featuredShows.seasonsEpisodes[selectedSeason].link.contains(
-                    "youtube"
-                )
-            )
-                initYoutubePlayerView(featuredShows.seasonsEpisodes[selectedSeason].link.split("v=")[1])
-            else {
-                activity.let { AppUtility.showToast(it, "Source Error") }
+            if (featuredShows.seasonsEpisodes.isNotEmpty() && selectedSeason < featuredShows.seasonsEpisodes.size) {
+                if (featuredShows.seasonsEpisodes[selectedSeason].link.contains("youtube")) {
+                    initYoutubePlayerView(featuredShows.seasonsEpisodes[selectedSeason].link.split("v=")[1])
+                } else {
+                    initYoutubePlayerView(featuredShows.seasonsEpisodes[selectedSeason].link)
+                }
             }
         } else {
             selectedSeason = seasonArray.size - 1
@@ -274,12 +334,18 @@ class ShowViewFragment : Fragment(), MoreEpisodeAdapter.OnSeasonItemClickedListe
     }
 
     private fun initYoutubePlayerView(videoCode: String) {
+        youtube_playerFragment.visibility = View.VISIBLE
+        simpleExoPlayerView?.visibility = View.GONE
+        if (player != null && player?.playWhenReady!!) {
+            player?.playWhenReady = false
+        }
+
         if (isFromSeasonClick) {
             if (this@ShowViewFragment::youTubePlayer.isInitialized) {
                 youTubePlayer.loadVideo(videoCode)
                 youTubePlayer.play()
+                return
             }
-            return
         }
         if (this@ShowViewFragment::activity.isInitialized) {
             val a: Activity? = activity
@@ -297,7 +363,7 @@ class ShowViewFragment : Fragment(), MoreEpisodeAdapter.OnSeasonItemClickedListe
                 ).apply(RequestOptions.bitmapTransform(BlurTransformation(20, 2)))
                 .into(showImage)
         }
-        playerContainer.visibility = View.VISIBLE
+        youtube_playerFragment.visibility = View.VISIBLE
         val youTubePlayerFragment = newInstance()
         youTubePlayerFragment.initialize(AppConstant.YOUTUBE_API_KEY, object :
             YouTubePlayer.OnInitializedListener {
@@ -351,15 +417,24 @@ class ShowViewFragment : Fragment(), MoreEpisodeAdapter.OnSeasonItemClickedListe
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
-            if (this@ShowViewFragment::youTubePlayer.isInitialized) {
+            if (this@ShowViewFragment::youTubePlayer.isInitialized && youtube_playerFragment.visibility == View.VISIBLE) {
                 youTubePlayer.setFullscreen(false)
+            } else {
+                if (simpleExoPlayerView?.visibility == View.VISIBLE) {
+                    closeFullscreenDialog()
+                }
             }
         } else {
-            if (this@ShowViewFragment::youTubePlayer.isInitialized) {
+            if (this@ShowViewFragment::youTubePlayer.isInitialized && youtube_playerFragment.visibility == View.VISIBLE) {
                 youTubePlayer.setFullscreen(true)
+            } else {
+                if (simpleExoPlayerView?.visibility == View.VISIBLE) {
+                    setFullScreenForPlayer()
+                }
             }
         }
     }
+
 
     private fun formatHoursAndMinutes(totalMinutes: Int): String? {
         var minutes = (totalMinutes % 60).toString()
@@ -524,22 +599,17 @@ class ShowViewFragment : Fragment(), MoreEpisodeAdapter.OnSeasonItemClickedListe
                 }
 
                 if (fromLiveSchedule) {
-                    if (featuredShows.link.contains(
-                            "youtube"
-                        )
-                    ) {
+                    if (featuredShows.link.contains("youtube")) {
                         if (mediaPlayer.playWhenReady)
                             mediaPlayer.playWhenReady = false
 
-                        if (featuredShows.link.isNotEmpty() && !featuredShows.link.contains(
-                                "youtube"
-                            )
-                        ) {
-                            activity?.let { AppUtility.showToast(it, "Source Error") }
-                            return@setOnClickListener
+                        if (featuredShows.link.isNotEmpty() && !featuredShows.link.contains("youtube")) {
+                            initializePlayer(featuredShows.link)
+                        } else {
+                            val videoCode = featuredShows.link.split("v=")[1]
+                            initYoutubePlayerView(videoCode)
                         }
-                        val videoCode = featuredShows.link.split("v=")[1]
-                        initYoutubePlayerView(videoCode)
+
                     } else {
                         if (this@ShowViewFragment::youTubePlayer.isInitialized && youTubePlayer.isPlaying) {
                             youTubePlayer.pause()
@@ -552,21 +622,18 @@ class ShowViewFragment : Fragment(), MoreEpisodeAdapter.OnSeasonItemClickedListe
                         )
                     }
                 } else {
-                    if (featuredShows.type == "Video" || (featuredShows.seasonsEpisodes.isNotEmpty() && featuredShows.seasonsEpisodes[index].link.contains(
-                            "youtube"
-                        ))
-                    ) {
+                    if (featuredShows.type == "Video") {
                         if (mediaPlayer.playWhenReady)
                             mediaPlayer.playWhenReady = false
-                        if (featuredShows.seasonsEpisodes.isNotEmpty() && !featuredShows.seasonsEpisodes[index].link.contains(
-                                "youtube"
-                            )
-                        ) {
-                            activity.let { AppUtility.showToast(it, "Source Error") }
-                            return@setOnClickListener
+                        if (featuredShows.seasonsEpisodes.isNotEmpty() && index < featuredShows.seasonsEpisodes.size) {
+                            if (!featuredShows.seasonsEpisodes[index].link.contains("youtube")) {
+                                initializePlayer(featuredShows.seasonsEpisodes[index].link)
+                            } else {
+                                val videoCode =
+                                    featuredShows.seasonsEpisodes[index].link.split("v=")[1]
+                                initYoutubePlayerView(videoCode)
+                            }
                         }
-                        val videoCode = featuredShows.seasonsEpisodes[index].link.split("v=")[1]
-                        initYoutubePlayerView(videoCode)
                     } else {
                         if (this@ShowViewFragment::youTubePlayer.isInitialized && youTubePlayer.isPlaying) {
                             youTubePlayer.pause()
@@ -597,7 +664,11 @@ class ShowViewFragment : Fragment(), MoreEpisodeAdapter.OnSeasonItemClickedListe
                     activity?.let { it1 ->
                         AppUtility.shareAppContent(
                             it1,
-                            "Listen to live commentary/discussion for ${featuredShows.title} on Sports Flashes ${resources.getString(R.string.app_url)}"
+                            "Listen to live commentary/discussion for ${featuredShows.title} on Sports Flashes ${
+                                resources.getString(
+                                    R.string.app_url
+                                )
+                            }"
                         )
                     }
                 } else if (featuredShows.seasonsEpisodes.isNotEmpty() && featuredShows.type.equals(
@@ -608,7 +679,11 @@ class ShowViewFragment : Fragment(), MoreEpisodeAdapter.OnSeasonItemClickedListe
                     activity?.let { it1 ->
                         AppUtility.shareAppContent(
                             it1,
-                            "Listen to podcast ${featuredShows.title} on Sports Flashes ${resources.getString(R.string.app_url)}"
+                            "Listen to podcast ${featuredShows.title} on Sports Flashes ${
+                                resources.getString(
+                                    R.string.app_url
+                                )
+                            }"
                         )
                     }
                 } else if (featuredShows.seasonsEpisodes.isNotEmpty() && featuredShows.seasonsEpisodes[selectedSeason].live) {
@@ -616,14 +691,22 @@ class ShowViewFragment : Fragment(), MoreEpisodeAdapter.OnSeasonItemClickedListe
                         activity?.let { it1 ->
                             AppUtility.shareAppContent(
                                 it1,
-                                "Listen to podcast ${featuredShows.title} on Sports Flashes ${resources.getString(R.string.app_url)}"
+                                "Listen to podcast ${featuredShows.title} on Sports Flashes ${
+                                    resources.getString(
+                                        R.string.app_url
+                                    )
+                                }"
                             )
                         }
                     } else {
                         activity?.let { it1 ->
                             AppUtility.shareAppContent(
                                 it1,
-                                "Watch ${featuredShows.title} on Sports Flashes ${resources.getString(R.string.app_url)}"
+                                "Watch ${featuredShows.title} on Sports Flashes ${
+                                    resources.getString(
+                                        R.string.app_url
+                                    )
+                                }"
                             )
                         }
                     }
@@ -631,7 +714,11 @@ class ShowViewFragment : Fragment(), MoreEpisodeAdapter.OnSeasonItemClickedListe
                     activity?.let { it1 ->
                         AppUtility.shareAppContent(
                             it1,
-                            "Watch ${featuredShows.title} on Sports Flashes ${resources.getString(R.string.app_url)}"
+                            "Watch ${featuredShows.title} on Sports Flashes ${
+                                resources.getString(
+                                    R.string.app_url
+                                )
+                            }"
                         )
                     }
                 }
@@ -678,9 +765,118 @@ class ShowViewFragment : Fragment(), MoreEpisodeAdapter.OnSeasonItemClickedListe
     }
 
     override fun onDestroy() {
-        super.onDestroy()
         activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         isVisibleToUser = false
+        if (player != null && player?.playWhenReady!!) {
+            player?.playWhenReady = false
+            simpleExoPlayerView?.visibility == View.GONE
+        }
+        super.onDestroy()
+    }
+
+    private fun initializePlayer(streamUrl: String) {
+        shouldAutoPlay = true
+        bandwidthMeter = DefaultBandwidthMeter()
+        mediaDataSourceFactory =
+            DefaultHttpDataSourceFactory(Util.getUserAgent(activity, "GetVokl"))
+
+        youtube_playerFragment.visibility = View.GONE
+        simpleExoPlayerView?.visibility = View.VISIBLE
+        if (this@ShowViewFragment::youTubePlayer.isInitialized && youTubePlayer.isPlaying) {
+            youTubePlayer.pause()
+        }
+        if (stopPlayerReInit) {
+            return
+        }
+        if (player != null) {
+            if (streamUrl.contains("m3u8")) {
+                val hlsMediaSource: HlsMediaSource =
+                    HlsMediaSource.Factory(mediaDataSourceFactory).createMediaSource(
+                        Uri.parse(streamUrl)
+                    )
+                player?.prepare(hlsMediaSource)
+                player?.playWhenReady = true
+            } else if (streamUrl.contains("mp4")) {
+                val extractorsFactory = DefaultExtractorsFactory()
+                val mediaSource: MediaSource = ExtractorMediaSource(
+                    Uri.parse(streamUrl),
+                    mediaDataSourceFactory, extractorsFactory, null, null
+                )
+                player?.prepare(mediaSource)
+                simpleExoPlayerView?.useController = true
+                simpleExoPlayerView?.showController()
+                player?.playWhenReady = true
+            }
+            return
+        }
+        simpleExoPlayerView?.requestFocus()
+        val videoTrackSelectionFactory: TrackSelection.Factory =
+            AdaptiveTrackSelection.Factory(bandwidthMeter)
+        trackSelector = DefaultTrackSelector(videoTrackSelectionFactory)
+        player = ExoPlayerFactory.newSimpleInstance(activity, trackSelector)
+        simpleExoPlayerView?.setPlayer(player)
+        player?.playWhenReady = shouldAutoPlay
+        player?.addListener(object : Player.EventListener {
+            override fun onTracksChanged(
+                trackGroups: TrackGroupArray,
+                trackSelections: TrackSelectionArray
+            ) {
+            }
+
+            override fun onLoadingChanged(isLoading: Boolean) {
+                if (isLoading) {
+                    video_load_progress_overView.visibility = View.VISIBLE
+                } else {
+                    video_load_progress_overView.visibility = View.GONE
+                }
+            }
+
+            override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
+                if (playWhenReady) {
+                    if (mediaPlayer.playWhenReady)
+                        mediaPlayer.playWhenReady = false
+                }
+                when (playbackState) {
+                    Player.STATE_IDLE, Player.STATE_READY -> {
+                        video_load_progress_overView.visibility = View.GONE
+                    }
+                    Player.STATE_BUFFERING -> if (context!!.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                        video_load_progress_overView.visibility = View.VISIBLE
+                    } else {
+                        video_load_progress_overView.visibility = View.VISIBLE
+                    }
+
+                }
+            }
+
+            override fun onRepeatModeChanged(repeatMode: Int) {}
+            override fun onPlayerError(error: ExoPlaybackException) {
+                error.printStackTrace()
+                if (error.type == ExoPlaybackException.TYPE_SOURCE && error.cause is HttpDataSource.InvalidResponseCodeException) {
+                    Toast.makeText(activity, "Source error", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onPlaybackParametersChanged(playbackParameters: PlaybackParameters) {}
+        })
+        if (streamUrl.contains("m3u8")) {
+            val hlsMediaSource: HlsMediaSource =
+                HlsMediaSource.Factory(mediaDataSourceFactory).createMediaSource(
+                    Uri.parse(streamUrl)
+                )
+            player?.prepare(hlsMediaSource)
+            player?.playWhenReady = true
+        } else if (streamUrl.contains("mp4")) {
+            val extractorsFactory = DefaultExtractorsFactory()
+            val mediaSource: MediaSource = ExtractorMediaSource(
+                Uri.parse(streamUrl),
+                mediaDataSourceFactory, extractorsFactory, null, null
+            )
+            player?.prepare(mediaSource)
+            simpleExoPlayerView?.useController = true
+            simpleExoPlayerView?.showController()
+            player?.playWhenReady = true
+        }
     }
 
 }

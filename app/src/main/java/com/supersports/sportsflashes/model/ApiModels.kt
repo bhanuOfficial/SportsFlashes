@@ -22,7 +22,7 @@ data class FeaturedShows(
     val type: String = "",
     val updatedAt: String = "",
     val thumbnailData: Any = Any(),
-    val radio: Boolean = false,
+    var radio: Boolean = false,
     var subscribed: Boolean = false,
     val link: String = ""
 )
